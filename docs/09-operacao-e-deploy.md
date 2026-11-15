@@ -1,4 +1,4 @@
-<!-- revisado: 1.0.0 -->
+<!-- revisado: 1.1.0 -->
 # Operação, deploy e manutenção
 
 ## Hospedagem
@@ -24,6 +24,9 @@ VPS com **Coolify** (Docker). A aplicação do Partidou tem projeto, domínio (`
 
 ## Testes
 `node supabase/tests/run-tests.mjs` sobe um PostgreSQL embutido, aplica todas as migrations em ordem e executa centenas de verificações (isolamento entre centros, conflito de reservas, financeiro, permissões, página pública, partidas). Deve passar 100% antes de publicar (`npm i --no-save embedded-postgres pg`).
+
+## Domínios
+`app.partidou.com.br` (sistema) e `partidou.com.br` + `www` (site comercial) são domínios da mesma aplicação no Coolify; o middleware escolhe o conteúdo pelo endereço (ver capítulo do site comercial).
 
 ## Segurança operacional
 Credenciais só em `.env.deploy` local ou no Coolify; ao terminar, esvaziar `COOLIFY_TOKEN` e `DATABASE_URL`, revogar o token no Coolify e trocar a senha do banco. Guardar cópia segura dos backups.

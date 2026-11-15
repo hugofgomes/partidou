@@ -6,7 +6,7 @@ export const metadata = { title: "Política de privacidade · Partidou" }
 export default function Privacidade() {
   return (
     <main className="mx-auto max-w-2xl space-y-4 px-4 py-10 text-sm leading-relaxed">
-      <Link href="/quadras" className="text-primary underline">← Voltar</Link>
+      <Link href="/" className="text-primary underline">← Voltar</Link>
       <h1 className="text-2xl font-bold">Política de privacidade</h1>
       <p>O Partidou conecta jogadores a quadras e oferece aos centros esportivos um sistema de gestão. Esta página explica como tratamos dados pessoais, em linha com a Lei Geral de Proteção de Dados (LGPD).</p>
       <h2 className="text-lg font-semibold">Quais dados coletamos</h2>

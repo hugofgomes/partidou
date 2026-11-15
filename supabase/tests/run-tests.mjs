@@ -1269,6 +1269,50 @@ section("Quadra Esportiva: página pública, reservas online e partidas (0040)")
   ok("busca com horário ocupado exclui o centro (modalidade só da quadra com reserva)", await (async () => { await as(P.a1, async () => { await db.query(`select public.court_booking_create($1,'avulsa','Bloqueio Teste',null,null,$2,$3)`, [P.c2, T(D1, 20), T(D1, 21)]) }, true); const r = await anon(async () => (await db.query(`select public.court_public_search('futebol_society',null,null,$1,1200,1260) v`, [D1])).rows[0].v); return r.length === 0 })())
 }
 
+section("Site comercial: captação de leads (0041)")
+{
+  const L = { owner: uid(1801), org: uid(1802), user: uid(1803), org2: uid(1804) }
+  await q(`insert into auth.users (id, email) values ($1,'l-owner@x'),($2,'l-user@x')`, [L.owner, L.user])
+  await q(`insert into public.organizations (id, slug, name, status, kind, plan_id) values ($1,'dono-leads','Dono Leads','ativa','quadra',(select id from public.plans where code='ilimitado')),($2,'centro-leads','Centro Leads','ativa','quadra',(select id from public.plans where code='quadra_t'))`, [L.org, L.org2])
+  await q(`insert into public.profiles (tenant_id, id, full_name, role) values ($1,$2,'Dono','admin'),($3,$4,'Admin','admin')`, [L.org, L.owner, L.org2, L.user])
+  await q(`insert into public.platform_admins (user_id) values ($1)`, [L.owner])
+  let done
+  async function anon(fn, commit = false) {
+    await db.query("begin"); done = false
+    try { await db.query("set local role anon"); const r = await fn(); if (commit) { await db.query("commit"); done = true } return r } finally { if (!done) await db.query("rollback") }
+  }
+  const aerr = (sql, p = []) => anon(async () => err(sql, p))
+  const create = (args) => anon(async () => (await db.query(`select public.site_lead_create($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) id`, args)).rows[0].id, true)
+  const base = ["quadra", "  João   Dono ", "Arena Floripa", "Florianópolis", "sc", "(48) 99999-0001", "JOAO@ARENA.COM", 3, "Quero conhecer", true, "quadra_pro", "site-form"]
+
+  const id = await create(base)
+  ok("visitante cadastra um interesse e recebe um identificador", /^[0-9a-f-]{36}$/.test(id))
+  const row = (await q(`select * from public.site_leads where id=$1`, [id]))[0]
+  ok("dados normalizados: nome, WhatsApp com DDI, e-mail minúsculo, UF maiúscula, consentimento e situação inicial", row.name === "João Dono" && row.whatsapp === "5548999990001" && row.email === "joao@arena.com" && row.state === "SC" && row.consent === true && row.status === "novo" && row.audience === "quadra")
+  ok("visitante não lê a tabela nem lista os contatos", /permission denied/.test(await aerr(`select * from public.site_leads`) ?? "") && /permission denied/.test(await aerr(`select * from public.site_leads_list()`) ?? ""))
+  ok("visitante não altera contatos", /permission denied/.test(await aerr(`select public.site_lead_update('${id}','ganho','x')`) ?? ""))
+  ok("sem consentimento não cadastra", /consentimento/.test(await aerr(`select public.site_lead_create('jogador','Maria Jogadora',null,null,null,'48988880001',null,null,null,false)`) ?? ""))
+  ok("exige WhatsApp ou e-mail, nome e estabelecimento (dono de quadra)", /WhatsApp ou e-mail/.test(await aerr(`select public.site_lead_create('jogador','Maria Jogadora',null,null,null,null,null,null,null,true)`) ?? "") && /nome/.test(await aerr(`select public.site_lead_create('jogador','M',null,null,null,'48988880001',null,null,null,true)`) ?? "") && /estabelecimento/.test(await aerr(`select public.site_lead_create('quadra','Pedro Dono',null,null,null,'48988880002',null,null,null,true)`) ?? ""))
+  ok("tipo, e-mail, estado e quantidade de quadras inválidos são recusados", (await aerr(`select public.site_lead_create('xx','Maria Jogadora',null,null,null,'48988880001',null,null,null,true)`)) !== null && /E-mail/.test(await aerr(`select public.site_lead_create('jogador','Maria Jogadora',null,null,null,null,'abc',null,null,true)`) ?? "") && (await aerr(`select public.site_lead_create('jogador','Maria Jogadora',null,null,'ZZ','48988880001',null,null,null,true)`)) !== null && /Quantidade/.test(await aerr(`select public.site_lead_create('quadra','Pedro Dono','Arena X',null,null,'48988880002',null,999,null,true)`) ?? ""))
+  await create(["jogador", "Maria Jogadora", null, null, null, "48988880001", null, null, null, true, null, "site-form"])
+  await create(["organizador", "Carlos Org", null, "Joinville", "SC", null, "carlos@org.com", null, "Racha de quinta", true, "organizador_pro", "site-form"])
+  // freio: no máximo 3 contatos por WhatsApp em 24 horas
+  await create(base); await create(base)
+  ok("no máximo 3 contatos por WhatsApp ou e-mail em 24 horas", /Já recebemos/.test(await aerr(`select public.site_lead_create('quadra','Joao Dono','Arena Floripa',null,null,'48999990001',null,1,null,true)`) ?? ""))
+
+  await as(L.owner, async () => {
+    const all = await q(`select * from public.site_leads_list()`)
+    ok("dono da plataforma lista os contatos (mais recentes primeiro)", all.length === 5 && new Date(all[0].created_at) >= new Date(all[4].created_at))
+    ok("filtro por situação", (await q(`select * from public.site_leads_list('novo')`)).length === 5 && (await q(`select * from public.site_leads_list('ganho')`)).length === 0)
+    await db.query(`select public.site_lead_update($1,'contatado','Ligar amanhã')`, [id])
+    ok("dono atualiza situação e anotações, com registro de quem alterou", (await one(`select status from public.site_leads_list() where id=$1`, [id])) === "contatado" && (await one(`select notes from public.site_leads_list() where id=$1`, [id])) === "Ligar amanhã" && (await one(`select updated_by::text from public.site_leads_list() where id=$1`, [id])) === L.owner)
+    ok("situação inválida é recusada", /inválida/.test(await err(`select public.site_lead_update('${id}','xx',null)`) ?? ""))
+  }, true)
+  await as(L.user, async () => {
+    ok("administrador de um centro (não dono) não acessa os contatos", /restrito/.test(await err(`select * from public.site_leads_list()`) ?? "") && /restrito/.test(await err(`select public.site_lead_update('${id}','ganho',null)`) ?? "") && /permission denied/.test(await err(`select * from public.site_leads`) ?? ""))
+  })
+}
+
 section("Auditoria")
 await as(U.peladaAdmin, async () => {
   await db.query(`insert into public.expenses (spent_at, description, amount) values (current_date,'Auditada',3)`)

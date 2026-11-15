@@ -2,6 +2,24 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.1.0",
+      "date": "2026-11-15",
+      "title": "Site comercial do Partidou (partidou.com.br)",
+      "novidades": [
+        "Site institucional e comercial completo em partidou.com.br: hero, como funciona, gestão de quadras, agenda inteligente, jogadores, organizadores, modalidades, planos, benefícios, perguntas frequentes, formulário de contato e rodapé, com a identidade oficial (verde-escuro, lima, branco gelo e grafite; fontes Sora e Inter).",
+        "Formulário de captação para donos de quadra, organizadores e jogadores, com validação, proteção contra spam (campo-isca, tempo mínimo e limite por IP e por contato), consentimento LGPD e gravação no banco; os contatos aparecem em Painel do SaaS → Contatos do site, com situação e anotações.",
+        "SEO: título e descrição, canonical, Open Graph e Twitter Cards com imagem de compartilhamento, dados estruturados (Organização, Site, Aplicativo e Perguntas frequentes), robots.txt e sitemap.xml por endereço.",
+        "Política de cookies."
+      ],
+      "melhorias": [
+        "partidou.com.br serve o site e redireciona o restante para app.partidou.com.br; www redireciona para o endereço principal.",
+        "Conteúdo que ainda não existe (organizadores e perfil de jogador) aparece marcado como Em breve; mockups são ilustrativos e sem números reais."
+      ],
+      "correcoes": [
+        "Service worker do app instalável deixava de instalar por apontar para ícones que não existem mais."
+      ]
+    },
+    {
       "version": "1.0.0",
       "date": "2026-11-15",
       "title": "Partidou: gestão de quadras e centros esportivos",

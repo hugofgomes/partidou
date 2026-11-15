@@ -6,7 +6,7 @@ export const metadata = { title: "Termos de uso · Partidou" }
 export default function Termos() {
   return (
     <main className="mx-auto max-w-2xl space-y-4 px-4 py-10 text-sm leading-relaxed">
-      <Link href="/quadras" className="text-primary underline">← Voltar</Link>
+      <Link href="/" className="text-primary underline">← Voltar</Link>
       <h1 className="text-2xl font-bold">Termos de uso</h1>
       <p>Ao usar o Partidou você concorda com os termos abaixo.</p>
       <h2 className="text-lg font-semibold">Reservas</h2>

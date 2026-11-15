@@ -10,7 +10,7 @@ import { TrialBanner } from "@/components/trial-banner"
 import { useRole } from "@/hooks/use-role"
 import { supabase } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
-import { Activity, BookOpen, Bell, CalendarRange, ChartColumn, ChevronDown, ClipboardList, Clock, Contact, CreditCard, Crown, Hourglass, LayoutDashboard, LogOut, MapPin, Megaphone, Menu as MenuIcon, PanelLeftClose, PanelLeftOpen, Settings2, UserCog, Users, Wallet, X } from "lucide-react"
+import { Activity, BookOpen, Bell, CalendarRange, ChartColumn, ChevronDown, ClipboardList, Clock, Contact, CreditCard, Crown, Hourglass, Inbox, LayoutDashboard, LogOut, MapPin, Megaphone, Menu as MenuIcon, PanelLeftClose, PanelLeftOpen, Settings2, UserCog, Users, Wallet, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import * as React from "react"
@@ -39,7 +39,7 @@ const ACCOUNT = { href: "/conta", label: "Minha conta", icon: UserCog }
 
 const isActive = (path: string, href: string) => (href === "/" || href === "/quadra" ? path === href : path === href || path.startsWith(href + "/"))
 const PLATFORM = { href: "/super", label: "Painel do SaaS", icon: Crown }
-const SAAS_LINKS = [{ href: "/super/acessos", label: "Log de acessos", icon: Activity }, { href: "/super/comunicados", label: "Comunicados", icon: Megaphone }, { href: "/super/documentacao", label: "Documentação", icon: BookOpen }]
+const SAAS_LINKS = [{ href: "/super/acessos", label: "Log de acessos", icon: Activity }, { href: "/super/leads", label: "Contatos do site", icon: Inbox }, { href: "/super/comunicados", label: "Comunicados", icon: Megaphone }, { href: "/super/documentacao", label: "Documentação", icon: BookOpen }]
 const titleOf = (path: string) => [...ADMIN, ...QUADRA, ...SAAS_LINKS, PLATFORM, ACCOUNT].filter((n) => isActive(path, n.href)).sort((a, b) => b.href.length - a.href.length)[0]?.label ?? ""
 
 const itemCls = "flex w-full cursor-default items-center gap-2 rounded-md px-2.5 py-2 text-sm outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"

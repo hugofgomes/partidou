@@ -1,4 +1,4 @@
-<!-- revisado: 1.0.0 -->
+<!-- revisado: 1.1.0 -->
 # Visão geral
 
 ## O que é
@@ -15,7 +15,7 @@ O **Partidou** é uma plataforma SaaS (software por assinatura) para **gestão d
 | **Jogador e organizador** | Público, sem conta | Busca quadras, vê horários livres, solicita reservas e pede vaga em partidas |
 
 ## Endereços
-- Produção: `app.partidou.com.br`. Busca pública: `/quadras`. Página de cada centro: `/quadras/<identificador-do-centro>`. Gestão de partida pelo organizador: `/partida/<código-secreto>`.
+- Site comercial: `partidou.com.br` (capítulo "Site comercial"). Sistema em produção: `app.partidou.com.br`. Busca pública: `/quadras`. Página de cada centro: `/quadras/<identificador-do-centro>`. Gestão de partida pelo organizador: `/partida/<código-secreto>`.
 
 ## Tecnologias
 Next.js (App Router) e React, Tailwind CSS, Supabase (PostgreSQL, Autenticação, Storage e regras de acesso por linha) e hospedagem em VPS com Coolify (Docker). Detalhes no capítulo de arquitetura.

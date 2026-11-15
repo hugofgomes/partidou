@@ -28,7 +28,10 @@
     "/partida/[token]": "Gestão da partida pelo organizador (código secreto no link, sem login)",
     "/quadra/espera": "Quadra Esportiva: lista de espera e horários livres compatíveis",
     "/": "Página inicial: leva ao Dashboard do centro (logado) ou à busca de quadras (visitante)",
-    "/sem-acesso": "Aviso para conta sem acesso liberado (bloqueada, revogada ou sem centro) com botão de sair"
+    "/sem-acesso": "Aviso para conta sem acesso liberado (bloqueada, revogada ou sem centro) com botão de sair",
+    "/site": "Site comercial do Partidou (servido na raiz de partidou.com.br): apresentação, planos, FAQ e formulário de contato",
+    "/cookies": "Política de cookies",
+    "/super/leads": "Contatos captados pelo site comercial: acompanhamento, anotações e situação (dono da plataforma)"
   },
   "apis": {
     "/api/assinatura": "Cria a assinatura no Asaas e devolve o link de pagamento",
@@ -37,7 +40,8 @@
     "/api/versao": "Identificador do build, usado para avisar o navegador sobre nova versão",
     "/api/webhooks/asaas": "Eventos de cobrança do Asaas (ativa, suspende, cancela grupos)",
     "/api/super/comunicados/enviar": "Envia o próximo lote de e-mails de um comunicado (somente dono da plataforma)",
-    "/api/super/comunicados/teste": "Envia o comunicado de teste só para o e-mail do dono"
+    "/api/super/comunicados/teste": "Envia o comunicado de teste só para o e-mail do dono",
+    "/api/site/lead": "Recebe o formulário do site comercial (valida, protege contra spam e grava o contato); sem login"
   },
   "env": {
     "APP_URL": "Endereço público usado nos links dos e-mails de aviso (padrão: domínio principal)",

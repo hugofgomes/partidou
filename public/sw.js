@@ -1,9 +1,9 @@
 // Service worker do app instalável (PWA).
 // REGRA DE SEGURANÇA: nunca guarda páginas, respostas de API ou dados do Supabase (são de pessoas logadas e podem ser de outro usuário
 // no mesmo aparelho). Só guarda arquivos estáticos públicos (ícones e código versionado) e a página offline.
-const CACHE = "partidou-pwa-v1"
+const CACHE = "partidou-pwa-v2"
 const OFFLINE = "/offline"
-const PRECACHE = [OFFLINE, "/pwa/icon-192.png", "/pwa/icon-512.png"]
+const PRECACHE = [OFFLINE, "/brand/icon-192.png", "/brand/icon-512.png"]
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()))
@@ -26,7 +26,7 @@ self.addEventListener("fetch", (e) => {
     return
   }
   // Arquivos estáticos versionados e ícones: cache primeiro (o nome do arquivo muda quando o conteúdo muda)
-  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/pwa/")) {
+  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/brand/")) {
     e.respondWith(caches.match(req).then((hit) => hit ?? fetch(req).then((res) => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)) }
       return res

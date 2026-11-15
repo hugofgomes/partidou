@@ -1,8 +1,22 @@
+import { APP_URL, SITE_URL, isMarketingHost } from "@/lib/site-config"
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 import { isAdminOnlyPath, isStaff } from "@/lib/roles"
 
+/** partidou.com.br (site comercial): a raiz mostra o site; textos legais e o envio do formulário ficam aqui; todo o resto é do sistema e vai para app.partidou.com.br. */
+function marketing(req: NextRequest) {
+  const { pathname, search } = req.nextUrl
+  const host = (req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "").toLowerCase().split(":")[0]
+  if (host.startsWith("www.")) return NextResponse.redirect(SITE_URL + pathname + search, 308)
+  if (pathname === "/") { const u = req.nextUrl.clone(); u.pathname = "/site"; return NextResponse.rewrite(u) }
+  if (pathname === "/site") return NextResponse.redirect(SITE_URL + "/", 308)
+  if (["/privacidade", "/termos", "/cookies", "/api/site/lead"].includes(pathname)) return NextResponse.next()
+  return NextResponse.redirect(APP_URL + pathname + search, 307)
+}
+
 export async function middleware(req: NextRequest) {
+  if (isMarketingHost(req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "")) return marketing(req)
+  if (req.nextUrl.pathname === "/site") return NextResponse.redirect(SITE_URL + "/", 308)
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   if (!url || !key) return NextResponse.next()
@@ -31,7 +45,7 @@ export async function middleware(req: NextRequest) {
   // Recuperação de senha: pedir o link (sem login) e definir a nova senha (com a sessão criada pelo link).
   if (path === "/recuperar" || path === "/redefinir-senha") return res
   // Páginas públicas: busca de quadras, página do centro, gestão da partida pelo organizador (código secreto no link) e textos legais.
-  if (path === "/quadras" || path.startsWith("/quadras/") || path.startsWith("/partida/") || path === "/privacidade" || path === "/termos") return res
+  if (path === "/quadras" || path.startsWith("/quadras/") || path.startsWith("/partida/") || path === "/privacidade" || path === "/termos" || path === "/cookies" || path === "/api/site/lead") return res
   // Quem não está logado vê a busca de quadras; o resto pede login.
   if (!user && path === "/") return go("/quadras")
   if (!user) return path === "/login" ? res : go("/login")

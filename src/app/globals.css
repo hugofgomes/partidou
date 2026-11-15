@@ -144,9 +144,30 @@
   h1, h2, h3 {
     color: var(--primary);
   }
+  /* Site comercial: títulos herdam a cor da seção (as classes text-* continuam valendo) */
+  .mk h1, .mk h2, .mk h3 { color: inherit; }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
   }
 }
 /* Diretoria (somente consulta): esconde tudo que grava. O banco já recusa qualquer escrita; isto só limpa a tela. */
 [data-readonly] [data-write] { display: none !important; }
+
+/* Site comercial (partidou.com.br): cores da marca como utilitários (bg-forest, text-lime...) e animações discretas */
+@theme inline {
+  --color-forest: #142C25;
+  --color-lime: #B9F344;
+  --color-ice: #F6F8F4;
+  --color-graphite: #19221D;
+  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+@keyframes mk-float { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+@keyframes mk-glow { 0%, 100% { opacity: .35 } 50% { opacity: .7 } }
+.mk-float { animation: mk-float 6s ease-in-out infinite }
+.mk-glow { animation: mk-glow 7s ease-in-out infinite }
+.mk-reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease-out, transform .6s ease-out }
+.mk-reveal.mk-in { opacity: 1; transform: none }
+@media (prefers-reduced-motion: reduce) {
+  .mk-float, .mk-glow { animation: none }
+  .mk-reveal { opacity: 1; transform: none; transition: none }
+}

@@ -1,5 +1,5 @@
 {
- "version": "1.0.0",
+ "version": "1.1.0",
  "versionDate": "2026-11-15",
  "stack": {
   "next": "15.5.29",
@@ -10,8 +10,8 @@
   {
    "id": "visao-geral",
    "title": "Visão geral",
-   "revisado": "1.0.0",
-   "markdown": "# Visão geral\n\n## O que é\nO **Partidou** é uma plataforma SaaS (software por assinatura) para **gestão de quadras e centros esportivos** e para conectar jogadores a horários livres. Cada centro esportivo é um cliente com o ambiente de gestão isolado: agenda, reservas, clientes, equipe, financeiro, relatórios e uma página pública para divulgar quadras e receber solicitações de reserva.\n\n*PARTIDOU — O jogo começa aqui.*\n\n## Quem usa\n| Perfil | Quem é | O que faz |\n|---|---|---|\n| **Dono da plataforma** | Quem comercializa o Partidou | Cria e gerencia centros (clientes), planos, assinaturas e suspensões; acessa o Painel do SaaS e esta documentação |\n| **Administrador do centro** | Proprietário ou gestor do estabelecimento | Gerencia tudo do próprio centro, inclusive equipe, financeiro e configurações |\n| **Gerente, recepcionista, financeiro** | Equipe do centro | Cada perfil acessa só o que o cargo permite (ver capítulo de perfis) |\n| **Jogador e organizador** | Público, sem conta | Busca quadras, vê horários livres, solicita reservas e pede vaga em partidas |\n\n## Endereços\n- Produção: `app.partidou.com.br`. Busca pública: `/quadras`. Página de cada centro: `/quadras/<identificador-do-centro>`. Gestão de partida pelo organizador: `/partida/<código-secreto>`.\n\n## Tecnologias\nNext.js (App Router) e React, Tailwind CSS, Supabase (PostgreSQL, Autenticação, Storage e regras de acesso por linha) e hospedagem em VPS com Coolify (Docker). Detalhes no capítulo de arquitetura."
+   "revisado": "1.1.0",
+   "markdown": "# Visão geral\n\n## O que é\nO **Partidou** é uma plataforma SaaS (software por assinatura) para **gestão de quadras e centros esportivos** e para conectar jogadores a horários livres. Cada centro esportivo é um cliente com o ambiente de gestão isolado: agenda, reservas, clientes, equipe, financeiro, relatórios e uma página pública para divulgar quadras e receber solicitações de reserva.\n\n*PARTIDOU — O jogo começa aqui.*\n\n## Quem usa\n| Perfil | Quem é | O que faz |\n|---|---|---|\n| **Dono da plataforma** | Quem comercializa o Partidou | Cria e gerencia centros (clientes), planos, assinaturas e suspensões; acessa o Painel do SaaS e esta documentação |\n| **Administrador do centro** | Proprietário ou gestor do estabelecimento | Gerencia tudo do próprio centro, inclusive equipe, financeiro e configurações |\n| **Gerente, recepcionista, financeiro** | Equipe do centro | Cada perfil acessa só o que o cargo permite (ver capítulo de perfis) |\n| **Jogador e organizador** | Público, sem conta | Busca quadras, vê horários livres, solicita reservas e pede vaga em partidas |\n\n## Endereços\n- Site comercial: `partidou.com.br` (capítulo \"Site comercial\"). Sistema em produção: `app.partidou.com.br`. Busca pública: `/quadras`. Página de cada centro: `/quadras/<identificador-do-centro>`. Gestão de partida pelo organizador: `/partida/<código-secreto>`.\n\n## Tecnologias\nNext.js (App Router) e React, Tailwind CSS, Supabase (PostgreSQL, Autenticação, Storage e regras de acesso por linha) e hospedagem em VPS com Coolify (Docker). Detalhes no capítulo de arquitetura."
   },
   {
    "id": "arquitetura",
@@ -58,14 +58,20 @@
   {
    "id": "operacao-e-deploy",
    "title": "Operação, deploy e manutenção",
-   "revisado": "1.0.0",
-   "markdown": "# Operação, deploy e manutenção\n\n## Hospedagem\nVPS com **Coolify** (Docker). A aplicação do Partidou tem projeto, domínio (`app.partidou.com.br`) e banco Supabase próprios. O build usa o `Dockerfile` (Node 22) e roda `npm run build`, que valida o histórico de versões e regenera esta documentação. O Dockerfile limita a memória do build (`--max-old-space-size=1536`) e o Next usa um processo por vez, porque a VPS é pequena.\n\n## Variáveis de ambiente (Coolify)\n`NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` (variáveis de **build**), `SUPABASE_SERVICE_ROLE_KEY`, `PLATFORM_ORG_SLUG` (organização do dono), `APP_URL`, `CRON_SECRET`; opcionais: `SMTP_*`, `ASAAS_*`, `PLATFORM_ALERT_EMAIL`. Só os nomes aparecem na documentação.\n\n## Fluxo de uma entrega\n1. Alterar o código; mudança no banco = nova migration numerada (somente adiciona, com reversão no fim) e testes em `supabase/tests/run-tests.mjs`.\n2. Subir a versão no `package.json` e registrar a entrada no topo de `src/data/changelog.json`.\n3. Atualizar os capítulos de `docs/` e `docs/descricoes.json`.\n4. Rodar tipos, lint, build e testes.\n5. **Backup do banco → aplicar migrations → push → deploy** (a migration antes do código novo).\n\n## Ferramentas (`scripts/`)\n| Comando | Função |\n|---|---|\n| `node --env-file=.env.deploy scripts/migrate.mjs` | Aplica migrations pendentes (`--status` lista; `--fresh` só em banco novo e vazio; `--baseline NNNN` marca como aplicadas) |\n| `node --env-file=.env.deploy scripts/backup-supabase.mjs` | Backup completo em `backups/` (fora do Git; contém dados pessoais) |\n\n`.env.deploy` (ignorado pelo Git): `DATABASE_URL` (Supabase → Connect → Session pooler), `COOLIFY_URL`, `COOLIFY_TOKEN`, `COOLIFY_APP_UUID`. Use `node --env-file=`.\n\n## Testes\n`node supabase/tests/run-tests.mjs` sobe um PostgreSQL embutido, aplica todas as migrations em ordem e executa centenas de verificações (isolamento entre centros, conflito de reservas, financeiro, permissões, página pública, partidas). Deve passar 100% antes de publicar (`npm i --no-save embedded-postgres pg`).\n\n## Segurança operacional\nCredenciais só em `.env.deploy` local ou no Coolify; ao terminar, esvaziar `COOLIFY_TOKEN` e `DATABASE_URL`, revogar o token no Coolify e trocar a senha do banco. Guardar cópia segura dos backups.\n\n## Problemas conhecidos\n- **VPS sem memória:** o build pesa; mantenha swap ativo (6 GB hoje) e evite deploys simultâneos. Idealmente, build fora da VPS ou mais RAM.\n- **Roteamento de domínio:** ao tirar um domínio de uma aplicação do Coolify, o contêiner antigo só esquece o domínio quando é recriado; enquanto isso ele pode capturar o endereço.\n- **Banco com tabelas herdadas:** o histórico de migrations inclui estruturas de outra origem (futebol de grupo) que o Partidou não usa; permanecem porque o banco em produção foi criado a partir delas."
+   "revisado": "1.1.0",
+   "markdown": "# Operação, deploy e manutenção\n\n## Hospedagem\nVPS com **Coolify** (Docker). A aplicação do Partidou tem projeto, domínio (`app.partidou.com.br`) e banco Supabase próprios. O build usa o `Dockerfile` (Node 22) e roda `npm run build`, que valida o histórico de versões e regenera esta documentação. O Dockerfile limita a memória do build (`--max-old-space-size=1536`) e o Next usa um processo por vez, porque a VPS é pequena.\n\n## Variáveis de ambiente (Coolify)\n`NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` (variáveis de **build**), `SUPABASE_SERVICE_ROLE_KEY`, `PLATFORM_ORG_SLUG` (organização do dono), `APP_URL`, `CRON_SECRET`; opcionais: `SMTP_*`, `ASAAS_*`, `PLATFORM_ALERT_EMAIL`. Só os nomes aparecem na documentação.\n\n## Fluxo de uma entrega\n1. Alterar o código; mudança no banco = nova migration numerada (somente adiciona, com reversão no fim) e testes em `supabase/tests/run-tests.mjs`.\n2. Subir a versão no `package.json` e registrar a entrada no topo de `src/data/changelog.json`.\n3. Atualizar os capítulos de `docs/` e `docs/descricoes.json`.\n4. Rodar tipos, lint, build e testes.\n5. **Backup do banco → aplicar migrations → push → deploy** (a migration antes do código novo).\n\n## Ferramentas (`scripts/`)\n| Comando | Função |\n|---|---|\n| `node --env-file=.env.deploy scripts/migrate.mjs` | Aplica migrations pendentes (`--status` lista; `--fresh` só em banco novo e vazio; `--baseline NNNN` marca como aplicadas) |\n| `node --env-file=.env.deploy scripts/backup-supabase.mjs` | Backup completo em `backups/` (fora do Git; contém dados pessoais) |\n\n`.env.deploy` (ignorado pelo Git): `DATABASE_URL` (Supabase → Connect → Session pooler), `COOLIFY_URL`, `COOLIFY_TOKEN`, `COOLIFY_APP_UUID`. Use `node --env-file=`.\n\n## Testes\n`node supabase/tests/run-tests.mjs` sobe um PostgreSQL embutido, aplica todas as migrations em ordem e executa centenas de verificações (isolamento entre centros, conflito de reservas, financeiro, permissões, página pública, partidas). Deve passar 100% antes de publicar (`npm i --no-save embedded-postgres pg`).\n\n## Domínios\n`app.partidou.com.br` (sistema) e `partidou.com.br` + `www` (site comercial) são domínios da mesma aplicação no Coolify; o middleware escolhe o conteúdo pelo endereço (ver capítulo do site comercial).\n\n## Segurança operacional\nCredenciais só em `.env.deploy` local ou no Coolify; ao terminar, esvaziar `COOLIFY_TOKEN` e `DATABASE_URL`, revogar o token no Coolify e trocar a senha do banco. Guardar cópia segura dos backups.\n\n## Problemas conhecidos\n- **VPS sem memória:** o build pesa; mantenha swap ativo (6 GB hoje) e evite deploys simultâneos. Idealmente, build fora da VPS ou mais RAM.\n- **Roteamento de domínio:** ao tirar um domínio de uma aplicação do Coolify, o contêiner antigo só esquece o domínio quando é recriado; enquanto isso ele pode capturar o endereço.\n- **Banco com tabelas herdadas:** o histórico de migrations inclui estruturas de outra origem (futebol de grupo) que o Partidou não usa; permanecem porque o banco em produção foi criado a partir delas."
   },
   {
    "id": "como-manter-esta-documentacao",
    "title": "Como esta documentação se mantém atualizada",
    "revisado": "1.0.0",
    "markdown": "# Como esta documentação se mantém atualizada\n\n## O que atualiza sozinho\nA cada build, `tools/build-docs.mjs` lê o código e regenera as seções automáticas: versão e histórico, migrations, tabelas e funções do banco, páginas e rotas de API (com acesso e métodos) e variáveis de ambiente (só nomes).\n\n## O que precisa de revisão humana\n- Os capítulos `docs/NN-nome.md` explicam o \"porquê\" e o \"como\"; cada um tem a marca ``. Quando a versão do sistema passa dela, a tela avisa que o capítulo pode estar desatualizado.\n- As descrições de páginas, APIs e variáveis ficam em `docs/descricoes.json`; itens novos sem descrição saem como aviso no build.\n\n## Regra de ouro\nToda entrega que mude comportamento atualiza o capítulo, a marca `revisado`, `docs/descricoes.json` (se houver item novo) e o histórico de versões.\n\n## Quem vê\nSomente o dono da plataforma, em `/super/documentacao` (a rota `/api/docs` valida a sessão e confirma no banco)."
+  },
+  {
+   "id": "site-comercial",
+   "title": "Site comercial (partidou.com.br)",
+   "revisado": "1.1.0",
+   "markdown": "# Site comercial (partidou.com.br)\n\n## O que é\nSite institucional e comercial do Partidou, na raiz de **https://partidou.com.br**. Apresenta os três públicos (donos de quadra, organizadores e jogadores), os planos e um formulário de contato. O sistema continua em **app.partidou.com.br**.\n\n## Como é servido (um só projeto, dois endereços)\n- O código do site é a página `/site` (`src/app/(marketing)/site`) e os componentes de `src/components/site`.\n- O middleware (`src/middleware.ts`) olha o endereço: em `partidou.com.br` a raiz `/` mostra o site; `/privacidade`, `/termos`, `/cookies` e `/api/site/lead` ficam ali mesmo; **todo o resto** (login, busca de quadras, painel) redireciona para `app.partidou.com.br` com o mesmo caminho. `www.partidou.com.br` redireciona para `partidou.com.br`. Em `app.partidou.com.br`, `/site` redireciona para o site.\n- `robots.txt` e `sitemap.xml` mudam conforme o endereço (o site é indexável; o sistema expõe só a busca pública e os textos legais).\n\n## Conteúdo e configuração (`src/lib/site-config.ts`)\nPlanos e preços, perguntas frequentes, modalidades, menu, redes sociais e depoimentos ficam num único arquivo. **Preços**: valores de lançamento (Organizador Pro R$ 29,90, Quadra Pro R$ 99,90 e Arena Business R$ 199,90), sujeitos a confirmação; não há cobrança online: os botões levam ao formulário. **Redes sociais**: só aparecem no rodapé as que tiverem endereço em `SOCIAL`. **Depoimentos**: a seção só é publicada quando `TESTIMONIALS` tiver itens reais e autorizados (hoje está vazia, de propósito).\n\n## Honestidade do conteúdo\nO site só afirma o que existe. O que ainda está em desenvolvimento aparece com a marca **Em breve** (plano Organizador Pro, jogos recorrentes e mensalidades de organizador, perfil e histórico do jogador, faixa etária e nível de partida). Os mockups (celular, dashboard e agenda) são ilustrações em HTML/CSS marcadas como \"Exemplo ilustrativo\", sem números nem clientes reais. A partida com vagas já existe ligada à reserva de uma quadra (ver capítulo do módulo).\n\n## Formulário de contato (captação de leads)\n- Tela: seção `#contato` (componente `lead-form.tsx`). Três perfis (dono de quadra, organizador, jogador); os botões dos planos abrem o formulário já com o perfil e o plano.\n- API: `POST /api/site/lead` valida os dados, descarta robôs (campo-isca preenchido ou envio em menos de 2,5 s), limita 5 envios por IP em 10 minutos (em memória, por instância) e chama a função `site_lead_create`.\n- Banco (`0041_site_leads.sql`): tabela `site_leads` **sem acesso direto** (nem para visitantes nem para usuários logados). O visitante só executa `site_lead_create` (valida tudo no servidor, exige consentimento e no máximo 3 contatos por WhatsApp ou e-mail em 24 horas). O dono da plataforma lista e atualiza por `site_leads_list` e `site_lead_update`.\n- Acompanhamento: Painel do SaaS → **Contatos do site** (`/super/leads`): situação (novo, contatado, negociando, ganho, perdido), anotações, links de WhatsApp e e-mail.\n- Ainda não existe: aviso por e-mail ou WhatsApp quando chega um contato novo (confira o painel), captcha (se houver spam, avaliar Turnstile) e integração com CRM externo.\n\n## SEO e desempenho\nTítulo e descrição definidos, `canonical`, Open Graph e Twitter Cards (imagem `public/brand/og-partidou.png`, 1200×630), dados estruturados JSON-LD (Organization, WebSite, SoftwareApplication e FAQPage, com o mesmo texto da página), HTML semântico, FAQ com `<details>` (acessível e sem JavaScript), imagens do rodapé com carregamento tardio, animações discretas que respeitam \"reduzir movimento\" e conteúdo visível mesmo sem JavaScript.\n\n## Implantação (uma vez)\n1. **DNS (Cloudflare):** registros `A` de `partidou.com.br` e de `www` apontando para o IP da VPS (como o `app`); comece com a nuvem cinza (DNS only) até o HTTPS ser emitido.\n2. **Coolify:** na aplicação do Partidou, acrescentar `https://partidou.com.br` e `https://www.partidou.com.br` à lista de domínios (mantendo `https://app.partidou.com.br`) e fazer o deploy.\n3. **Banco:** aplicar a migration `0041_site_leads.sql` **antes** do deploy (sem ela o formulário responde erro).\n4. **Conferir:** `/` mostra o site, `/login` em partidou.com.br leva ao app, `robots.txt` e `sitemap.xml`, o envio de um contato de teste e o painel Contatos do site."
   }
  ],
  "migrations": [
@@ -228,6 +234,10 @@
   {
    "file": "0040_quadra_fase6.sql",
    "summary": "Quadra Esportiva, Fase 6: página pública, busca de disponibilidade, solicitação de reserva, partidas e vagas. Visitantes NÃO acessam tabelas: só as funções abaixo (sem dados privados). A disponibilidade continua com UMA fonte de verdade:"
+  },
+  {
+   "file": "0041_site_leads.sql",
+   "summary": "Site comercial: captação de interessados (donos de quadra, organizadores e jogadores). O visitante só executa a função de cadastro (sem ler nada); o dono da plataforma lista e acompanha pelo Painel do SaaS."
   }
  ],
  "tables": [
@@ -398,6 +408,10 @@
   {
    "name": "signup_requests",
    "file": "0003_signup.sql"
+  },
+  {
+   "name": "site_leads",
+   "file": "0041_site_leads.sql"
   },
   {
    "name": "support_sessions",
@@ -1026,6 +1040,21 @@
    "area": "Geral"
   },
   {
+   "name": "site_lead_create",
+   "file": "0041_site_leads.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "site_lead_update",
+   "file": "0041_site_leads.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "site_leads_list",
+   "file": "0041_site_leads.sql",
+   "area": "Geral"
+  },
+  {
    "name": "slug_available",
    "file": "0017_organizations_app.sql",
    "area": "Geral"
@@ -1263,6 +1292,11 @@
    "description": "Minha conta: dados do usuário e troca de senha"
   },
   {
+   "path": "/cookies",
+   "access": "Administrador e Diretoria",
+   "description": "Política de cookies"
+  },
+  {
    "path": "/login",
    "access": "Público",
    "description": "Entrada no sistema"
@@ -1358,6 +1392,11 @@
    "description": "Aviso para conta sem acesso liberado (bloqueada, revogada ou sem centro) com botão de sair"
   },
   {
+   "path": "/site",
+   "access": "Administrador e Diretoria",
+   "description": "Site comercial do Partidou (servido na raiz de partidou.com.br): apresentação, planos, FAQ e formulário de contato"
+  },
+  {
    "path": "/super",
    "access": "Dono da plataforma",
    "description": "Painel do SaaS: indicadores, clientes, criação de grupos e planos"
@@ -1381,6 +1420,11 @@
    "path": "/super/documentacao",
    "access": "Dono da plataforma",
    "description": "Esta documentação (somente dono da plataforma)"
+  },
+  {
+   "path": "/super/leads",
+   "access": "Dono da plataforma",
+   "description": "Contatos captados pelo site comercial: acompanhamento, anotações e situação (dono da plataforma)"
   },
   {
    "path": "/termos",
@@ -1410,6 +1454,13 @@
     "PUT"
    ],
    "description": "Quadra Esportiva: convida (POST) e reenvia acesso (PUT) de funcionários do centro; só o administrador"
+  },
+  {
+   "path": "/api/site/lead",
+   "methods": [
+    "POST"
+   ],
+   "description": "Recebe o formulário do site comercial (valida, protege contra spam e grava o contato); sem login"
   },
   {
    "path": "/api/super/comunicados/enviar",
@@ -1461,13 +1512,13 @@
    "name": "NEXT_PUBLIC_SUPABASE_ANON_KEY",
    "scope": "Navegador (gravada no build)",
    "description": "Chave pública do Supabase (navegador)",
-   "uses": 5
+   "uses": 6
   },
   {
    "name": "NEXT_PUBLIC_SUPABASE_URL",
    "scope": "Navegador (gravada no build)",
    "description": "Endereço do projeto Supabase",
-   "uses": 6
+   "uses": 7
   },
   {
    "name": "PLATFORM_ALERT_EMAIL",
@@ -1526,6 +1577,24 @@
  ],
  "changelog": [
   {
+   "version": "1.1.0",
+   "date": "2026-11-15",
+   "title": "Site comercial do Partidou (partidou.com.br)",
+   "novidades": [
+    "Site institucional e comercial completo em partidou.com.br: hero, como funciona, gestão de quadras, agenda inteligente, jogadores, organizadores, modalidades, planos, benefícios, perguntas frequentes, formulário de contato e rodapé, com a identidade oficial (verde-escuro, lima, branco gelo e grafite; fontes Sora e Inter).",
+    "Formulário de captação para donos de quadra, organizadores e jogadores, com validação, proteção contra spam (campo-isca, tempo mínimo e limite por IP e por contato), consentimento LGPD e gravação no banco; os contatos aparecem em Painel do SaaS → Contatos do site, com situação e anotações.",
+    "SEO: título e descrição, canonical, Open Graph e Twitter Cards com imagem de compartilhamento, dados estruturados (Organização, Site, Aplicativo e Perguntas frequentes), robots.txt e sitemap.xml por endereço.",
+    "Política de cookies."
+   ],
+   "melhorias": [
+    "partidou.com.br serve o site e redireciona o restante para app.partidou.com.br; www redireciona para o endereço principal.",
+    "Conteúdo que ainda não existe (organizadores e perfil de jogador) aparece marcado como Em breve; mockups são ilustrativos e sem números reais."
+   ],
+   "correcoes": [
+    "Service worker do app instalável deixava de instalar por apontar para ícones que não existem mais."
+   ]
+  },
+  {
    "version": "1.0.0",
    "date": "2026-11-15",
    "title": "Partidou: gestão de quadras e centros esportivos",
@@ -1543,10 +1612,10 @@
   }
  ],
  "stats": {
-  "migrations": 40,
-  "tables": 43,
-  "functions": 168,
-  "pages": 28,
-  "apis": 7
+  "migrations": 41,
+  "tables": 44,
+  "functions": 171,
+  "pages": 31,
+  "apis": 8
  }
 }
