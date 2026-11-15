@@ -1,0 +1,21 @@
+{
+  "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-11-15",
+      "title": "Partidou: gestão de quadras e centros esportivos",
+      "novidades": [
+        "Repositório e sistema próprios do Partidou, separados do GEAB.",
+        "Módulo Quadra Esportiva completo: agenda (dia, semana e mês), reservas avulsas, recorrentes e bloqueios com validação de conflito no banco, centro e quadras, horários e preços, clientes, equipe com perfis, lista de espera, financeiro (contas a receber, pagamentos e mensalidades), dashboard e relatórios com exportação em Excel e PDF.",
+        "Página pública de cada centro (/quadras/nome-do-centro) com busca, disponibilidade e solicitação de reserva sem login; partidas com vagas e gestão pelo organizador.",
+        "Identidade visual do Partidou em todo o sistema: verde-escuro #142C25, lima #B9F344, branco gelo #F6F8F4 e grafite #19221D, logotipo, favicon e ícones do app.",
+        "Painel do SaaS para o dono da plataforma, multi-tenant com isolamento por centro, assinatura via Asaas e modo espião somente leitura."
+      ],
+      "melhorias": [
+        "Build econômico para VPS pequena."
+      ],
+      "correcoes": []
+    }
+  ]
+}
