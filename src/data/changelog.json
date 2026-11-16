@@ -2,6 +2,18 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.4.1",
+      "date": "2026-11-16",
+      "title": "Site: Instagram oficial no rodapé",
+      "novidades": [
+        "Link do Instagram oficial (@partidouoo) no rodapé do site, abrindo em nova aba."
+      ],
+      "melhorias": [
+        "O perfil também entrou nos dados estruturados da organização (sameAs), o que ajuda o Google a associar a rede social à marca."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.4.0",
       "date": "2026-11-16",
       "title": "Site partidou.com.br: visual mais limpo, mais leve e acessível",

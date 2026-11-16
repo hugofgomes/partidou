@@ -35,7 +35,7 @@ export const NAV = [
 
 /** Redes sociais oficiais: só aparecem no rodapé as que tiverem endereço preenchido. */
 export const SOCIAL: { label: string; href: string }[] = [
-  // { label: "Instagram", href: "https://instagram.com/..." },
+  { label: "Instagram @partidouoo", href: "https://www.instagram.com/partidouoo/" },
   // { label: "Facebook", href: "https://facebook.com/..." },
   // { label: "LinkedIn", href: "https://linkedin.com/company/..." },
   // { label: "WhatsApp", href: "https://wa.me/55..." },

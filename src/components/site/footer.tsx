@@ -18,7 +18,7 @@ export function SiteFooter() {
           <p className="mt-5 font-display text-lg font-bold">O jogo começa aqui.</p>
           <p className="mt-1 text-sm text-white/70">Gestão de quadras e organização de partidas.</p>
           <a href={`mailto:${CONTACT_EMAIL}`} className="mt-4 inline-block text-sm font-medium text-lime hover:underline">{CONTACT_EMAIL}</a>
-          {SOCIAL.length > 0 && <ul className="mt-5 flex flex-wrap gap-2">{SOCIAL.map((s) => <li key={s.label}><a href={s.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-9 items-center rounded-full border border-white/20 px-3 text-xs text-white/80 hover:bg-white/10">{s.label}</a></li>)}</ul>}
+          {SOCIAL.length > 0 && <ul className="mt-5 flex flex-wrap gap-2">{SOCIAL.map((s) => <li key={s.label}><a href={s.href} target="_blank" rel="noopener noreferrer" data-track={`social_${s.label.split(" ")[0].toLowerCase()}`} className="inline-flex min-h-10 items-center rounded-full border border-white/20 px-4 text-sm text-white/85 transition-colors hover:bg-white/10">{s.label}<span className="sr-only"> (abre em nova aba)</span></a></li>)}</ul>}
         </div>
         {groups.map((g) => (
           <nav key={g.label} aria-label={g.label}>

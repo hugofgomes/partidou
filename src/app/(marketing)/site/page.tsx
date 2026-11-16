@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/site/footer"
 import { SiteHeader } from "@/components/site/header"
 import { LeadForm } from "@/components/site/lead-form"
 import { Features, ForOrganizers, ForPlayers, Hero, HowItWorks, Management, Plans, SmartAgenda, Testimonials } from "@/components/site/sections"
-import { APP_URL, FAQ, SEO, SITE_URL } from "@/lib/site-config"
+import { APP_URL, CONTACT_EMAIL, FAQ, SEO, SITE_URL, SOCIAL } from "@/lib/site-config"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 /** Dados estruturados (Schema.org): organização, site, aplicativo e perguntas frequentes (conteúdo igual ao da página). */
 const jsonLd = [
-  { "@context": "https://schema.org", "@type": "Organization", name: "Partidou", url: SITE_URL, logo: `${SITE_URL}/brand/icon-512.png`, slogan: "O jogo começa aqui." },
+  { "@context": "https://schema.org", "@type": "Organization", name: "Partidou", url: SITE_URL, logo: `${SITE_URL}/brand/icon-512.png`, slogan: "O jogo começa aqui.", email: CONTACT_EMAIL, ...(SOCIAL.length ? { sameAs: SOCIAL.map((s) => s.href) } : {}) },
   { "@context": "https://schema.org", "@type": "WebSite", name: "Partidou", url: SITE_URL, inLanguage: "pt-BR" },
   { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Partidou", applicationCategory: "BusinessApplication", operatingSystem: "Web", url: APP_URL, description: SEO.description, inLanguage: "pt-BR" },
   { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
