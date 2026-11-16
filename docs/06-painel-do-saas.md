@@ -11,3 +11,6 @@ Acesso: só quem está em `platform_admins`. Menu "SaaS".
 - **Documentação** (`/super/documentacao`): esta documentação.
 
 Observação: alguns textos e indicadores do painel ainda vêm da base herdada (por exemplo, contagem de "atletas"); a revisão desses rótulos para o contexto de quadras está pendente.
+
+## Avisos de contatos do site
+O menu **Contatos do site** mostra um número com os contatos em situação "novo", somado ao sino do topo, e um aviso na tela aparece quando chega um contato com o sistema aberto (detalhes no capítulo do site comercial).

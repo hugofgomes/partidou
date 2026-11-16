@@ -50,7 +50,14 @@ export async function POST(req: NextRequest) {
     const from = fromAddress(), address = from.match(/<([^<>\s]+@[^<>\s]+)>\s*$/)?.[1] ?? from
     const notify = process.env.LEAD_NOTIFY_EMAIL || process.env.PLATFORM_ALERT_EMAIL || address
     const mails = [teamNotification(lead, notify, "https://app.partidou.com.br/super/leads"), leadConfirmation(lead, address)].filter((m) => m !== null)
-    try { const t = transporter(); await Promise.allSettled(mails.map((m) => t.sendMail({ from, to: m.to, replyTo: m.replyTo, subject: m.subject, text: m.text, html: m.html }))) } catch { /* sem e-mail: segue */ }
-  }
+    // Falha de e-mail não derruba o envio, mas fica registrada no log do servidor (Coolify → Logs) para diagnóstico.
+    try {
+      const t = transporter()
+      const res = await Promise.allSettled(mails.map((m) => t.sendMail({ from, to: m.to, replyTo: m.replyTo, subject: m.subject, text: m.text, html: m.html })))
+      res.forEach((r, i) => r.status === "rejected"
+        ? console.error(`[lead] e-mail ${i === 0 ? "para a equipe" : "de confirmação"} falhou:`, r.reason instanceof Error ? r.reason.message : r.reason)
+        : console.info(`[lead] e-mail ${i === 0 ? "para a equipe" : "de confirmação"} enviado (${mails[i].to.replace(/^(.).*@/, "$1***@")})`))
+    } catch (e) { console.error("[lead] SMTP indisponível:", e instanceof Error ? e.message : e) }
+  } else console.warn("[lead] SMTP não configurado: contato salvo, nenhum e-mail enviado")
   return NextResponse.json({ ok: true })
 }

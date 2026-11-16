@@ -15,6 +15,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import * as React from "react"
 import { createPortal } from "react-dom"
+import { toast } from "sonner"
 
 const ADMIN = [
   { href: "/assinatura", label: "Assinatura", icon: CreditCard },
@@ -183,6 +184,28 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     supabase().from("court_bookings").select("id", { count: "exact", head: true }).eq("status", "pendente").neq("kind", "bloqueio").gte("starts_at", new Date().toISOString())
       .then((r) => setPending(r.count ?? 0), () => {})
   }, [path, courtRole])
+  // Contatos novos do site (só para o dono da plataforma): número no menu e no sino, e aviso na tela quando chega um novo com o sistema aberto.
+  const [newLeads, setNewLeads] = React.useState(0)
+  const seenLeads = React.useRef<Set<string> | null>(null)
+  React.useEffect(() => {
+    if (!(role === "admin" && isPlatform)) return
+    let alive = true
+    const check = () => supabase().rpc("site_leads_list", { p_status: "novo" }).then(({ data }) => {
+      if (!alive || !Array.isArray(data)) return
+      const rows = data as { id: string; name: string; city: string | null; audience: string }[]
+      setNewLeads(rows.length)
+      if (seenLeads.current) {
+        for (const l of rows) if (!seenLeads.current.has(l.id))
+          toast.success(`Novo contato do site: ${l.name}`, { description: [l.audience === "quadra" ? "Dono de quadra" : l.audience === "organizador" ? "Organizador" : "Jogador", l.city].filter(Boolean).join(" · "), action: { label: "Abrir", onClick: () => { window.location.href = "/super/leads" } }, duration: 15000 })
+      }
+      seenLeads.current = new Set(rows.map((l) => l.id))
+    }, () => {})
+    check()
+    const t = window.setInterval(check, 60_000)
+    const onFocus = () => check()
+    window.addEventListener("focus", onFocus)
+    return () => { alive = false; window.clearInterval(t); window.removeEventListener("focus", onFocus) }
+  }, [role, isPlatform, path])
   const signOut = async () => {
     await supabase().auth.signOut()
     window.location.href = "/login"
@@ -228,7 +251,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <div className="space-y-1">
               <p className={cn("px-3 pb-1 text-[11px] font-semibold tracking-wider text-white/50 uppercase", collapsed && "lg:hidden")}>SaaS</p>
               <SideLink {...PLATFORM} path={path} />
-              {SAAS_LINKS.map((n) => <SideLink key={n.href} {...n} path={path} />)}
+              {SAAS_LINKS.map((n) => <SideLink key={n.href} {...n} path={path} badge={n.href === "/super/leads" ? newLeads : undefined} />)}
             </div>
           )}
         </nav>
@@ -255,13 +278,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </button>
           <div className="flex-1 truncate text-lg font-semibold tracking-tight text-primary">{titleOf(path)}</div>
           <Link
-            href="/quadra/reservas"
-            aria-label={pending > 0 ? `Notificações: ${pending} reserva(s) pendente(s)` : "Notificações: nenhuma pendência"}
-            title={pending > 0 ? `${pending} reserva(s) aguardando confirmação` : "Sem pendências"}
+            href={pending === 0 && newLeads > 0 ? "/super/leads" : "/quadra/reservas"}
+            aria-label={pending + newLeads > 0 ? `Notificações: ${[pending && `${pending} reserva(s) pendente(s)`, newLeads && `${newLeads} contato(s) novo(s) do site`].filter(Boolean).join(" e ")}` : "Notificações: nenhuma pendência"}
+            title={pending + newLeads > 0 ? [pending && `${pending} reserva(s) aguardando confirmação`, newLeads && `${newLeads} contato(s) novo(s) do site`].filter(Boolean).join(" · ") : "Sem pendências"}
             className="relative grid size-10 place-items-center rounded-lg text-primary outline-none transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Bell className="size-5" />
-            {pending > 0 && <span className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-[#B9F344] px-1 text-[10px] leading-4 font-semibold text-[#142C25]">{pending}</span>}
+            {pending + newLeads > 0 && <span className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-[#B9F344] px-1 text-[10px] leading-4 font-semibold text-[#142C25]">{pending + newLeads}</span>}
           </Link>
           <UserMenu name={me} roleLabel={courtRole ? COURT_ROLE_LABEL[courtRole] : "Conta"} onSignOut={signOut} />
         </header>
