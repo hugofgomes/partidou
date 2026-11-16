@@ -2,6 +2,20 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.3.0",
+      "date": "2026-11-16",
+      "title": "Gerenciar clientes: editar e excluir direto da lista",
+      "novidades": [
+        "No menu de ações (⋯) de cada cliente em Painel do SaaS → Gerenciar clientes: Editar cliente (nome, site, lema, cor e logo) e Excluir cliente.",
+        "Cliente excluído mostra a ação Restaurar cliente no próprio menu."
+      ],
+      "melhorias": [
+        "A confirmação de exclusão mostra os dados do centro (quadras, reservas, clientes, funcionários, lançamentos e pagamentos), oferece exportar tudo em JSON antes e exige digitar o nome do cliente, o motivo e o prazo de recuperação (7 a 365 dias). A exclusão definitiva continua disponível só depois do prazo, na página do cliente.",
+        "A mesma confirmação é usada na lista e na página do cliente."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.2.0",
       "date": "2026-11-16",
       "title": "E-mails do formulário do site",

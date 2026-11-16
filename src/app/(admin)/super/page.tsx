@@ -3,6 +3,8 @@
 import { BRAND_PRIMARY } from "@/lib/brand"
 
 import { NativeSelect } from "@/components/native-select"
+import { DeleteDialog } from "@/components/super/delete-org-dialog"
+import { EditOrgDialog } from "@/components/super/edit-org-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -15,7 +17,7 @@ import { supabase } from "@/lib/supabase/client"
 import { slugify } from "@/lib/tenant"
 import { maskPhone } from "@/lib/whatsapp"
 import { Menu } from "@base-ui/react/menu"
-import { Download, ExternalLink, MoreHorizontal, StickyNote, UserPen } from "lucide-react"
+import { Download, ExternalLink, MoreHorizontal, Pencil, RotateCcw, StickyNote, Trash2, UserPen } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import * as React from "react"
@@ -186,6 +188,8 @@ export default function SuperPage() {
   const [sort, setSort] = React.useState<{ key: string; dir: 1 | -1 }>({ key: "created_at", dir: -1 })
   const [page, setPage] = React.useState(0)
   const [edit, setEdit] = React.useState<Org | null>(null)
+  const [editOrg, setEditOrg] = React.useState<Org | null>(null)
+  const [delOrg, setDelOrg] = React.useState<Org | null>(null)
   const [busy, setBusy] = React.useState(false)
   const [nw, setNw] = React.useState({ name: "", slug: "", plan: "teste", email: "" })
 
@@ -250,6 +254,7 @@ export default function SuperPage() {
       <Menu.Portal><Menu.Positioner align="end" sideOffset={6} className="z-50"><Menu.Popup className="min-w-56 rounded-xl border bg-popover p-1 text-popover-foreground shadow-lg outline-none">
         <Menu.Item onClick={() => router.push(`/super/clientes/${g.id}`)} className={itemCls}><ExternalLink className="size-4" /> {g.status === "excluida" ? "Recuperar ou excluir definitivamente" : "Abrir cliente"}</Menu.Item>
         {g.status !== "excluida" && <>
+          <Menu.Item onClick={() => setEditOrg(g)} className={itemCls}><Pencil className="size-4" /> Editar cliente</Menu.Item>
           <Menu.Item onClick={() => setEdit(g)} className={itemCls}><UserPen className="size-4" /> Contato do responsável</Menu.Item>
           <Menu.Item onClick={() => { const n = window.prompt("Anotação interna (só você vê):", g.notes ?? ""); if (n !== null) act(() => db().rpc("sa_set_notes", { p_org: g.id, p_notes: n }), "Anotação salva.") }} className={itemCls}><StickyNote className="size-4" /> Anotação interna</Menu.Item>
           <Menu.Separator className="my-1 h-px bg-border" />
@@ -258,7 +263,10 @@ export default function SuperPage() {
           {g.status === "suspensa" || g.status === "cancelada"
             ? <Menu.Item onClick={() => act(() => db().rpc("sa_set_org_status", { p_org: g.id, p_status: "ativa", p_reason: null }), "Grupo reativado.")} className={itemCls}>Reativar acesso</Menu.Item>
             : <Menu.Item onClick={() => { const r = window.prompt(`Suspender “${g.name}”? O grupo perde o acesso imediatamente. Motivo (opcional):`); if (r !== null) act(() => db().rpc("sa_set_org_status", { p_org: g.id, p_status: "suspensa", p_reason: r }), "Grupo suspenso.") }} className={`${itemCls} text-red-700`}>Suspender acesso</Menu.Item>}
+          <Menu.Separator className="my-1 h-px bg-border" />
+          <Menu.Item onClick={() => setDelOrg(g)} className={`${itemCls} text-red-700 data-[highlighted]:bg-red-50 data-[highlighted]:text-red-800`}><Trash2 className="size-4" /> Excluir cliente</Menu.Item>
         </>}
+        {g.status === "excluida" && <Menu.Item onClick={() => act(() => db().rpc("sa_restore_org", { p_org: g.id }), "Cliente restaurado.")} className={itemCls}><RotateCcw className="size-4" /> Restaurar cliente</Menu.Item>}
       </Menu.Popup></Menu.Positioner></Menu.Portal>
     </Menu.Root>
   )
@@ -438,6 +446,8 @@ export default function SuperPage() {
         </nav>
       )}
       <ContactDialog org={edit} onClose={() => setEdit(null)} onSaved={reload} />
+      <EditOrgDialog org={editOrg} onClose={() => setEditOrg(null)} onSaved={reload} />
+      {delOrg && <DeleteDialog org={delOrg} mode="soft" onClose={() => setDelOrg(null)} onDone={() => { setDelOrg(null); reload() }} />}
 
       <Card><CardContent className="space-y-3 pt-4">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">Novo grupo</h2>

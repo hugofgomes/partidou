@@ -1,5 +1,5 @@
 {
- "version": "1.2.0",
+ "version": "1.3.0",
  "versionDate": "2026-11-16",
  "stack": {
   "next": "15.5.29",
@@ -40,8 +40,8 @@
   {
    "id": "painel-do-saas",
    "title": "Painel do SaaS (dono da plataforma)",
-   "revisado": "1.0.0",
-   "markdown": "# Painel do SaaS (dono da plataforma)\n\nAcesso: só quem está em `platform_admins`. Menu \"SaaS\".\n\n- **Dashboard** (`/super`): clientes, situação, receita estimada e atividade.\n- **Clientes** (`/super/clientes/[id]`): dados, plano, tipo da organização (`quadra`), suspensão e reativação, mais dias de teste, vincular administrador, modo espião, exportação e exclusão lógica ou definitiva.\n- **Log de acessos** (`/super/acessos`): uso por cliente.\n- **Comunicados** (`/super/comunicados`): e-mails em massa aos clientes (SMTP), com teste e descadastro.\n- **Documentação** (`/super/documentacao`): esta documentação.\n\nObservação: alguns textos e indicadores do painel ainda vêm da base herdada (por exemplo, contagem de \"atletas\"); a revisão desses rótulos para o contexto de quadras está pendente."
+   "revisado": "1.3.0",
+   "markdown": "# Painel do SaaS (dono da plataforma)\n\nAcesso: só quem está em `platform_admins`. Menu \"SaaS\".\n\n- **Dashboard** (`/super`): clientes, situação, receita estimada e atividade.\n- **Gerenciar clientes** (lista em `/super`): menu de ações (⋯) em cada cliente com **Editar cliente** (nome, site, lema, cor e logo), contato do responsável, anotação, +7 dias de teste, ativar, suspender/reativar, **Excluir cliente** e, para excluídos, **Restaurar cliente**. A exclusão da lista é **lógica**: confirma mostrando os dados afetados (quadras, reservas, clientes, funcionários, usuários, lançamentos e pagamentos), oferece exportar em JSON, exige motivo, prazo de recuperação (7 a 365 dias) e a digitação do nome do cliente; o acesso é bloqueado e nada é apagado. O próprio centro do dono não pode ser excluído. A **exclusão definitiva** (que apaga os dados) só é liberada depois do prazo de recuperação, na página do cliente.\n- **Clientes** (`/super/clientes/[id]`): dados, plano, tipo da organização (`quadra`), suspensão e reativação, mais dias de teste, vincular administrador, modo espião, exportação e exclusão lógica ou definitiva.\n- **Log de acessos** (`/super/acessos`): uso por cliente.\n- **Comunicados** (`/super/comunicados`): e-mails em massa aos clientes (SMTP), com teste e descadastro.\n- **Documentação** (`/super/documentacao`): esta documentação.\n\nObservação: alguns textos e indicadores do painel ainda vêm da base herdada (por exemplo, contagem de \"atletas\"); a revisão desses rótulos para o contexto de quadras está pendente."
   },
   {
    "id": "autenticacao",
@@ -238,6 +238,10 @@
   {
    "file": "0041_site_leads.sql",
    "summary": "Site comercial: captação de interessados (donos de quadra, organizadores e jogadores). O visitante só executa a função de cadastro (sem ler nada); o dono da plataforma lista e acompanha pelo Painel do SaaS."
+  },
+  {
+   "file": "0042_delete_check_quadras.sql",
+   "summary": "Exclusão de cliente (Painel do SaaS): a conferência \"dados afetados\" passa a incluir os dados do centro esportivo (reservas, clientes, equipe, lançamentos e pagamentos). Mantém as chaves antigas. Só substitui a função. Reversão no fim."
   }
  ],
  "tables": [
@@ -1181,7 +1185,7 @@
   },
   {
    "name": "sa_org_delete_check",
-   "file": "0027_super_exclusao.sql",
+   "file": "0042_delete_check_quadras.sql",
    "area": "Painel do SaaS"
   },
   {
@@ -1588,6 +1592,20 @@
  ],
  "changelog": [
   {
+   "version": "1.3.0",
+   "date": "2026-11-16",
+   "title": "Gerenciar clientes: editar e excluir direto da lista",
+   "novidades": [
+    "No menu de ações (⋯) de cada cliente em Painel do SaaS → Gerenciar clientes: Editar cliente (nome, site, lema, cor e logo) e Excluir cliente.",
+    "Cliente excluído mostra a ação Restaurar cliente no próprio menu."
+   ],
+   "melhorias": [
+    "A confirmação de exclusão mostra os dados do centro (quadras, reservas, clientes, funcionários, lançamentos e pagamentos), oferece exportar tudo em JSON antes e exige digitar o nome do cliente, o motivo e o prazo de recuperação (7 a 365 dias). A exclusão definitiva continua disponível só depois do prazo, na página do cliente.",
+    "A mesma confirmação é usada na lista e na página do cliente."
+   ],
+   "correcoes": []
+  },
+  {
    "version": "1.2.0",
    "date": "2026-11-16",
    "title": "E-mails do formulário do site",
@@ -1649,7 +1667,7 @@
   }
  ],
  "stats": {
-  "migrations": 41,
+  "migrations": 42,
   "tables": 44,
   "functions": 171,
   "pages": 32,

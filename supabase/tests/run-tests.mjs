@@ -1313,6 +1313,33 @@ section("Site comercial: captação de leads (0041)")
   })
 }
 
+section("Painel do SaaS: conferência de exclusão com dados do centro (0042)")
+{
+  const X = { owner: uid(1901), a: uid(1902), org: uid(1903), cen: uid(1904), v: uid(1905), c: uid(1906) }
+  await q(`insert into auth.users (id, email) values ($1,'x-owner@x'),($2,'x-a@x')`, [X.owner, X.a])
+  await q(`insert into public.organizations (id, slug, name, status, kind, plan_id) values ($1,'dono-x','Dono X','ativa','quadra',(select id from public.plans where code='ilimitado')),($2,'centro-x','Centro X','ativa','quadra',(select id from public.plans where code='quadra_t'))`, [X.org, X.cen])
+  await q(`insert into public.profiles (tenant_id, id, full_name, role) values ($1,$2,'Dono','admin'),($3,$4,'Admin Centro','admin')`, [X.org, X.owner, X.cen, X.a])
+  await q(`insert into public.platform_admins (user_id) values ($1)`, [X.owner])
+  await q(`insert into public.court_venues (id, tenant_id, trade_name) values ($1,$2,'Centro X')`, [X.v, X.cen])
+  await q(`insert into public.court_courts (id, tenant_id, venue_id, name, sport, price_cents) values ($1,$2,$3,'Quadra X','futsal',10000)`, [X.c, X.cen, X.v])
+  await q(`insert into public.court_clients (tenant_id, name, phone) values ($1,'Cliente Um','5548911110001'),($1,'Cliente Dois','5548911110002')`, [X.cen])
+  await q(`insert into public.court_hours (tenant_id, weekday, opens_min, closes_min) select $1, d, 480, 1380 from generate_series(0,6) d`, [X.cen])
+  await as(X.owner, async () => {
+    const c = (await db.query(`select public.sa_org_delete_check($1) c`, [X.cen])).rows[0].c
+    ok("conferência mostra quadras, clientes, equipe e reservas do centro", c.courts === 1 && c.clients === 2 && c.staff === 0 && c.bookings === 0 && c.receivables === 0 && c.mine === false, JSON.stringify(c))
+    ok("mantém as chaves antigas (compatibilidade)", "athletes" in c && "users" in c && "has_subscription" in c)
+    const own = (await db.query(`select public.sa_org_delete_check($1) c`, [X.org])).rows[0].c
+    ok("avisa quando o cliente é o próprio centro do dono", own.mine === true)
+    ok("excluir o próprio centro é recusado", /não pode excluir/.test(await err(`select public.sa_delete_org('${X.org}','Dono X','teste',30)`) ?? ""))
+    ok("exclusão exige o nome digitado e prazo de 7 a 365 dias", /nome digitado/.test(await err(`select public.sa_delete_org('${X.cen}','errado','teste',30)`) ?? "") && /Prazo/.test(await err(`select public.sa_delete_org('${X.cen}','Centro X','teste',3)`) ?? ""))
+    await db.query(`select public.sa_delete_org($1,'Centro X','cliente cancelou',30)`, [X.cen])
+  }, true)
+  ok("exclusão lógica bloqueia o acesso e guarda os dados", (await one(`select status from public.organizations where id=$1`, [X.cen])) === "excluida" && (await one(`select count(*)::int from public.court_clients where tenant_id=$1`, [X.cen])) === 2)
+  await as(X.owner, async () => { await db.query(`select public.sa_restore_org($1)`, [X.cen]) }, true)
+  ok("restaurar volta o cliente ao estado anterior", (await one(`select status from public.organizations where id=$1`, [X.cen])) === "ativa")
+  await as(X.a, async () => { ok("administrador de um centro não executa a conferência nem exclui", /restrito/.test(await err(`select public.sa_org_delete_check('${X.cen}')`) ?? "") && /restrito/.test(await err(`select public.sa_delete_org('${X.cen}','Centro X','x',30)`) ?? "")) })
+}
+
 section("Auditoria")
 await as(U.peladaAdmin, async () => {
   await db.query(`insert into public.expenses (spent_at, description, amount) values (current_date,'Auditada',3)`)
