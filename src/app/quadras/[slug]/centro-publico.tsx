@@ -138,10 +138,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
           <button type="button" onClick={share} className="inline-flex min-h-10 items-center gap-2 rounded-full px-3 text-sm font-medium text-white/85 hover:bg-white/10"><Share2 className="size-4" /> Compartilhar</button>
         </div>
         <div className="mx-auto max-w-6xl px-4 pb-7 pt-5 sm:px-6">
-          <div className="flex items-start gap-4 sm:items-center sm:gap-5">
-            {venue.logo_url
-              ? <img src={venue.logo_url} alt={`Logo da ${venue.name}`} width={88} height={88} className="size-16 shrink-0 rounded-2xl bg-white object-cover ring-2 ring-white/10 sm:size-[88px]" />
-              : <span aria-hidden className="grid size-16 shrink-0 place-items-center rounded-2xl bg-lime text-2xl font-bold text-forest sm:size-[88px] sm:text-3xl">{venue.name.trim()[0]?.toUpperCase()}</span>}
+          <div>
             <div className="min-w-0">
               <h1 className="text-2xl font-bold leading-tight tracking-tight text-white sm:text-[2rem]">{venue.name}</h1>
               <p className="mt-1.5 flex items-start gap-1.5 text-sm text-white/80"><MapPin aria-hidden className="mt-0.5 size-4 shrink-0 text-lime" />{addressLine(venue)}</p>
