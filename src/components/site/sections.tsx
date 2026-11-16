@@ -3,7 +3,7 @@ import { LINKS, PHOTOS, PLANS, SPORTS, TESTIMONIALS, type Plan } from "@/lib/sit
 import { cn } from "@/lib/utils"
 import { ArrowRight, CalendarRange, ChartColumn, Check, Clock, Contact, Globe2, Hourglass, KeyRound, LayoutGrid, Link2, Lock, MapPin, Repeat, Search, ShieldCheck, Smartphone, Sparkles, Trophy, UserCheck, Users, Wallet, Wrench } from "lucide-react"
 import { LeadLink } from "./lead-link"
-import { AgendaMockup, DashboardMockup, PhoneMockup } from "./mockups"
+import { AgendaMockup, DashboardMockup } from "./mockups"
 import { Photo } from "./photo"
 
 /* ───────── Peças reutilizáveis: botões, títulos de seção e selo "Em breve" ───────── */
@@ -49,7 +49,7 @@ function FeatureList({ items, dark, cols = 2 }: { items: { i: React.ElementType;
   )
 }
 
-/* ───────── 1. Hero: foto real em tela cheia, título grande e o app em primeiro plano ───────── */
+/* ───────── 1. Hero: foto real em tela cheia, título grande e a tela real do sistema em primeiro plano ───────── */
 export function Hero() {
   return (
     <section id="inicio" aria-labelledby="hero-titulo" className="relative isolate flex min-h-[100svh] items-center overflow-hidden bg-forest px-4 pb-16 pt-28 text-white sm:px-6 lg:min-h-[52rem] lg:pb-24 lg:pt-32">
@@ -57,10 +57,10 @@ export function Hero() {
       {/* Película verde da marca: garante leitura do texto (contraste AA) e integra a foto à identidade */}
       <div aria-hidden className="absolute inset-0 -z-10 bg-forest/75 lg:bg-transparent lg:bg-gradient-to-r lg:from-forest lg:from-25% lg:via-forest/70 lg:via-50% lg:to-forest/0" />
       <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-forest to-transparent" />
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-[1.25fr_0.75fr]">
+      <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-10">
         <div>
           <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime/30 bg-forest/60 px-3 py-1 text-xs font-semibold text-lime backdrop-blur sm:text-[13px]"><Sparkles aria-hidden className="size-3.5 shrink-0" /> Maior plataforma de gestão de quadras esportivas do Brasil</p>
-          <h1 id="hero-titulo" className="font-display text-[2.9rem] font-bold leading-[1.02] tracking-tight text-balance sm:text-7xl lg:text-[5.5rem]">Seu próximo jogo <span className="text-lime">começa aqui.</span></h1>
+          <h1 id="hero-titulo" className="font-display text-[2.9rem] font-bold leading-[1.02] tracking-tight text-balance sm:text-7xl lg:text-[4.5rem] xl:text-[5rem]">Seu próximo jogo <span className="text-lime">começa aqui.</span></h1>
           <p className="mt-7 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl">Encontre quadras, organize partidas e conecte jogadores em uma única plataforma.</p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a href={LINKS.buscarQuadras} data-track="hero_encontrar_jogo" className={cn(btnLime, "min-h-14 px-8 text-base")}>Encontrar um Jogo <ArrowRight aria-hidden className="size-5" /></a>
@@ -68,9 +68,13 @@ export function Hero() {
           </div>
           <p className="mt-10 text-sm text-white/75">Futebol society · Futsal · Vôlei · Beach tennis · Basquete · Tênis</p>
         </div>
-        <div className="relative ml-auto hidden w-full max-w-[14.5rem] translate-y-16 lg:block">
-          <PhoneMockup className="w-full shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)]" />
-        </div>
+        <figure className="relative">
+          <div className="overflow-hidden rounded-xl border border-white/15 bg-[#f6f8f4] shadow-[0_40px_90px_-20px_rgba(0,0,0,0.7)] lg:rounded-2xl">
+            <div aria-hidden className="flex items-center gap-1.5 border-b border-black/5 bg-white px-3 py-2"><span className="size-2.5 rounded-full bg-[#ff5f57]" /><span className="size-2.5 rounded-full bg-[#febc2e]" /><span className="size-2.5 rounded-full bg-[#28c840]" /><span className="ml-3 truncate rounded-md bg-black/[0.04] px-3 py-0.5 text-[11px] text-graphite/70">app.partidou.com.br/quadra/financeiro</span></div>
+            <Photo photo={PHOTOS.sistema} priority sizes="(min-width: 1024px) 60vw, 100vw" className="block h-auto w-full" />
+          </div>
+          <figcaption className="mt-3 text-center text-xs text-white/70 lg:text-left">Tela real do sistema: módulo Financeiro.</figcaption>
+        </figure>
       </div>
     </section>
   )
