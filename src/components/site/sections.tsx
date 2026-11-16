@@ -1,262 +1,269 @@
 /* eslint-disable @next/next/no-img-element -- foto de depoimento vem de endereço configurado */
 import { LINKS, PLANS, SPORTS, TESTIMONIALS } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
-import { AgendaMockup, DashboardMockup, PhoneMockup } from "./mockups"
+import { ArrowRight, CalendarRange, ChartColumn, Check, Clock, Contact, Globe2, Hourglass, KeyRound, LayoutGrid, Link2, Lock, MapPin, Repeat, Search, ShieldCheck, Smartphone, Sparkles, Trophy, UserCheck, Users, Wallet, Wrench } from "lucide-react"
 import { LeadLink } from "./lead-link"
-import { Reveal } from "./reveal"
-import { Check, CalendarDays, CalendarRange, ChartColumn, Clock, Contact, Eye, Globe2, Hourglass, KeyRound, LayoutGrid, MapPin, Megaphone, MessageCircle, Repeat, Search, Share2, ShieldCheck, Sparkles, Target, Trophy, UserCheck, Users, Wallet, Wrench } from "lucide-react"
+import { AgendaMockup, DashboardMockup, PhoneMockup } from "./mockups"
 
-const btn = "inline-flex min-h-12 items-center justify-center rounded-full px-6 text-[15px] font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2"
-export const btnLime = cn(btn, "bg-lime text-forest hover:brightness-95 focus-visible:outline-lime")
-export const btnGhostDark = cn(btn, "border border-white/30 text-white hover:bg-white/10 focus-visible:outline-white")
-const btnForest = cn(btn, "bg-forest text-lime hover:bg-forest/90 focus-visible:outline-forest")
+/* ───────── Peças reutilizáveis: botões, títulos de seção e selo "Em breve" ───────── */
+const btn = "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-semibold transition-colors"
+export const btnLime = cn(btn, "bg-lime text-forest hover:bg-[#c8f76a]")
+export const btnGhostDark = cn(btn, "border border-white/25 text-white hover:bg-white/10")
+const btnForest = cn(btn, "bg-forest text-white hover:bg-[#1d3d33]")
+const linkArrow = "inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
 
-function Heading({ eyebrow, title, sub, dark, center = true }: { eyebrow?: string; title: string; sub?: string; dark?: boolean; center?: boolean }) {
+type Tone = "dark" | "light" | "white"
+const TONE: Record<Tone, string> = { dark: "bg-forest text-white", light: "bg-ice text-graphite on-light", white: "bg-white text-graphite on-light" }
+
+function Section({ id, tone = "light", children, className, labelledBy }: { id?: string; tone?: Tone; children: React.ReactNode; className?: string; labelledBy?: string }) {
+  return <section id={id} aria-labelledby={labelledBy} className={cn("scroll-mt-16 px-4 py-20 sm:px-6 sm:py-28", TONE[tone], className)}><div className="mx-auto max-w-6xl">{children}</div></section>
+}
+
+function Heading({ id, eyebrow, title, sub, dark, center }: { id: string; eyebrow: string; title: string; sub?: string; dark?: boolean; center?: boolean }) {
   return (
-    <div className={cn("max-w-3xl", center && "mx-auto text-center")}>
-      {eyebrow && <p className={cn("mb-3 text-xs font-semibold uppercase tracking-[0.18em]", dark ? "text-lime" : "text-forest/70")}>{eyebrow}</p>}
-      <h2 className={cn("font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-[2.6rem]", dark ? "text-white" : "text-forest")}>{title}</h2>
-      {sub && <p className={cn("mt-4 text-base leading-relaxed sm:text-lg", dark ? "text-white/75" : "text-graphite/75")}>{sub}</p>}
+    <div className={cn("max-w-2xl", center && "mx-auto text-center")}>
+      <p className={cn("mb-3 text-sm font-semibold", dark ? "text-lime" : "text-forest/80")}>{eyebrow}</p>
+      <h2 id={id} className={cn("font-display text-3xl font-bold leading-[1.15] tracking-tight text-balance sm:text-[2.5rem]", dark ? "text-white" : "text-forest")}>{title}</h2>
+      {sub && <p className={cn("mt-4 text-lg leading-relaxed text-pretty", dark ? "text-white/75" : "text-graphite/75")}>{sub}</p>}
     </div>
   )
 }
-const Section = ({ id, dark, children, className }: { id?: string; dark?: boolean; children: React.ReactNode; className?: string }) => (
-  <section id={id} className={cn("scroll-mt-20 px-4 py-20 sm:px-6 sm:py-24", dark ? "bg-forest text-white" : "bg-ice text-graphite", className)}><div className="mx-auto max-w-7xl">{children}</div></section>
-)
-const Soon = () => <span className="ml-2 rounded-full bg-lime/90 px-2 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide text-forest">Em breve</span>
 
-export function Hero() {
-  const highlights = [{ i: Search, t: "Encontre partidas" }, { i: CalendarDays, t: "Reserve quadras" }, { i: Users, t: "Organize seu time" }, { i: LayoutGrid, t: "Gerencie seu centro esportivo" }]
+const Soon = ({ dark }: { dark?: boolean }) => <span className={cn("ml-2 inline-block rounded-full px-2 py-0.5 align-middle text-[11px] font-semibold", dark ? "bg-white/10 text-lime" : "bg-forest/10 text-forest")}>Em breve</span>
+
+/** Lista de recursos com ícone. `soon` marca o que ainda não existe — o site nunca apresenta o futuro como disponível. */
+function FeatureList({ items, dark, cols = 2 }: { items: { i: React.ElementType; t: string; d?: string; soon?: boolean }[]; dark?: boolean; cols?: 1 | 2 }) {
   return (
-    <section id="inicio" className="relative overflow-hidden bg-forest px-4 pb-20 pt-32 text-white sm:px-6 lg:pb-28 lg:pt-36">
-      <div aria-hidden className="mk-glow pointer-events-none absolute -right-40 -top-40 size-[34rem] rounded-full bg-lime/25 blur-[120px]" />
-      <svg aria-hidden className="pointer-events-none absolute inset-0 size-full opacity-[0.07]" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="campo" width="120" height="120" patternUnits="userSpaceOnUse"><circle cx="60" cy="60" r="34" fill="none" stroke="#B9F344" strokeWidth="1.5" /><path d="M0 60h26M94 60h26" stroke="#B9F344" strokeWidth="1.5" /></pattern></defs><rect width="100%" height="100%" fill="url(#campo)" /></svg>
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
+    <ul className={cn("grid gap-x-8 gap-y-5", cols === 2 && "sm:grid-cols-2")}>
+      {items.map((x) => (
+        <li key={x.t} className="flex gap-3.5">
+          <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl", dark ? "bg-white/[0.08] text-lime" : "bg-forest text-lime")}><x.i aria-hidden className="size-5" /></span>
+          <span className="pt-0.5">
+            <strong className={cn("block text-[15px] font-semibold", dark ? "text-white" : "text-forest")}>{x.t}{x.soon && <Soon dark={dark} />}</strong>
+            {x.d && <span className={cn("mt-0.5 block text-[15px] leading-relaxed", dark ? "text-white/70" : "text-graphite/70")}>{x.d}</span>}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/* ───────── 1. Hero ───────── */
+export function Hero() {
+  return (
+    <section id="inicio" aria-labelledby="hero-titulo" className="relative overflow-hidden bg-forest px-4 pb-20 pt-28 text-white sm:px-6 sm:pt-36 lg:pb-28">
+      {/* Grafismo esportivo discreto: linhas de campo */}
+      <svg aria-hidden className="pointer-events-none absolute -right-24 top-10 hidden h-[36rem] w-[36rem] text-lime/[0.07] lg:block" viewBox="0 0 400 400" fill="none" stroke="currentColor" strokeWidth="2"><rect x="20" y="20" width="360" height="360" rx="8" /><line x1="200" y1="20" x2="200" y2="380" /><circle cx="200" cy="200" r="60" /><rect x="20" y="130" width="60" height="140" /><rect x="320" y="130" width="60" height="140" /></svg>
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[1.05fr_1fr]">
         <div>
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-lime/40 bg-lime/10 px-3 py-1 text-xs font-semibold text-lime"><Sparkles className="size-3.5" /> Maior plataforma de gestão de quadras esportivas do Brasil</p>
-          <h1 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Seu próximo jogo <span className="text-lime">começa aqui.</span></h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/80">Encontre quadras, organize partidas, complete seu time e viva o esporte de um jeito mais fácil.</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href={LINKS.buscarQuadras} className={btnLime}>Encontrar um Jogo</a>
-            <a href="#contato" className={btnGhostDark}>Sou Dono de Quadra</a>
+          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-lime/30 bg-lime/10 px-3 py-1 text-xs font-semibold text-lime sm:text-[13px]"><Sparkles aria-hidden className="size-3.5 shrink-0" /> Maior plataforma de gestão de quadras esportivas do Brasil</p>
+          <h1 id="hero-titulo" className="font-display text-[2.6rem] font-bold leading-[1.05] tracking-tight text-balance sm:text-6xl lg:text-[4.25rem]">Seu próximo jogo <span className="text-lime">começa aqui.</span></h1>
+          <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/80 sm:text-xl">Encontre quadras, organize partidas e conecte jogadores em uma única plataforma.</p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a href={LINKS.buscarQuadras} data-track="hero_encontrar_jogo" className={btnLime}>Encontrar um Jogo</a>
+            <LeadLink audience="quadra" track="hero_dono_quadra" className={btnGhostDark}>Sou Dono de Quadra</LeadLink>
           </div>
-          <ul className="mt-10 grid grid-cols-2 gap-3 text-sm text-white/85 sm:max-w-lg">
-            {highlights.map(({ i: I, t }) => <li key={t} className="flex items-center gap-2"><span className="grid size-8 shrink-0 place-items-center rounded-lg bg-white/10 text-lime"><I className="size-4" /></span>{t}</li>)}
-          </ul>
         </div>
-        <div className="relative mx-auto h-[26rem] w-full max-w-xl sm:h-[30rem] lg:h-[33rem] lg:max-w-none">
-          <DashboardMockup className="absolute right-0 top-0 w-[94%]" />
-          <PhoneMockup className="mk-float absolute bottom-0 left-0 w-[40%] min-w-[9.5rem] max-w-[13rem]" />
+        <div className="relative mx-auto h-[23rem] w-full max-w-lg sm:h-[28rem] lg:h-[31rem] lg:max-w-none">
+          <DashboardMockup className="absolute right-0 top-0 w-[92%]" />
+          <PhoneMockup className="absolute bottom-0 left-0 w-[38%] min-w-[9rem] max-w-[12.5rem]" />
         </div>
       </div>
     </section>
   )
 }
 
+/* ───────── 2. Como funciona: os três públicos ───────── */
 export function HowItWorks() {
   const cards = [
-    { i: Search, who: "Jogadores", t: "Encontre seu próximo jogo.", d: "Descubra partidas disponíveis, encontre vagas e participe de jogos próximos de você.", b: ["Busca por quadra, modalidade e horário", "Vagas visíveis na hora", "Convite pelo WhatsApp"], cta: "Encontrar Partidas", href: LINKS.buscarQuadras },
-    { i: Users, who: "Organizadores", t: "Organize partidas sem complicação.", d: "Crie jogos, controle participantes, encontre jogadores e compartilhe convites.", b: ["Partida ligada à reserva da quadra", "Aprovação de quem pede vaga", "Convites e lista de participantes"], cta: "Organizar Partida", href: `${LINKS.buscarQuadras}` },
-    { i: LayoutGrid, who: "Donos de Quadras", t: "Sua quadra mais organizada e rentável.", d: "Controle horários, reservas, clientes, funcionários e financeiro em uma única plataforma.", b: ["Agenda e reservas sem conflito", "Clientes, equipe e financeiro", "Relatórios de ocupação"], cta: "Conhecer a Gestão", href: "#para-quadras" },
+    { i: LayoutGrid, who: "Donos de quadras", t: "Gestão completa do seu centro esportivo", d: "Agenda, reservas, clientes, equipe e financeiro no mesmo lugar.", cta: "Para quadras", href: "#para-quadras" },
+    { i: Users, who: "Organizadores", t: "Partidas organizadas sem planilha", d: "Abra vagas na sua reserva e aprove quem quer jogar.", cta: "Para organizadores", href: "#para-organizadores" },
+    { i: Search, who: "Jogadores", t: "Um jogo perto de você", d: "Veja quadras, horários livres e partidas com vagas.", cta: "Para jogadores", href: "#para-jogadores" },
   ]
   return (
-    <Section id="como-funciona">
-      <Reveal><Heading eyebrow="Como funciona" title="Tudo o que você precisa para jogar está aqui." sub="O Partidou conecta quem quer jogar, quem organiza partidas e quem administra espaços esportivos." /></Reveal>
-      <div className="mt-14 grid gap-6 lg:grid-cols-3">
-        {cards.map((c, n) => (
-          <Reveal key={c.who} delay={n * 90}>
-            <article className="flex h-full flex-col rounded-3xl border bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-              <span className="grid size-12 place-items-center rounded-2xl bg-forest text-lime"><c.i className="size-6" /></span>
-              <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-forest/60">{c.who}</p>
-              <h3 className="mt-1 font-display text-xl font-bold text-forest">{c.t}</h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-graphite/75">{c.d}</p>
-              <ul className="mt-5 space-y-2 text-sm text-graphite/80">{c.b.map((x) => <li key={x} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-forest" />{x}</li>)}</ul>
-              <a href={c.href} className={cn(btnForest, "mt-7 self-start")}>{c.cta}</a>
-            </article>
-          </Reveal>
-        ))}
-      </div>
-    </Section>
-  )
-}
-
-const MGMT = [
-  { i: CalendarRange, t: "Agenda Inteligente", d: "Visualize horários por dia, semana ou mês. Controle reservas avulsas, mensalistas, aulas e bloqueios." },
-  { i: Globe2, t: "Reservas Online", d: "Disponibilize horários e facilite a solicitação de reservas." },
-  { i: Contact, t: "Cadastro de Clientes", d: "Organize informações de jogadores, mensalistas e clientes." },
-  { i: Wallet, t: "Controle Financeiro", d: "Acompanhe valores a receber, pagamentos, mensalidades e pendências." },
-  { i: KeyRound, t: "Funcionários e Permissões", d: "Gerencie acessos de administradores, gerentes, recepcionistas e financeiro." },
-  { i: ChartColumn, t: "Relatórios Gerenciais", d: "Analise ocupação das quadras, receitas e horários mais procurados." },
-  { i: Hourglass, t: "Lista de Espera", d: "Registre interessados em horários ocupados e aproveite novas oportunidades de reserva." },
-  { i: MapPin, t: "Página Pública da Quadra", d: "Apresente seu centro esportivo, suas quadras, modalidades e disponibilidade." },
-]
-export function Management() {
-  return (
-    <Section id="para-quadras" dark>
-      <Reveal><Heading dark eyebrow="Para donos de quadras" title="Sua quadra organizada. Seu negócio crescendo." sub="Tenha o controle completo do seu centro esportivo com uma plataforma desenvolvida para simplificar sua operação e ajudar a aproveitar melhor seus horários disponíveis." /></Reveal>
-      <div className="mt-14 grid items-start gap-10 lg:grid-cols-[1.1fr_1fr]">
-        <Reveal><DashboardMockup className="w-full" /></Reveal>
-        <ul id="funcionalidades" className="grid scroll-mt-24 gap-3 sm:grid-cols-2">
-          {MGMT.map((f, n) => (
-            <Reveal key={f.t} delay={n * 50}>
-              <li className="h-full rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:border-lime/40 hover:bg-white/[0.07]">
-                <span className="grid size-9 place-items-center rounded-xl bg-lime/15 text-lime"><f.i className="size-[18px]" /></span>
-                <h3 className="mt-3 font-display text-[15px] font-bold">{f.t}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-white/70">{f.d}</p>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-12 text-center"><a href="#contato" className={btnLime}>Quero Gerenciar Minha Quadra</a></div>
-    </Section>
-  )
-}
-
-export function SmartAgenda() {
-  const items = [{ i: CalendarDays, t: "Visão diária, semanal e mensal" }, { i: Eye, t: "Reservas identificadas por cores" }, { i: Clock, t: "Controle de horários livres" }, { i: Repeat, t: "Reservas recorrentes" }, { i: Wrench, t: "Bloqueio para manutenção" }, { i: Trophy, t: "Gestão de aulas e torneios" }, { i: LayoutGrid, t: "Controle de reservas por quadra" }, { i: ShieldCheck, t: "Prevenção de conflitos de horários" }]
-  return (
-    <Section>
-      <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.15fr]">
-        <Reveal>
-          <Heading center={false} eyebrow="Agenda inteligente" title="Nunca mais perca o controle dos horários da sua quadra." sub="Veja o dia, a semana ou o mês de relance. As cores mostram o tipo de cada reserva, e o sistema não deixa dois clientes ocuparem o mesmo horário da mesma quadra." />
-          <ul className="mt-8 grid gap-3 sm:grid-cols-2">{items.map((x) => <li key={x.t} className="flex items-center gap-3 text-[15px] text-graphite/85"><span className="grid size-9 shrink-0 place-items-center rounded-xl bg-forest text-lime"><x.i className="size-[18px]" /></span>{x.t}</li>)}</ul>
-        </Reveal>
-        <Reveal delay={100}><AgendaMockup className="w-full" /></Reveal>
-      </div>
-    </Section>
-  )
-}
-
-export function FindPlayers() {
-  const feats = ["Criar partidas", "Informar local e horário", "Definir modalidade", "Definir quantidade de vagas", "Informar faixa etária", "Informar nível da partida", "Receber solicitações de jogadores", "Compartilhar convites pelo WhatsApp"]
-  return (
-    <Section dark>
-      <div className="grid items-center gap-12 lg:grid-cols-2">
-        <Reveal>
-          <Heading dark center={false} eyebrow="Encontre jogadores" title="Faltou jogador? O Partidou resolve." sub="Chega de depender apenas dos grupos de WhatsApp para completar sua partida. Com o Partidou, organizadores podem divulgar jogos e encontrar pessoas interessadas em participar." />
-          <ul className="mt-8 grid gap-2.5 sm:grid-cols-2">{feats.map((f) => <li key={f} className="flex gap-2 text-[15px] text-white/85"><Check className="mt-0.5 size-4 shrink-0 text-lime" />{f}</li>)}</ul>
-          <p className="mt-6 rounded-xl border border-lime/30 bg-lime/10 p-3 text-sm text-white/85">Hoje, a partida com vagas já funciona ligada à reserva de uma quadra do Partidou. Faixa etária, nível e o espaço próprio do organizador estão em desenvolvimento.</p>
-        </Reveal>
-        <Reveal delay={100}>
-          <div className="relative mx-auto max-w-sm">
-            <article className="rounded-3xl bg-white p-6 text-graphite shadow-2xl">
-              <p className="text-xs font-semibold uppercase tracking-wider text-forest/60">Partida · exemplo ilustrativo</p>
-              <h3 className="mt-2 font-display text-xl font-bold text-forest">Futebol Society — Quarta-feira</h3>
-              <dl className="mt-4 space-y-2 text-sm">
-                <div className="flex justify-between"><dt className="text-graphite/60">Horário</dt><dd className="font-semibold">20h</dd></div>
-                <div className="flex justify-between"><dt className="text-graphite/60">Modalidade</dt><dd className="font-semibold">Futebol Society</dd></div>
-                <div className="flex justify-between"><dt className="text-graphite/60">Nível</dt><dd className="font-semibold">Recreativo</dd></div>
-                <div className="flex justify-between"><dt className="text-graphite/60">Vagas</dt><dd className="font-semibold text-forest">3 disponíveis</dd></div>
-              </dl>
-              <span aria-hidden className="mt-5 flex h-12 items-center justify-center rounded-full bg-lime font-semibold text-forest">Quero Jogar</span>
-              <p className="mt-3 text-center text-xs text-graphite/55">Ilustração: não é uma partida real.</p>
-            </article>
-          </div>
-        </Reveal>
-      </div>
-    </Section>
-  )
-}
-
-export function ForOrganizers() {
-  const b = [{ i: Megaphone, t: "Criação de jogos" }, { i: Share2, t: "Convites para jogadores" }, { i: UserCheck, t: "Controle de presença" }, { i: Users, t: "Gestão de participantes" }, { i: Repeat, t: "Jogos recorrentes" }, { i: Wallet, t: "Controle de mensalidades" }, { i: Trophy, t: "Histórico de partidas" }, { i: MessageCircle, t: "Compartilhamento por WhatsApp" }]
-  return (
-    <Section id="para-organizadores">
-      <Reveal><Heading eyebrow="Para organizadores" title="Menos trabalho organizando. Mais tempo jogando." sub="O Organizador Pro está em desenvolvimento. Deixe seu contato e avisamos quando abrir." /></Reveal>
-      <div className="mt-12 grid items-center gap-10 lg:grid-cols-[1fr_1fr]">
-        <Reveal>
-          <div className="rounded-3xl bg-forest p-6 text-white shadow-xl sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-wider text-lime">Painel do organizador · exemplo ilustrativo</p>
-            <h3 className="mt-2 font-display text-lg font-bold">Racha de quinta</h3>
-            <ul className="mt-5 space-y-2.5">
-              {[["Participante confirmado", "bg-green-400"], ["Participante confirmado", "bg-green-400"], ["Pediu vaga", "bg-amber-400"], ["Pediu vaga", "bg-amber-400"]].map(([t, c], i) => (
-                <li key={i} className="flex items-center gap-3 rounded-xl bg-white/[0.06] p-3 text-sm"><span aria-hidden className="grid size-8 place-items-center rounded-full bg-white/10 text-xs font-bold text-lime">{i + 1}</span><span className="flex-1 text-white/80">{t}</span><span aria-hidden className={cn("size-2.5 rounded-full", c)} /></li>
-              ))}
-            </ul>
-            <div aria-hidden className="mt-5 flex gap-2"><span className="flex-1 rounded-full bg-lime py-2.5 text-center text-sm font-semibold text-forest">Aprovar</span><span className="flex-1 rounded-full border border-white/25 py-2.5 text-center text-sm text-white/80">Compartilhar</span></div>
-          </div>
-        </Reveal>
-        <Reveal delay={100}>
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {b.map((x) => <li key={x.t} className="flex items-center gap-3 rounded-2xl border bg-white p-3.5 text-[15px] font-medium text-graphite/85"><span className="grid size-9 shrink-0 place-items-center rounded-xl bg-forest text-lime"><x.i className="size-[18px]" /></span>{x.t}</li>)}
-          </ul>
-          <div className="mt-7"><a href="#contato" className={btnForest}>Começar a Organizar</a><Soon /></div>
-        </Reveal>
-      </div>
-    </Section>
-  )
-}
-
-export function ForPlayers() {
-  const rec = ["Busca por localização", "Filtros por modalidade", "Pesquisa por dia e horário", "Consulta de vagas", "Solicitação de participação", "Histórico de partidas", "Perfil do jogador"]
-  const live = new Set(["Pesquisa por dia e horário", "Consulta de vagas", "Solicitação de participação"])
-  return (
-    <Section id="para-jogadores" dark>
-      <Reveal><Heading dark eyebrow="Para jogadores" title="Sempre tem um jogo esperando por você." sub="Encontre partidas disponíveis, descubra novos lugares para jogar e conecte-se com pessoas que compartilham sua paixão pelo esporte." /></Reveal>
-      <div className="mt-12 grid items-center gap-10 lg:grid-cols-[1fr_1.1fr]">
-        <Reveal>
-          <ul className="space-y-2.5">
-            {rec.map((r) => <li key={r} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-3.5 text-[15px]"><Check className="size-4 shrink-0 text-lime" /><span className="flex-1">{r}</span>{!live.has(r) && <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-lime">Em breve</span>}</li>)}
-          </ul>
-          <div className="mt-7 flex flex-wrap gap-3"><a href={LINKS.buscarQuadras} className={btnLime}>Buscar Quadras Agora</a><a href="#contato" className={btnGhostDark}>Quero Ser Avisado</a></div>
-        </Reveal>
-        <Reveal delay={100}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <article className="rounded-3xl bg-white p-5 text-graphite shadow-xl"><p className="text-xs font-semibold uppercase tracking-wider text-forest/60">Quadra · exemplo</p><h3 className="mt-1 font-display text-lg font-bold text-forest">Arena Exemplo</h3><p className="text-sm text-graphite/65">Society e Futsal · Piso sintético</p><div className="mt-4 flex gap-1.5">{["19h", "20h", "21h"].map((h) => <span key={h} aria-hidden className="rounded-lg bg-lime px-2.5 py-1 text-xs font-bold text-forest">{h}</span>)}</div></article>
-            <article className="rounded-3xl border-2 border-lime bg-white p-5 text-graphite shadow-xl"><p className="text-xs font-semibold uppercase tracking-wider text-forest/60">Partida · exemplo</p><h3 className="mt-1 font-display text-lg font-bold text-forest">Vôlei de quinta</h3><p className="text-sm text-graphite/65">20h · Recreativo · 2 vagas</p><span aria-hidden className="mt-4 inline-block rounded-full bg-forest px-4 py-2 text-xs font-semibold text-lime">Quero jogar</span></article>
-          </div>
-          <p className="mt-3 text-xs text-white/50">Exemplos ilustrativos, sem dados reais.</p>
-        </Reveal>
-      </div>
-    </Section>
-  )
-}
-
-export function Sports() {
-  return (
-    <Section>
-      <Reveal><Heading eyebrow="Modalidades" title="Um aplicativo. Muitos esportes. Infinitas partidas." sub="O Partidou não é só de futebol: cada quadra define a sua modalidade, e o sistema se adapta." /></Reveal>
-      <ul className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {SPORTS.map((s, n) => (
-          <Reveal key={s} delay={n * 40}>
-            <li className="flex h-full items-center gap-3 rounded-2xl border bg-white p-4 transition hover:-translate-y-0.5 hover:border-forest/30 hover:shadow-md"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-forest text-lime"><Target className="size-5" /></span><span className="font-display text-sm font-bold text-forest">{s}</span></li>
-          </Reveal>
+    <Section id="como-funciona" labelledBy="como-titulo">
+      <Heading id="como-titulo" center eyebrow="Como funciona" title="Uma plataforma. Três jeitos de jogar." sub="O Partidou conecta quem administra quadras, quem organiza partidas e quem quer entrar em campo." />
+      <ul className="mt-14 grid gap-5 md:grid-cols-3">
+        {cards.map((c) => (
+          <li key={c.who} className="flex flex-col rounded-2xl border border-forest/10 bg-white p-7">
+            <span className="grid size-11 place-items-center rounded-xl bg-forest text-lime"><c.i aria-hidden className="size-5" /></span>
+            <p className="mt-5 text-sm font-semibold text-forest/75">{c.who}</p>
+            <h3 className="mt-1 font-display text-xl font-bold leading-snug text-forest">{c.t}</h3>
+            <p className="mt-2 flex-1 text-[15px] leading-relaxed text-graphite/75">{c.d}</p>
+            <a href={c.href} className={cn(linkArrow, "mt-6 text-forest")}>{c.cta} <ArrowRight aria-hidden className="size-4" /></a>
+          </li>
         ))}
       </ul>
     </Section>
   )
 }
 
-export function Plans() {
+/* ───────── 3. Para donos de quadras ───────── */
+const OWNER = [
+  { i: CalendarRange, t: "Agenda inteligente", d: "Dia, semana ou mês, por quadra." },
+  { i: Globe2, t: "Reservas online", d: "Clientes pedem o horário pela internet." },
+  { i: Contact, t: "Cadastro de clientes", d: "Avulsos, mensalistas e professores." },
+  { i: Wallet, t: "Controle financeiro", d: "A receber, recebido e em atraso." },
+  { i: KeyRound, t: "Gestão de funcionários", d: "Acesso por perfil: gerente, recepção, financeiro." },
+  { i: ChartColumn, t: "Relatórios de ocupação", d: "Horários mais procurados e receita." },
+  { i: Hourglass, t: "Lista de espera", d: "Aproveite cada horário que vagar." },
+  { i: MapPin, t: "Página pública da quadra", d: "Seu centro com link próprio para divulgar." },
+]
+export function Management() {
   return (
-    <Section id="planos" dark>
-      <Reveal><Heading dark eyebrow="Planos e preços" title="Escolha o plano certo para o seu jogo." sub="Valores de lançamento, sujeitos a confirmação. A contratação é feita com a nossa equipe: não há cobrança online neste site." /></Reveal>
-      <div className="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {PLANS.map((p, n) => (
-          <Reveal key={p.id} delay={n * 70}>
-            <article className={cn("relative flex h-full flex-col rounded-3xl p-7", p.highlight ? "bg-lime text-forest shadow-2xl shadow-lime/20 xl:-translate-y-3" : "border border-white/10 bg-white/[0.05] text-white")}>
-              {p.highlight && <span className="absolute -top-3 left-6 rounded-full bg-forest px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-lime">Mais indicado</span>}
-              <h3 className="font-display text-lg font-bold">{p.name}{p.soon && <Soon />}</h3>
-              <p className="mt-4 flex items-baseline gap-1"><span className="font-display text-4xl font-extrabold">{p.price}</span><span className={cn("text-sm", p.highlight ? "text-forest/70" : "text-white/60")}>{p.period}</span></p>
-              <ul className="mt-6 flex-1 space-y-2.5 text-sm">{p.items.map((i) => <li key={i} className="flex gap-2"><Check className={cn("mt-0.5 size-4 shrink-0", p.highlight ? "text-forest" : "text-lime")} />{i}</li>)}</ul>
-              <LeadLink audience={p.audience} plan={p.id} className={cn(btn, "mt-7", p.highlight ? "bg-forest text-lime hover:bg-forest/90" : "bg-lime text-forest hover:brightness-95")}>{p.cta}</LeadLink>
-            </article>
-          </Reveal>
-        ))}
+    <Section id="para-quadras" tone="dark" labelledBy="quadras-titulo">
+      <Heading id="quadras-titulo" dark eyebrow="Para donos de quadras" title="Sua quadra organizada. Seu negócio crescendo." sub="Controle reservas, clientes, horários e financeiro em um sistema de gestão de quadras feito para centros esportivos." />
+      <div className="mt-14 grid items-center gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+        <DashboardMockup className="w-full" />
+        <FeatureList dark items={OWNER} />
+      </div>
+      <div className="mt-14 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+        <LeadLink audience="quadra" plan="quadra_pro" track="quadras_quero_gerenciar" className={btnLime}>Quero Gerenciar Minha Quadra</LeadLink>
+        <a href="#agenda" className={cn(linkArrow, "text-white")}>Conhecer o Sistema <ArrowRight aria-hidden className="size-4" /></a>
       </div>
     </Section>
   )
 }
 
-export function OwnerBenefits() {
-  const b = [{ i: LayoutGrid, t: "Mais organização", d: "Centralize reservas, clientes e informações." }, { i: Megaphone, t: "Mais visibilidade", d: "Divulgue suas quadras para jogadores e organizadores." }, { i: ChartColumn, t: "Mais controle", d: "Acompanhe a ocupação e os recebimentos." }, { i: Sparkles, t: "Mais oportunidades", d: "Permita que novos clientes encontrem horários disponíveis." }]
+/* ───────── 4. Agenda e reservas ───────── */
+export function SmartAgenda() {
+  const items = [
+    { i: ShieldCheck, t: "Sem conflito de horários", d: "O sistema não deixa dois clientes reservarem a mesma quadra no mesmo horário." },
+    { i: Repeat, t: "Reservas recorrentes", d: "Mensalistas semanais, quinzenais ou mensais em poucos cliques." },
+    { i: Wrench, t: "Bloqueios e manutenção", d: "Feche horários para manutenção, aulas ou torneios." },
+    { i: Clock, t: "Horários livres à vista", d: "Cores por tipo de reserva mostram a ocupação de relance." },
+  ]
   return (
-    <Section>
-      <Reveal><Heading eyebrow="Para donos de quadras" title="Transforme horários vazios em novas oportunidades." /></Reveal>
-      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {b.map((x, n) => <Reveal key={x.t} delay={n * 70}><article className="h-full rounded-3xl border bg-white p-6"><span className="grid size-11 place-items-center rounded-2xl bg-forest text-lime"><x.i className="size-5" /></span><h3 className="mt-4 font-display text-lg font-bold text-forest">{x.t}</h3><p className="mt-2 text-[15px] leading-relaxed text-graphite/75">{x.d}</p></article></Reveal>)}
+    <Section id="agenda" labelledBy="agenda-titulo">
+      <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+        <div>
+          <Heading id="agenda-titulo" eyebrow="Agenda e reservas" title="Nunca mais perca o controle dos horários." sub="Uma agenda de quadras clara, que funciona no computador e no celular." />
+          <div className="mt-10"><FeatureList cols={1} items={items} /></div>
+        </div>
+        <AgendaMockup className="w-full" />
       </div>
+    </Section>
+  )
+}
+
+/* ───────── 5. Para organizadores ───────── */
+export function ForOrganizers() {
+  const items = [
+    { i: Trophy, t: "Criação de partidas", d: "Abra vagas na reserva feita com um centro parceiro." },
+    { i: UserCheck, t: "Controle de jogadores", d: "Aprove ou recuse quem pede para entrar." },
+    { i: Link2, t: "Convites por WhatsApp", d: "Compartilhe o link da partida com o grupo." },
+    { i: Check, t: "Confirmação de presença", soon: true },
+    { i: Repeat, t: "Jogos recorrentes", soon: true },
+    { i: Wallet, t: "Controle de pagamentos", soon: true },
+  ]
+  return (
+    <Section id="para-organizadores" tone="white" labelledBy="org-titulo">
+      <div className="grid items-center gap-12 lg:grid-cols-[1fr_1fr] lg:gap-16">
+        <div className="lg:order-2">
+          <Heading id="org-titulo" eyebrow="Para organizadores" title="Organize menos. Jogue mais." sub="Chega de lista no grupo e cobrança no privado: o Partidou ajuda a organizar partidas esportivas do início ao fim." />
+          <div className="mt-10"><FeatureList items={items} /></div>
+          <div className="mt-10 flex flex-col items-start gap-2">
+            <LeadLink audience="organizador" plan="organizador_pro" track="org_organizar_partida" className={btnForest}>Quero Organizar Partidas</LeadLink>
+            <p className="text-sm text-graphite/70">O plano Organizador Pro está em desenvolvimento: entre na lista e avisamos.</p>
+          </div>
+        </div>
+        <figure className="rounded-3xl bg-forest p-6 text-white sm:p-8 lg:order-1">
+          <figcaption className="sr-only">Ilustração do painel do organizador: partida com participantes confirmados e pedidos de vaga.</figcaption>
+          <div aria-hidden>
+            <div className="flex items-center justify-between"><p className="text-xs font-medium text-white/70">Exemplo ilustrativo</p><span className="rounded-full bg-lime px-2.5 py-0.5 text-xs font-semibold text-forest">Quinta · 20h</span></div>
+            <p className="mt-3 font-display text-xl font-bold">Racha de quinta</p>
+            <p className="text-sm text-white/70">Futebol Society · 10 de 12 vagas</p>
+            <ul className="mt-6 space-y-2">
+              {[["Confirmado", "bg-lime"], ["Confirmado", "bg-lime"], ["Confirmado", "bg-lime"], ["Pediu vaga", "bg-amber-300"], ["Pediu vaga", "bg-amber-300"]].map(([t, c], i) => (
+                <li key={i} className="flex items-center gap-3 rounded-xl bg-white/[0.06] px-3 py-2.5 text-sm"><span className="grid size-7 place-items-center rounded-full bg-white/10 text-xs font-bold text-lime">{i + 1}</span><span className="h-2 flex-1 rounded-full bg-white/15" /><span className="text-white/80">{t}</span><span className={cn("size-2 rounded-full", c)} /></li>
+              ))}
+            </ul>
+            <div className="mt-6 grid grid-cols-2 gap-2 text-sm font-semibold"><span className="rounded-full bg-lime py-2.5 text-center text-forest">Aprovar</span><span className="rounded-full border border-white/25 py-2.5 text-center">Compartilhar</span></div>
+          </div>
+        </figure>
+      </div>
+    </Section>
+  )
+}
+
+/* ───────── 6. Para jogadores ───────── */
+export function ForPlayers() {
+  const cards = [
+    { i: Search, t: "Partidas com vagas", d: "Veja jogos abertos nos centros parceiros." },
+    { i: Clock, t: "Dias e horários", d: "Consulte quando dá para jogar." },
+    { i: UserCheck, t: "Peça para participar", d: "Solicite a vaga e aguarde a aprovação." },
+    { i: LayoutGrid, t: "Escolha a modalidade", d: "Society, futsal, vôlei, beach tennis e mais.", soon: true },
+    { i: MapPin, t: "Partidas perto de você", d: "Busca pela sua localização.", soon: true },
+    { i: Users, t: "Conecte-se com jogadores", d: "Perfil e histórico de partidas.", soon: true },
+  ]
+  return (
+    <Section id="para-jogadores" tone="dark" labelledBy="jog-titulo">
+      <Heading id="jog-titulo" dark center eyebrow="Para jogadores" title="Encontre seu próximo jogo." sub="Faltou time? Encontre jogadores de futebol e partidas abertas sem depender só dos grupos de WhatsApp." />
+      <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {cards.map((c) => (
+          <li key={c.t} className="flex gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-lime text-forest"><c.i aria-hidden className="size-5" /></span>
+            <span><strong className="block font-semibold">{c.t}{c.soon && <Soon dark />}</strong><span className="mt-0.5 block text-[15px] text-white/70">{c.d}</span></span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-12 text-center"><a href={LINKS.buscarQuadras} data-track="jog_encontrar_jogo" className={btnLime}>Encontrar um Jogo</a></div>
+    </Section>
+  )
+}
+
+/* ───────── 7. Principais funcionalidades da plataforma ───────── */
+export function Features() {
+  const items = [
+    { i: Smartphone, t: "Funciona no celular", d: "Instale como aplicativo, sem loja de apps." },
+    { i: ShieldCheck, t: "Reservas sem conflito", d: "Regra garantida no banco de dados, não só na tela." },
+    { i: KeyRound, t: "Acesso por perfil", d: "Cada funcionário vê só o que precisa." },
+    { i: Globe2, t: "Página pública", d: "Divulgue quadras e horários com um link." },
+    { i: ChartColumn, t: "Relatórios", d: "Ocupação, receita e inadimplência." },
+    { i: Lock, t: "Dados protegidos", d: "Cada centro vê somente os próprios dados." },
+  ]
+  return (
+    <Section id="funcionalidades" labelledBy="func-titulo">
+      <Heading id="func-titulo" center eyebrow="Principais funcionalidades" title="Tudo o que um centro esportivo precisa." sub="Software para quadras esportivas de qualquer modalidade, do futebol society ao beach tennis." />
+      <ul className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-forest/10 bg-forest/10 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((x) => (
+          <li key={x.t} className="bg-white p-7">
+            <x.i aria-hidden className="size-6 text-forest" />
+            <h3 className="mt-4 font-display text-lg font-bold text-forest">{x.t}</h3>
+            <p className="mt-1 text-[15px] leading-relaxed text-graphite/70">{x.d}</p>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-10">
+        <h3 className="sr-only">Modalidades atendidas</h3>
+        <ul className="flex flex-wrap justify-center gap-2">
+          {SPORTS.map((s) => <li key={s} className="rounded-full border border-forest/15 bg-white px-4 py-2 text-sm font-medium text-forest">{s}</li>)}
+        </ul>
+      </div>
+    </Section>
+  )
+}
+
+/* ───────── 8. Planos ───────── */
+export function Plans() {
+  return (
+    <Section id="planos" tone="dark" labelledBy="planos-titulo">
+      <Heading id="planos-titulo" dark center eyebrow="Planos e preços" title="Escolha o plano certo para o seu jogo." />
+      <ul className="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {PLANS.map((p) => (
+          <li key={p.id} className={cn("relative flex flex-col rounded-2xl p-7", p.highlight ? "order-first bg-lime sm:order-none text-forest ring-4 ring-lime/25" : "border border-white/10 bg-white/[0.04] text-white")}>
+            {p.highlight && <span className="absolute -top-3 left-7 rounded-full bg-forest px-3 py-1 text-xs font-semibold text-lime">Mais indicado</span>}
+            <h3 className="font-display text-lg font-bold">{p.name}{p.soon && <Soon dark={!p.highlight} />}</h3>
+            <p className={cn("text-sm", p.highlight ? "text-forest/80" : "text-white/70")}>{p.tagline}</p>
+            <p className="mt-6 flex items-baseline gap-1"><span className="font-display text-4xl font-bold tracking-tight">{p.price}</span><span className={cn("text-sm", p.highlight ? "text-forest/80" : "text-white/70")}>{p.period}</span></p>
+            <ul className={cn("mt-6 flex-1 space-y-2.5 border-t pt-6 text-[15px]", p.highlight ? "border-forest/15" : "border-white/10")}>
+              {p.items.map((i) => <li key={i} className="flex gap-2.5"><Check aria-hidden className={cn("mt-0.5 size-4 shrink-0", p.highlight ? "text-forest" : "text-lime")} />{i}</li>)}
+            </ul>
+            <LeadLink audience={p.audience} plan={p.id} track={`plano_${p.id}`} className={cn(btn, "mt-8 w-full", p.highlight ? "bg-forest text-white hover:bg-[#1d3d33]" : "bg-white/10 text-white hover:bg-white/15")}>{p.cta}</LeadLink>
+          </li>
+        ))}
+      </ul>
+      <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-white/70">Valores de lançamento, sujeitos a confirmação. A contratação é feita com a nossa equipe, sem cobrança online neste site.</p>
     </Section>
   )
 }
@@ -265,32 +272,21 @@ export function OwnerBenefits() {
 export function Testimonials() {
   if (!TESTIMONIALS.length) return null
   return (
-    <Section dark>
-      <Reveal><Heading dark eyebrow="Depoimentos" title="Quem usa recomenda." /></Reveal>
-      <div className="mt-12 grid gap-5 md:grid-cols-3">
+    <Section tone="white" labelledBy="dep-titulo">
+      <Heading id="dep-titulo" center eyebrow="Depoimentos" title="Quem usa recomenda." />
+      <ul className="mt-12 grid gap-5 md:grid-cols-3">
         {TESTIMONIALS.map((t) => (
-          <figure key={t.name} className="rounded-3xl border border-white/10 bg-white/[0.05] p-6">
-            <blockquote className="text-[15px] leading-relaxed text-white/85">“{t.text}”</blockquote>
-            <figcaption className="mt-5 flex items-center gap-3">
-              {t.photo ? <img src={t.photo} alt="" loading="lazy" className="size-11 rounded-full object-cover" /> : <span aria-hidden className="grid size-11 place-items-center rounded-full bg-lime font-bold text-forest">{t.name[0]}</span>}
-              <span className="text-sm"><strong className="block">{t.name}</strong><span className="text-white/60">{t.role}{t.venue ? ` · ${t.venue}` : ""}</span></span>
-            </figcaption>
-          </figure>
+          <li key={t.name}>
+            <figure className="h-full rounded-2xl border border-forest/10 bg-ice p-6">
+              <blockquote className="text-[15px] leading-relaxed text-graphite/85">“{t.text}”</blockquote>
+              <figcaption className="mt-5 flex items-center gap-3">
+                {t.photo ? <img src={t.photo} alt="" loading="lazy" width={44} height={44} className="size-11 rounded-full object-cover" /> : <span aria-hidden className="grid size-11 place-items-center rounded-full bg-forest font-bold text-lime">{t.name[0]}</span>}
+                <span className="text-sm"><strong className="block text-forest">{t.name}</strong><span className="text-graphite/70">{t.role}{t.venue ? ` · ${t.venue}` : ""}</span></span>
+              </figcaption>
+            </figure>
+          </li>
         ))}
-      </div>
+      </ul>
     </Section>
-  )
-}
-
-export function FinalCta() {
-  return (
-    <section className="relative overflow-hidden bg-forest px-4 py-24 text-center text-white sm:px-6 sm:py-28">
-      <div aria-hidden className="mk-glow pointer-events-none absolute left-1/2 top-0 size-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/25 blur-[110px]" />
-      <div className="relative mx-auto max-w-3xl">
-        <h2 className="font-display text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">A próxima partida começa <span className="text-lime">com você.</span></h2>
-        <p className="mx-auto mt-5 max-w-2xl text-lg text-white/80">Seja para jogar, organizar ou administrar sua quadra, o Partidou conecta tudo em um só lugar.</p>
-        <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row"><a href="#contato" className={btnLime}>Começar Agora</a><a href="#para-quadras" className={btnGhostDark}>Conhecer o Sistema</a></div>
-      </div>
-    </section>
   )
 }

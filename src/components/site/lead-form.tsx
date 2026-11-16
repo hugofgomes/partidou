@@ -4,6 +4,7 @@ import { STATES, type Plan } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
 import { Check, Loader2 } from "lucide-react"
 import * as React from "react"
+import { track } from "./analytics"
 import { LEAD_EVENT, type LeadPreset } from "./lead-link"
 
 type Audience = Plan["audience"]
@@ -13,7 +14,7 @@ const TABS: { id: Audience; label: string; hint: string }[] = [
   { id: "jogador", label: "Sou jogador", hint: "Quero ser avisado quando abrir" },
 ]
 const PLAN_LABEL: Record<string, string> = { organizador_pro: "Organizador Pro", quadra_pro: "Quadra Pro", arena_business: "Arena Business" }
-const input = "h-12 w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 text-[15px] text-white placeholder:text-white/40 outline-none transition focus:border-lime focus:ring-2 focus:ring-lime/30"
+const input = "h-12 w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 text-[15px] text-white placeholder:text-white/50 outline-none transition focus:border-lime focus:ring-2 focus:ring-lime/30"
 
 /** Formulário de contato/captação. Envia para /api/site/lead, que valida e grava no banco (visível ao dono da plataforma). */
 export function LeadForm() {
@@ -42,24 +43,23 @@ export function LeadForm() {
       }) })
       const j = await r.json().catch(() => ({}))
       if (!r.ok) setError(j.error ?? "Não foi possível enviar agora. Tente de novo em instantes.")
-      else setDone(true)
+      else { setDone(true); track("generate_lead", { audience, plan: plan ?? undefined }) }
     } catch { setError("Sem conexão. Confira sua internet e tente de novo.") }
     setBusy(false)
   }
   const quadra = audience === "quadra"
   return (
-    <section id="contato" className="relative scroll-mt-20 overflow-hidden bg-graphite px-4 py-20 text-white sm:px-6 sm:py-24">
-      <div aria-hidden className="pointer-events-none absolute -left-32 bottom-0 size-96 rounded-full bg-lime/10 blur-[110px]" />
-      <div className="relative mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.1fr]">
+    <section id="contato" aria-labelledby="contato-titulo" className="scroll-mt-16 bg-graphite px-4 py-20 text-white sm:px-6 sm:py-28">
+      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
         <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-lime">Contato</p>
-          <h2 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl">Vamos conversar sobre o seu jogo.</h2>
+          <p className="mb-3 text-sm font-semibold text-lime">Comece agora</p>
+          <h2 id="contato-titulo" className="font-display text-3xl font-bold leading-[1.15] tracking-tight text-balance sm:text-[2.75rem]">A próxima partida começa <span className="text-lime">com você.</span></h2>
           <p className="mt-4 text-lg leading-relaxed text-white/75">Conte um pouco sobre você e retornamos por WhatsApp ou e-mail. Para donos de quadra, apresentamos o sistema e combinamos a implantação.</p>
           <ul className="mt-7 space-y-3 text-[15px] text-white/80">
             {["Sem compromisso: é só um primeiro contato", "Resposta da nossa equipe, não de robô", "Seus dados são usados só para este contato (LGPD)"].map((t) => <li key={t} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-lime" />{t}</li>)}
           </ul>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
           {done ? (
             <div role="status" className="py-10 text-center">
               <span className="mx-auto grid size-14 place-items-center rounded-full bg-lime text-forest"><Check className="size-7" /></span>
@@ -69,10 +69,10 @@ export function LeadForm() {
             </div>
           ) : (
             <form onSubmit={submit} noValidate={false} className="space-y-4" aria-describedby={error ? "lead-erro" : undefined}>
-              <div role="tablist" aria-label="Quem é você" className="grid gap-2 sm:grid-cols-3">
+              <div role="radiogroup" aria-label="Quem é você" className="grid gap-2 sm:grid-cols-3">
                 {TABS.map((t) => (
-                  <button key={t.id} type="button" role="tab" aria-selected={audience === t.id} onClick={() => setAudience(t.id)} className={cn("rounded-xl border px-3 py-2.5 text-left text-sm transition", audience === t.id ? "border-lime bg-lime text-forest" : "border-white/15 text-white/80 hover:bg-white/10")}>
-                    <span className="block font-semibold">{t.label}</span><span className={cn("block text-[11px]", audience === t.id ? "text-forest/70" : "text-white/50")}>{t.hint}</span>
+                  <button key={t.id} type="button" role="radio" aria-checked={audience === t.id} onClick={() => setAudience(t.id)} className={cn("rounded-xl border px-3 py-2.5 text-left text-sm transition", audience === t.id ? "border-lime bg-lime text-forest" : "border-white/15 text-white/80 hover:bg-white/10")}>
+                    <span className="block font-semibold">{t.label}</span><span className={cn("block text-[11px]", audience === t.id ? "text-forest/80" : "text-white/65")}>{t.hint}</span>
                   </button>
                 ))}
               </div>
@@ -86,12 +86,12 @@ export function LeadForm() {
                 <label className="block text-sm"><span className="mb-1.5 block font-medium">WhatsApp</span><input name="whatsapp" type="tel" inputMode="tel" autoComplete="tel" placeholder="(48) 99999-0000" className={input} /></label>
                 <label className="block text-sm"><span className="mb-1.5 block font-medium">E-mail</span><input name="email" type="email" autoComplete="email" className={input} /></label>
                 {quadra && <label className="block text-sm"><span className="mb-1.5 block font-medium">Quantidade de quadras</span><input name="courts" type="number" min={1} max={200} inputMode="numeric" className={input} /></label>}
-                <label className="block text-sm sm:col-span-2"><span className="mb-1.5 block font-medium">Mensagem <span className="font-normal text-white/50">(opcional)</span></span><textarea name="message" rows={3} maxLength={1000} className={cn(input, "h-auto py-3")} /></label>
+                <label className="block text-sm sm:col-span-2"><span className="mb-1.5 block font-medium">Mensagem <span className="font-normal text-white/65">(opcional)</span></span><textarea name="message" rows={3} maxLength={1000} className={cn(input, "h-auto py-3")} /></label>
                 <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden"><label>Site<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
               </div>
               <label className="flex items-start gap-3 text-sm text-white/80"><input name="consent" type="checkbox" required className="mt-1 size-4 accent-[#B9F344]" /><span>Autorizo o Partidou a entrar em contato comigo pelos dados informados. Posso pedir a exclusão a qualquer momento (<a href="/privacidade" className="underline">Política de Privacidade</a>).</span></label>
               {error && <p id="lead-erro" role="alert" className="rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-200">{error}</p>}
-              <button type="submit" disabled={busy} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-lime px-6 text-[15px] font-semibold text-forest transition hover:brightness-95 disabled:opacity-60">{busy && <Loader2 className="size-4 animate-spin" />} {quadra ? "Quero conhecer o Partidou" : "Quero ser avisado"}</button>
+              <button type="submit" disabled={busy} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-lime px-6 text-[15px] font-semibold text-forest transition-colors hover:bg-[#c8f76a] disabled:opacity-60">{busy && <Loader2 className="size-4 animate-spin" />} {quadra ? "Quero conhecer o Partidou" : "Quero ser avisado"}</button>
             </form>
           )}
         </div>

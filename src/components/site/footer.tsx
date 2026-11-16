@@ -1,29 +1,34 @@
-import { LINKS, SOCIAL } from "@/lib/site-config"
+import { CONTACT_EMAIL, LINKS, LOGO, SOCIAL } from "@/lib/site-config"
 
-const col = "mb-4 text-xs font-semibold uppercase tracking-wider text-lime"
-const link = "text-sm text-white/70 transition hover:text-white"
+const title = "mb-4 text-sm font-semibold text-white"
+const link = "text-sm text-white/70 transition-colors hover:text-white"
 
 export function SiteFooter() {
+  const groups = [
+    { label: "Plataforma", items: [["Encontrar um Jogo", LINKS.buscarQuadras], ["Gestão de Quadras", "#para-quadras"], ["Para Organizadores", "#para-organizadores"], ["Entrar no sistema", LINKS.entrar]] },
+    { label: "Empresa", items: [["Como Funciona", "#como-funciona"], ["Planos", "#planos"], ["Perguntas frequentes", "#faq"], ["Contato", "#contato"]] },
+    { label: "Legal", items: [["Política de Privacidade", LINKS.privacidade], ["Termos de Uso", LINKS.termos], ["Política de Cookies", LINKS.cookies]] },
+  ]
   return (
-    <footer className="bg-forest px-4 pb-10 pt-16 text-white sm:px-6">
-      <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+    <footer className="bg-forest px-4 pb-8 pt-16 text-white sm:px-6">
+      <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
         <div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/partidou-logo.png" alt="Partidou" width={1200} height={277} loading="lazy" className="h-10 w-auto" />
+          {/* eslint-disable-next-line @next/next/no-img-element -- PNG transparente já otimizado */}
+          <img src={LOGO.src} alt="Partidou" width={LOGO.width} height={LOGO.height} loading="lazy" className="h-9 w-auto" />
           <p className="mt-5 font-display text-lg font-bold">O jogo começa aqui.</p>
-          <p className="mt-2 max-w-xs text-sm leading-relaxed text-white/70">Conectando jogadores, organizadores e centros esportivos.</p>
-          {SOCIAL.length > 0 && <ul className="mt-5 flex flex-wrap gap-2">{SOCIAL.map((s) => <li key={s.label}><a href={s.href} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/20 px-3 py-1.5 text-xs text-white/80 hover:bg-white/10">{s.label}</a></li>)}</ul>}
+          <p className="mt-1 text-sm text-white/70">Gestão de quadras e organização de partidas.</p>
+          <a href={`mailto:${CONTACT_EMAIL}`} className="mt-4 inline-block text-sm font-medium text-lime hover:underline">{CONTACT_EMAIL}</a>
+          {SOCIAL.length > 0 && <ul className="mt-5 flex flex-wrap gap-2">{SOCIAL.map((s) => <li key={s.label}><a href={s.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-9 items-center rounded-full border border-white/20 px-3 text-xs text-white/80 hover:bg-white/10">{s.label}</a></li>)}</ul>}
         </div>
-        <nav aria-label="Plataforma"><h3 className={col}>Plataforma</h3><ul className="space-y-2.5">
-          <li><a className={link} href={LINKS.buscarQuadras}>Encontrar Partidas</a></li><li><a className={link} href={LINKS.buscarQuadras}>Encontrar Quadras</a></li>
-          <li><a className={link} href="#para-organizadores">Organizar Jogos</a></li><li><a className={link} href="#para-quadras">Gestão de Quadras</a></li><li><a className={link} href={LINKS.entrar}>Entrar no sistema</a></li></ul></nav>
-        <nav aria-label="Empresa"><h3 className={col}>Empresa</h3><ul className="space-y-2.5">
-          <li><a className={link} href="#como-funciona">Sobre o Partidou</a></li><li><a className={link} href="#planos">Planos</a></li><li><a className={link} href="#contato">Contato</a></li><li><a className={link} href="#faq">Suporte e dúvidas</a></li></ul></nav>
-        <nav aria-label="Legal"><h3 className={col}>Legal</h3><ul className="space-y-2.5">
-          <li><a className={link} href={LINKS.privacidade}>Política de Privacidade</a></li><li><a className={link} href={LINKS.termos}>Termos de Uso</a></li><li><a className={link} href={LINKS.cookies}>Política de Cookies</a></li></ul></nav>
+        {groups.map((g) => (
+          <nav key={g.label} aria-label={g.label}>
+            <h2 className={title}>{g.label}</h2>
+            <ul className="space-y-3">{g.items.map(([t, h]) => <li key={t}><a className={link} href={h}>{t}</a></li>)}</ul>
+          </nav>
+        ))}
       </div>
-      <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/55 sm:flex-row sm:justify-between">
-        <p>© 2026 Partidou. Todos os direitos reservados.</p><p>partidou.com.br</p>
+      <div className="mx-auto mt-14 flex max-w-6xl flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:justify-between">
+        <p>© {new Date().getFullYear()} Partidou. Todos os direitos reservados.</p><p>partidou.com.br</p>
       </div>
     </footer>
   )

@@ -161,13 +161,9 @@
   --color-graphite: #19221D;
   --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
-@keyframes mk-float { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
-@keyframes mk-glow { 0%, 100% { opacity: .35 } 50% { opacity: .7 } }
-.mk-float { animation: mk-float 6s ease-in-out infinite }
-.mk-glow { animation: mk-glow 7s ease-in-out infinite }
-.mk-reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease-out, transform .6s ease-out }
-.mk-reveal.mk-in { opacity: 1; transform: none }
+/* Foco visível para navegação por teclado (WCAG 2.2: 2.4.7 / 2.4.11) */
+.mk :is(a, button, summary, input, select, textarea):focus-visible { outline: 2px solid #B9F344; outline-offset: 3px; border-radius: 0.75rem }
+.mk .on-light :is(a, button, summary):focus-visible { outline-color: #142C25 }
 @media (prefers-reduced-motion: reduce) {
-  .mk-float, .mk-glow { animation: none }
-  .mk-reveal { opacity: 1; transform: none; transition: none }
+  .mk *, .mk *::before, .mk *::after { transition-duration: 0.01ms !important; animation: none !important }
 }

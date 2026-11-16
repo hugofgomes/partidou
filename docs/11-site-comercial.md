@@ -1,4 +1,4 @@
-<!-- revisado: 1.2.0 -->
+<!-- revisado: 1.4.0 -->
 # Site comercial (partidou.com.br)
 
 ## O que é
@@ -23,8 +23,19 @@ O site só afirma o que existe. O que ainda está em desenvolvimento aparece com
 - **E-mails do formulário:** depois de gravar o contato, a API envia (1) um **aviso à equipe** (para `LEAD_NOTIFY_EMAIL`, ou `PLATFORM_ALERT_EMAIL`, ou o próprio remetente `SMTP_FROM`) com os dados e o botão do painel e (2) uma **confirmação** para quem preencheu, se informou e-mail (com resposta para o remetente). Só saem se o SMTP do servidor estiver configurado (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_FROM_NAME`; no Partidou, via Resend). Falha de e-mail nunca derruba o envio: o contato já está salvo. O conteúdo digitado pelo visitante é escapado nos e-mails. A confirmação vai para qualquer e-mail informado, por isso há limites por IP e por contato.
 - Ainda não existe: aviso por WhatsApp, captcha (se houver spam, avaliar Turnstile) e integração com CRM externo.
 
-## SEO e desempenho
-Título e descrição definidos, `canonical`, Open Graph e Twitter Cards (imagem `public/brand/og-partidou.png`, 1200×630), dados estruturados JSON-LD (Organization, WebSite, SoftwareApplication e FAQPage, com o mesmo texto da página), HTML semântico, FAQ com `<details>` (acessível e sem JavaScript), imagens do rodapé com carregamento tardio, animações discretas que respeitam "reduzir movimento" e conteúdo visível mesmo sem JavaScript.
+## Estrutura da página (1.4.0)
+Ordem comercial, uma seção por objetivo: **Hero** (título, subtítulo, "Encontrar um Jogo" → `/quadras` e "Sou Dono de Quadra" → formulário) → **Como funciona** (os três públicos) → **Para donos de quadras** (mockup do painel + 8 recursos; "Quero Gerenciar Minha Quadra") → **Agenda e reservas** → **Para organizadores** ("Organize menos. Jogue mais."; o que ainda não existe tem selo Em breve; botão leva à lista de espera) → **Para jogadores** ("Encontrar um Jogo" → `/quadras`) → **Principais funcionalidades** (+ modalidades) → **Planos** (no celular o Quadra Pro aparece primeiro) → Depoimentos (só com itens reais) → **FAQ** → **Chamada final com o formulário** (`#contato`) → Rodapé (logo, slogan, links, `contato@partidou.com.br`, redes, textos legais, ano automático).
+Menu: Início, Como Funciona, Para Quadras, Para Organizadores, Planos, Contato; botões Entrar e Começar Agora (lima). No celular, menu em gaveta (Esc fecha e devolve o foco).
+
+## Medição de conversão
+Botões importantes têm `data-track="nome"` e um único ouvinte (`src/components/site/analytics.tsx`) gera o evento `cta_click`; o envio do formulário gera `generate_lead`. **Nenhuma ferramenta de análise está instalada**: sem `window.dataLayer`, nada é enviado nem gravado. Ao instalar GA4/Tag Manager, carregá-lo só após o consentimento do visitante (LGPD) e ele passa a receber os eventos.
+
+## SEO, desempenho e acessibilidade
+Título "Partidou | Gestão de Quadras e Organização de Partidas" e descrição em `SEO` (site-config), `canonical`, Open Graph e Twitter Cards (imagem `public/brand/og-partidou.png`, 1200×630), JSON-LD (Organization, WebSite, SoftwareApplication e FAQPage), um único `h1`, `h2` por seção ligado por `aria-labelledby`, FAQ com `<details>` (sem JavaScript), página 404 própria (`src/app/not-found.tsx`, fora do índice). Palavras-chave usadas no texto de forma natural (sistema de gestão de quadras, agenda de quadras, software para quadras esportivas, organizar partidas esportivas, encontrar jogadores de futebol, futebol society).
+Desempenho: logo do topo e do rodapé em `partidou-logo-520.png` (19 KB; o original de 223 KB era quase metade da página), Sora só no peso 700, sem animações de entrada (o componente Reveal foi removido) e sem brilhos animados. Foco visível em todos os elementos clicáveis e respeito a "reduzir movimento".
+Cabeçalhos de segurança (em `next.config.ts`, valem para site e sistema): HSTS, `X-Content-Type-Options`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy`, `Permissions-Policy` e sem `X-Powered-By`. CSP ainda não (exige mapear Supabase e scripts do Next).
+
+**Medições (Lighthouse 13.6, 16/11/2026):** antes, em produção: Desempenho 100, Acessibilidade 91, Boas práticas 100, SEO 100; página com 500 KB. Depois, no build local: Desempenho 100, Acessibilidade 97→100 após ajuste de contraste, SEO 100; página com 273 KB (Boas práticas só cai no teste local por ser HTTP). Sem rolagem horizontal em 320, 375, 390, 768, 1024, 1440 e 1920 px.
 
 ## Implantação (uma vez)
 1. **DNS (Cloudflare):** registros `A` de `partidou.com.br` e de `www` apontando para o IP da VPS (como o `app`); comece com a nuvem cinza (DNS only) até o HTTPS ser emitido.

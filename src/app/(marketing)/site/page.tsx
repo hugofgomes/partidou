@@ -1,8 +1,9 @@
+import { CtaTracker } from "@/components/site/analytics"
 import { FaqSection } from "@/components/site/faq"
 import { SiteFooter } from "@/components/site/footer"
 import { SiteHeader } from "@/components/site/header"
 import { LeadForm } from "@/components/site/lead-form"
-import { FinalCta, FindPlayers, ForOrganizers, ForPlayers, Hero, HowItWorks, Management, OwnerBenefits, Plans, SmartAgenda, Sports, Testimonials } from "@/components/site/sections"
+import { Features, ForOrganizers, ForPlayers, Hero, HowItWorks, Management, Plans, SmartAgenda, Testimonials } from "@/components/site/sections"
 import { APP_URL, FAQ, SEO, SITE_URL } from "@/lib/site-config"
 import type { Metadata } from "next"
 
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   title: { absolute: SEO.title },
   description: SEO.description,
   alternates: { canonical: SITE_URL + "/" },
-  openGraph: { type: "website", url: SITE_URL + "/", siteName: "Partidou", locale: "pt_BR", title: SEO.title, description: SEO.description, images: [{ url: "/brand/og-partidou.png", width: 1200, height: 630, alt: "Partidou: o jogo começa aqui" }] },
+  openGraph: { type: "website", url: SITE_URL + "/", siteName: "Partidou", locale: "pt_BR", title: SEO.title, description: SEO.description, images: [{ url: "/brand/og-partidou.png", width: 1200, height: 630, alt: "Partidou: gestão de quadras e organização de partidas" }] },
   twitter: { card: "summary_large_image", title: SEO.title, description: SEO.description, images: ["/brand/og-partidou.png"] },
   robots: { index: true, follow: true },
 }
@@ -34,18 +35,16 @@ export default function SitePage() {
         <HowItWorks />
         <Management />
         <SmartAgenda />
-        <FindPlayers />
         <ForOrganizers />
         <ForPlayers />
-        <Sports />
+        <Features />
         <Plans />
-        <OwnerBenefits />
         <Testimonials />
         <FaqSection />
         <LeadForm />
-        <FinalCta />
       </main>
       <SiteFooter />
+      <CtaTracker />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </>
   )

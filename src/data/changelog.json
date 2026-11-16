@@ -2,6 +2,25 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.4.0",
+      "date": "2026-11-16",
+      "title": "Site partidou.com.br: visual mais limpo, mais leve e acessível",
+      "novidades": [
+        "Nova ordem das seções: Hero, Como funciona, Para donos de quadras, Agenda e reservas, Para organizadores, Para jogadores, Principais funcionalidades, Planos, Perguntas frequentes e chamada final com o formulário.",
+        "Página 404 própria, com a marca e caminhos de volta.",
+        "Eventos de conversão (cliques nos botões e envio do formulário) prontos para uma ferramenta de análise; nada é enviado enquanto nenhuma estiver instalada."
+      ],
+      "melhorias": [
+        "Cabeçalho com menu centralizado (Início, Como Funciona, Para Quadras, Para Organizadores, Planos, Contato) e botões Entrar e Começar Agora.",
+        "Textos mais curtos, sem seções repetidas; o que ainda não existe continua marcado como Em breve.",
+        "Página 45% mais leve (500 KB → 276 KB): logo otimizada (223 KB → 19 KB), uma única espessura da fonte Sora e sem animações de entrada.",
+        "Acessibilidade no Lighthouse de 91 para 100: contraste, listas corretas, foco visível no teclado e menu do celular que fecha com Esc.",
+        "No celular, o plano Quadra Pro aparece primeiro.",
+        "Cabeçalhos de segurança (HSTS, nosniff, X-Frame-Options, Referrer-Policy e Permissions-Policy) em todo o sistema."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.3.1",
       "date": "2026-11-16",
       "title": "Site: novo selo na home",
