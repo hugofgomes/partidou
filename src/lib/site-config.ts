@@ -49,7 +49,6 @@ export const TESTIMONIALS: { name: string; role: string; venue?: string; text: s
 export type Photo = { base: string; widths: number[]; w: number; h: number; alt: string; credit: string }
 export const PHOTOS = {
   hero: { base: "/site/hero-quadra-noite", widths: [828, 1280, 1920], w: 1920, h: 1188, alt: "Vista aérea de uma quadra de futebol society iluminada à noite, com jogadores em campo", credit: "Tahamie Farooqui / Unsplash" },
-  sistema: { base: "/site/sistema-financeiro", widths: [640, 1100, 1600], w: 1600, h: 396, alt: "Tela real do sistema Partidou: módulo Financeiro com contas a receber, valores em atraso, recebidos no período e lançamentos", credit: "Captura de tela do sistema Partidou" },
   quadra: { base: "/site/quadra-society", widths: [480, 800], w: 800, h: 528, alt: "Trave de futebol em quadra de grama sintética à noite", credit: "Arpit Sharma / Unsplash" },
   amigos: { base: "/site/amigos-jogando", widths: [480, 800], w: 800, h: 528, alt: "Grupo de amigos jogando futebol em uma quadra aberta", credit: "Attareza Naufal / Unsplash" },
   futsal: { base: "/site/futsal-lance", widths: [480, 800], w: 800, h: 528, alt: "Dois jogadores disputando a bola em uma quadra de futsal", credit: "Alfonso Scarpa / Unsplash" },

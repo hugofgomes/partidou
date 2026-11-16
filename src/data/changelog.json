@@ -2,6 +2,16 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.5.2",
+      "date": "2026-11-16",
+      "title": "Site: painel ilustrativo no topo",
+      "novidades": [],
+      "melhorias": [
+        "A captura do Financeiro (com valores zerados) foi trocada por uma ilustração do painel com o mesmo layout e menu do sistema e dados de exemplo (reservas do dia, ocupação, valores, próximas reservas), marcada como \"Exemplo ilustrativo\". Feita em HTML: nítida em qualquer tela e sem peso de imagem."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.5.1",
       "date": "2026-11-16",
       "title": "Site: tela real do sistema no topo",

@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils"
-import { CalendarDays, ChartColumn, Contact, LayoutDashboard, Search, Users, Wallet } from "lucide-react"
+/* eslint-disable @next/next/no-img-element -- logo pequena e já otimizada dentro da ilustração */
+import { CalendarDays, ChartColumn, ClipboardList, Contact, Hourglass, LayoutDashboard, Search, Users, Wallet } from "lucide-react"
 
 /** Mockups ilustrativos desenhados em HTML/CSS. Mostram a interface do Partidou; NÃO exibem números ou clientes reais. */
 const Tag = ({ className }: { className?: string }) => <span className={cn("rounded-full bg-black/75 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur", className)}>Exemplo ilustrativo</span>
@@ -104,6 +105,61 @@ export function AgendaMockup({ className }: { className?: string }) {
         <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-graphite/70">
           {(Object.keys(KINDS) as K[]).map((k) => <li key={k} className="flex items-center gap-1.5"><span className={cn("size-3 rounded-sm border", KINDS[k].cls)} />{KINDS[k].label}</li>)}
         </ul>
+      </div>
+    </figure>
+  )
+}
+
+/** Painel do sistema para o topo do site: mesmo layout e menu das telas reais (/quadra), com DADOS DE EXEMPLO
+ *  (marcado "Exemplo ilustrativo"; não são números de clientes). Em HTML: nítido em qualquer tela e quase sem peso. */
+const MENU = [
+  { i: LayoutDashboard, t: "Dashboard", on: true }, { i: CalendarDays, t: "Agenda de Quadras" }, { i: ClipboardList, t: "Reservas" },
+  { i: Hourglass, t: "Lista de Espera" }, { i: Contact, t: "Clientes" }, { i: Users, t: "Funcionários" }, { i: Wallet, t: "Financeiro" }, { i: ChartColumn, t: "Relatórios" },
+]
+const KPIS = [{ k: "Reservas hoje", v: "18", s: "6 mensalistas" }, { k: "Ocupação", v: "82%", s: "+9% que a anterior" }, { k: "A receber", v: "R$ 3.240", s: "12 lançamentos" }, { k: "Recebido no mês", v: "R$ 14.860", s: "em dia", ok: true }]
+const WEEK = [["Seg", 58], ["Ter", 66], ["Qua", 74], ["Qui", 81], ["Sex", 92], ["Sáb", 100], ["Dom", 70]] as const
+const NEXT = [
+  { h: "19:00", q: "Quadra 1 · Society", t: "Mensalista", c: "bg-green-500" }, { h: "19:00", q: "Quadra 2 · Futsal", t: "Avulsa", c: "bg-orange-400" },
+  { h: "20:00", q: "Quadra 3 · Beach", t: "Com professor", c: "bg-purple-500" }, { h: "21:00", q: "Quadra 1 · Society", t: "Avulsa", c: "bg-orange-400" },
+]
+export function HeroAppMockup({ className }: { className?: string }) {
+  return (
+    <figure className={cn("overflow-hidden rounded-xl border border-white/15 bg-[#f6f8f4] text-graphite shadow-[0_40px_90px_-20px_rgba(0,0,0,0.7)] lg:rounded-2xl", className)}>
+      <figcaption className="sr-only">Ilustração do painel do Partidou com dados de exemplo: reservas do dia, ocupação da semana, valores a receber e próximas reservas por quadra.</figcaption>
+      <div aria-hidden>
+        <div className="flex items-center gap-1.5 border-b border-black/5 bg-white px-3 py-2">
+          <span className="size-2.5 rounded-full bg-[#ff5f57]" /><span className="size-2.5 rounded-full bg-[#febc2e]" /><span className="size-2.5 rounded-full bg-[#28c840]" />
+          <span className="ml-3 hidden truncate rounded-md bg-black/[0.04] px-3 py-0.5 text-[11px] text-graphite/75 sm:block">app.partidou.com.br/quadra</span>
+          <Tag className="ml-auto" />
+        </div>
+        <div className="flex">
+          <div className="hidden w-44 shrink-0 bg-forest px-2.5 py-3 sm:block">
+            <img src="/brand/partidou-logo-520.png" alt="" width={520} height={120} className="mb-4 ml-1 h-6 w-auto" />
+            <ul className="space-y-0.5">
+              {MENU.map((m) => <li key={m.t} className={cn("flex items-center gap-2 rounded-lg px-2 py-1.5 text-[11px]", m.on ? "bg-lime font-semibold text-forest" : "text-white/80")}><m.i className="size-3.5 shrink-0" />{m.t}</li>)}
+            </ul>
+          </div>
+          <div className="min-w-0 flex-1 space-y-3 p-3 sm:p-4">
+            <div className="flex items-center justify-between"><p className="text-sm font-bold text-forest">Dashboard</p><span className="rounded-full bg-forest px-2.5 py-1 text-[10px] font-semibold text-lime">+ Nova reserva</span></div>
+            <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+              {KPIS.map((k) => <div key={k.k} className="rounded-xl border border-black/5 bg-white p-2.5"><p className="truncate text-[10px] text-graphite/75">{k.k}</p><p className={cn("mt-1 text-base font-bold leading-none", k.ok ? "text-green-700" : "text-forest")}>{k.v}</p><p className="mt-1 truncate text-[9px] text-graphite/70">{k.s}</p></div>)}
+            </div>
+            <div className="grid gap-2 lg:grid-cols-[1.2fr_1fr]">
+              <div className="rounded-xl border border-black/5 bg-white p-3">
+                <p className="text-[10px] font-semibold text-graphite/80">Ocupação da semana</p>
+                <div className="mt-2 flex h-24 items-end gap-1.5">
+                  {WEEK.map(([d, v]) => <div key={d} className="flex h-full flex-1 flex-col justify-end gap-1"><span className={cn("rounded-t", d === "Sáb" ? "bg-lime" : "bg-forest/85")} style={{ height: `${v}%` }} /><span className="text-center text-[9px] text-graphite/70">{d}</span></div>)}
+                </div>
+              </div>
+              <div className="rounded-xl border border-black/5 bg-white p-3">
+                <p className="text-[10px] font-semibold text-graphite/80">Próximas reservas</p>
+                <ul className="mt-2 space-y-1.5">
+                  {NEXT.map((n, i) => <li key={i} className="flex items-center gap-2 text-[10px]"><span className="w-8 shrink-0 font-semibold text-forest">{n.h}</span><span className={cn("size-2 shrink-0 rounded-full", n.c)} /><span className="min-w-0 flex-1 truncate">{n.q}</span><span className="hidden shrink-0 text-graphite/70 sm:inline">{n.t}</span></li>)}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </figure>
   )

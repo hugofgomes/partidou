@@ -3,7 +3,7 @@ import { LINKS, PHOTOS, PLANS, SPORTS, TESTIMONIALS, type Plan } from "@/lib/sit
 import { cn } from "@/lib/utils"
 import { ArrowRight, CalendarRange, ChartColumn, Check, Clock, Contact, Globe2, Hourglass, KeyRound, LayoutGrid, Link2, Lock, MapPin, Repeat, Search, ShieldCheck, Smartphone, Sparkles, Trophy, UserCheck, Users, Wallet, Wrench } from "lucide-react"
 import { LeadLink } from "./lead-link"
-import { AgendaMockup, DashboardMockup } from "./mockups"
+import { AgendaMockup, DashboardMockup, HeroAppMockup } from "./mockups"
 import { Photo } from "./photo"
 
 /* ───────── Peças reutilizáveis: botões, títulos de seção e selo "Em breve" ───────── */
@@ -49,7 +49,7 @@ function FeatureList({ items, dark, cols = 2 }: { items: { i: React.ElementType;
   )
 }
 
-/* ───────── 1. Hero: foto real em tela cheia, título grande e a tela real do sistema em primeiro plano ───────── */
+/* ───────── 1. Hero: foto real em tela cheia, título grande e o painel do sistema (ilustração com dados de exemplo) em primeiro plano ───────── */
 export function Hero() {
   return (
     <section id="inicio" aria-labelledby="hero-titulo" className="relative isolate flex min-h-[100svh] items-center overflow-hidden bg-forest px-4 pb-16 pt-28 text-white sm:px-6 lg:min-h-[52rem] lg:pb-24 lg:pt-32">
@@ -68,13 +68,7 @@ export function Hero() {
           </div>
           <p className="mt-10 text-sm text-white/75">Futebol society · Futsal · Vôlei · Beach tennis · Basquete · Tênis</p>
         </div>
-        <figure className="relative">
-          <div className="overflow-hidden rounded-xl border border-white/15 bg-[#f6f8f4] shadow-[0_40px_90px_-20px_rgba(0,0,0,0.7)] lg:rounded-2xl">
-            <div aria-hidden className="flex items-center gap-1.5 border-b border-black/5 bg-white px-3 py-2"><span className="size-2.5 rounded-full bg-[#ff5f57]" /><span className="size-2.5 rounded-full bg-[#febc2e]" /><span className="size-2.5 rounded-full bg-[#28c840]" /><span className="ml-3 truncate rounded-md bg-black/[0.04] px-3 py-0.5 text-[11px] text-graphite/70">app.partidou.com.br/quadra/financeiro</span></div>
-            <Photo photo={PHOTOS.sistema} priority sizes="(min-width: 1024px) 60vw, 100vw" className="block h-auto w-full" />
-          </div>
-          <figcaption className="mt-3 text-center text-xs text-white/70 lg:text-left">Tela real do sistema: módulo Financeiro.</figcaption>
-        </figure>
+        <HeroAppMockup className="w-full" />
       </div>
     </section>
   )
