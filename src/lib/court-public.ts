@@ -15,3 +15,13 @@ export const FLOOR_LABEL: Record<string, string> = { grama_sintetica: "Grama sin
 export const addressLine = (v: PubVenue["venue"]) => [[v.street, v.number].filter(Boolean).join(", "), v.complement, v.district, [v.city, v.state].filter(Boolean).join("/")].filter(Boolean).join(" · ")
 export const onlyDigits = (s: string) => s.replace(/\D/g, "")
 export const waNumber = (v: string | null) => { const d = onlyDigits(v ?? ""); return d ? (d.length <= 11 ? "55" + d : d) : "" }
+
+/** Rótulos de modalidade utilizáveis no servidor (mesma lista de SPORTS em hooks/use-court-role). */
+export const SPORT_LABEL: Record<string, string> = { futebol_society: "Futebol society", futsal: "Futsal", futebol_campo: "Futebol de campo", volei: "Vôlei", volei_praia: "Vôlei de praia", beach_tennis: "Beach tennis", basquete: "Basquete", tenis: "Tênis", padel: "Padel", outra: "Outra modalidade" }
+export const sportName = (v: string) => SPORT_LABEL[v] ?? v
+
+/** Horário de funcionamento do centro num dia da semana (união das faixas de todas as quadras). */
+export function venueHoursOn(hours: PubVenue["hours"], weekday: number) {
+  const hs = hours.filter((h) => h.weekday === weekday)
+  return hs.length ? { opens: Math.min(...hs.map((h) => h.opens_min)), closes: Math.max(...hs.map((h) => h.closes_min)) } : null
+}

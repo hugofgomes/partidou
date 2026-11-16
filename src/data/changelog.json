@@ -2,6 +2,25 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.6.0",
+      "date": "2026-11-16",
+      "title": "Nova página pública do centro esportivo (reservas)",
+      "novidades": [
+        "Cabeçalho com nome, endereço, horário de hoje e botões Como chegar (Google Maps), WhatsApp, Enviar para a galera e Instagram.",
+        "Cards das quadras com foto 16:9 (ou imagem substituta), características, preço por hora e botão \"Ver horários disponíveis\".",
+        "Agenda visual: dias com indicador de vagas, \"Outra data\" com calendário, duração em botões e horários por período (livres, selecionado e ocupados desabilitados).",
+        "Resumo da reserva fixo na lateral (computador) e barra inferior com Confirmar (celular).",
+        "Prévia própria de cada centro ao compartilhar no WhatsApp, dados estruturados para o Google e página 404 para centro inexistente."
+      ],
+      "melhorias": [
+        "Antes de confirmar, a disponibilidade é conferida de novo; se o horário acabou de ser reservado, o jogador é avisado e a agenda é atualizada.",
+        "Página chega pronta do servidor (mais rápida); Lighthouse 100 em desempenho, acessibilidade, boas práticas e SEO."
+      ],
+      "correcoes": [
+        "O nome do centro não aparecia no cabeçalho da página pública."
+      ]
+    },
+    {
       "version": "1.5.4",
       "date": "2026-11-16",
       "title": "E-mails do formulário do site com o visual do Partidou",
