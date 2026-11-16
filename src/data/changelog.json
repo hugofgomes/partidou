@@ -2,6 +2,20 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.5.0",
+      "date": "2026-11-16",
+      "title": "Site: fotos reais, topo com mais impacto e planos reorganizados",
+      "novidades": [
+        "Fotos reais de quadras e pessoas jogando (licença Unsplash, uso comercial livre): fundo do topo, cards de Como funciona e faixa de modalidades."
+      ],
+      "melhorias": [
+        "Topo em tela cheia: foto aérea de uma quadra society iluminada à noite, título maior, botões maiores e o app em primeiro plano.",
+        "Planos reorganizados: primeiro os dois planos para centros esportivos lado a lado (Quadra Pro em destaque; Arena Business como \"Tudo do Quadra Pro, mais\"), depois Jogador e Organizador Pro em uma faixa compacta \"em breve\".",
+        "Fotos em WebP com vários tamanhos (o celular baixa a versão menor) e carregamento sob demanda abaixo da primeira dobra; Lighthouse continua 100 em desempenho e acessibilidade."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.4.1",
       "date": "2026-11-16",
       "title": "Site: Instagram oficial no rodapé",

@@ -1,4 +1,4 @@
-<!-- revisado: 1.4.0 -->
+<!-- revisado: 1.5.0 -->
 # Site comercial (partidou.com.br)
 
 ## O que é
@@ -26,6 +26,11 @@ O site só afirma o que existe. O que ainda está em desenvolvimento aparece com
 ## Estrutura da página (1.4.0)
 Ordem comercial, uma seção por objetivo: **Hero** (título, subtítulo, "Encontrar um Jogo" → `/quadras` e "Sou Dono de Quadra" → formulário) → **Como funciona** (os três públicos) → **Para donos de quadras** (mockup do painel + 8 recursos; "Quero Gerenciar Minha Quadra") → **Agenda e reservas** → **Para organizadores** ("Organize menos. Jogue mais."; o que ainda não existe tem selo Em breve; botão leva à lista de espera) → **Para jogadores** ("Encontrar um Jogo" → `/quadras`) → **Principais funcionalidades** (+ modalidades) → **Planos** (no celular o Quadra Pro aparece primeiro) → Depoimentos (só com itens reais) → **FAQ** → **Chamada final com o formulário** (`#contato`) → Rodapé (logo, slogan, links, `contato@partidou.com.br`, redes, textos legais, ano automático).
 Menu: Início, Como Funciona, Para Quadras, Para Organizadores, Planos, Contato; botões Entrar e Começar Agora (lima). No celular, menu em gaveta (Esc fecha e devolve o foco).
+
+## Fotos (1.5.0)
+Fotos reais em `public/site/` (WebP, larguras 480/800; o fundo do topo em 828/1280/1920), declaradas em `PHOTOS` (site-config) com texto alternativo e crédito, e exibidas pelo componente `photo.tsx` (`srcset`/`sizes`; o topo carrega com prioridade, as demais sob demanda). Origem: **Unsplash** (licença permite uso comercial sem crédito obrigatório). Créditos: topo — Tahamie Farooqui; quadra society — Arpit Sharma; amigos jogando — Attareza Naufal; futsal (lance e bola) — Alfonso Scarpa; vôlei de praia — Andrew Lvov; campo à noite — Abigail Keenan.
+**Trocar por fotos próprias** (recomendado, ex.: centros clientes com autorização de imagem): gerar com o mesmo nome e larguras (`npx sharp`/script em `node -e` com `sharp`, WebP qualidade 60–70) e ajustar `alt`/`credit` em `PHOTOS`.
+Topo: foto em tela cheia com película verde da marca (garante contraste do texto), app no celular em primeiro plano (só no computador). Planos: dois planos de centros esportivos lado a lado (Arena Business mostra só o que acrescenta ao Quadra Pro) e faixa compacta "em breve" com Jogador e Organizador Pro.
 
 ## Medição de conversão
 Botões importantes têm `data-track="nome"` e um único ouvinte (`src/components/site/analytics.tsx`) gera o evento `cta_click`; o envio do formulário gera `generate_lead`. **Nenhuma ferramenta de análise está instalada**: sem `window.dataLayer`, nada é enviado nem gravado. Ao instalar GA4/Tag Manager, carregá-lo só após o consentimento do visitante (LGPD) e ele passa a receber os eventos.

@@ -44,7 +44,20 @@ export const SOCIAL: { label: string; href: string }[] = [
 /** Depoimentos reais e autorizados. Enquanto a lista estiver vazia, a seção NÃO é publicada. */
 export const TESTIMONIALS: { name: string; role: string; venue?: string; text: string; photo?: string }[] = []
 
-export const SPORTS = ["Futebol Society", "Futsal", "Futebol de Campo", "Vôlei", "Beach Tennis", "Basquete", "Tênis", "E outras"]
+/** Fotos do site (public/site, WebP em vários tamanhos). Licença Unsplash: uso comercial livre, sem obrigação de crédito; os créditos ficam aqui.
+ *  Para trocar por fotos próprias, gere os mesmos nomes e larguras (ver docs/11-site-comercial.md). */
+export type Photo = { base: string; widths: number[]; w: number; h: number; alt: string; credit: string }
+export const PHOTOS = {
+  hero: { base: "/site/hero-quadra-noite", widths: [828, 1280, 1920], w: 1920, h: 1188, alt: "Vista aérea de uma quadra de futebol society iluminada à noite, com jogadores em campo", credit: "Tahamie Farooqui / Unsplash" },
+  quadra: { base: "/site/quadra-society", widths: [480, 800], w: 800, h: 528, alt: "Trave de futebol em quadra de grama sintética à noite", credit: "Arpit Sharma / Unsplash" },
+  amigos: { base: "/site/amigos-jogando", widths: [480, 800], w: 800, h: 528, alt: "Grupo de amigos jogando futebol em uma quadra aberta", credit: "Attareza Naufal / Unsplash" },
+  futsal: { base: "/site/futsal-lance", widths: [480, 800], w: 800, h: 528, alt: "Dois jogadores disputando a bola em uma quadra de futsal", credit: "Alfonso Scarpa / Unsplash" },
+  volei: { base: "/site/volei-praia", widths: [480, 800], w: 800, h: 528, alt: "Jogador sacando em uma quadra de vôlei de praia", credit: "Andrew Lvov / Unsplash" },
+  bola: { base: "/site/futsal-bola", widths: [480, 800], w: 800, h: 528, alt: "Jogador com o pé sobre a bola em um ginásio de futsal", credit: "Alfonso Scarpa / Unsplash" },
+  campo: { base: "/site/campo-noite", widths: [480, 800], w: 800, h: 528, alt: "Partida de futebol em campo iluminado por refletor à noite", credit: "Abigail Keenan / Unsplash" },
+} satisfies Record<string, Photo>
+
+export const SPORTS =["Futebol Society", "Futsal", "Futebol de Campo", "Vôlei", "Beach Tennis", "Basquete", "Tênis", "E outras"]
 
 export type Plan = { id: "jogador" | "organizador_pro" | "quadra_pro" | "arena_business"; name: string; tagline: string; price: string; period: string; items: string[]; cta: string; highlight?: boolean; soon?: boolean; audience: "quadra" | "organizador" | "jogador" }
 /** Valores de lançamento (sujeitos a confirmação). Cobrança e contratação online ainda não existem: o botão leva ao formulário de contato. */
