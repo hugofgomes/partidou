@@ -29,7 +29,7 @@ VPS com **Coolify** (Docker). A aplicação do Partidou tem projeto, domínio (`
 `app.partidou.com.br` (sistema) e `partidou.com.br` + `www` (site comercial) são domínios da mesma aplicação no Coolify; o middleware escolhe o conteúdo pelo endereço (ver capítulo do site comercial).
 
 ## Segurança operacional
-Credenciais só em `.env.deploy` local ou no Coolify; ao terminar, esvaziar `COOLIFY_TOKEN` e `DATABASE_URL`, revogar o token no Coolify e trocar a senha do banco. Guardar cópia segura dos backups.
+Credenciais só em `.env.deploy` local (chmod 600, fora do Git) ou no Coolify. Por decisão do dono (16/11/2026), `DATABASE_URL` e `COOLIFY_TOKEN` ficam salvos no `.env.deploy` para que migrations e deploys sejam feitos automaticamente pelo assistente; o deploy usa `POST /api/v1/deploy` da API do Coolify. Se uma credencial vazar, trocar a senha do banco / revogar o token e atualizar o arquivo. `SUPABASE_ACCESS_TOKEN` continua sendo apagado após o uso. Guardar cópia segura dos backups.
 
 ## Problemas conhecidos
 - **VPS sem memória:** o build pesa; mantenha swap ativo (6 GB hoje) e evite deploys simultâneos. Idealmente, build fora da VPS ou mais RAM.
