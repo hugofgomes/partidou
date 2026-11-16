@@ -53,7 +53,7 @@
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Chave pública do Supabase (navegador)",
     "NEXT_PUBLIC_SUPABASE_URL": "Endereço do projeto Supabase",
     "PLATFORM_ALERT_EMAIL": "E-mail que recebe o resumo diário dos avisos enviados",
-    "PLATFORM_ORG_SLUG": "Endereço do grupo dono do servidor (usa as credenciais globais de Pix, WhatsApp e e-mail); padrão geab",
+    "PLATFORM_ORG_SLUG": "Identificador da organização dona da plataforma (a do administrador principal); padrão partidou",
     "SMTP_FROM": "Remetente dos e-mails do aplicativo",
     "SMTP_FROM_NAME": "Nome exibido como remetente dos avisos (padrão Gestão de Futebol)",
     "SMTP_HOST": "Servidor SMTP (Resend)",

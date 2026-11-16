@@ -13,8 +13,8 @@ const files = fs.readdirSync(migDir).filter((f) => f.endsWith(".sql")).sort()
 fs.rmSync(path.join(here, ".pgdata-tests"), { recursive: true, force: true })
 const server = new EmbeddedPostgres({ databaseDir: path.join(here, ".pgdata-tests"), user: "postgres", password: "test", port: 54331, persistent: false, onLog: () => {}, onError: () => {} })
 process.on("uncaughtException", async (e) => { console.error(e); try { await server.stop() } catch {} process.exit(1) })
-await server.initialise(); await server.start(); await server.createDatabase("geab_test")
-const db = new pg.Client({ connectionString: "postgresql://postgres:test@localhost:54331/geab_test" }); await db.connect()
+await server.initialise(); await server.start(); await server.createDatabase("partidou_test")
+const db = new pg.Client({ connectionString: "postgresql://postgres:test@localhost:54331/partidou_test" }); await db.connect()
 
 let pass = 0, fail = 0
 const ok = (name, cond, detail = "") => { if (cond) { pass++; console.log("  ✓", name) } else { fail++; console.log("  ✗", name, detail) } }
@@ -939,7 +939,7 @@ section("Quadra Esportiva: agenda e reservas (0036)")
   await q(`delete from public.support_sessions`)
 
   // simultaneidade: duas pessoas tentam o mesmo horário ao mesmo tempo
-  const c2 = new pg.Client({ connectionString: "postgresql://postgres:test@localhost:54331/geab_test" }); await c2.connect()
+  const c2 = new pg.Client({ connectionString: "postgresql://postgres:test@localhost:54331/partidou_test" }); await c2.connect()
   const slot = [R.c1, "avulsa", "Concorrente", null, null, T("07-27", 15), T("07-27", 16)]
   const call = `select public.court_booking_create($1,$2,$3,$4,$5,$6,$7)`
   await c2.query("begin"); await c2.query("set local role authenticated"); await c2.query("select set_config('request.jwt.claim.sub', $1, true)", [R.rr])
@@ -1103,7 +1103,7 @@ section("Quadra Esportiva: financeiro (0038)")
   }, true)
   // concorrência: duas baixas ao mesmo tempo no mesmo saldo
   const rc = await as(F.a1, async () => (await db.query(`select public.court_receivable_create(null,null,'Fulano Conc','Concorrência','2030-01-10',10000)`)).rows[0].court_receivable_create, true)
-  const c2 = new pg.Client({ connectionString: "postgresql://postgres:test@localhost:54331/geab_test" }); await c2.connect()
+  const c2 = new pg.Client({ connectionString: "postgresql://postgres:test@localhost:54331/partidou_test" }); await c2.connect()
   await c2.query("begin"); await c2.query("set local role authenticated"); await c2.query("select set_config('request.jwt.claim.sub', $1, true)", [F.a1])
   await c2.query(`select public.court_payment_register($1, 7000, 'pix')`, [rc.id])
   await db.query("begin"); await db.query("set local role authenticated"); await db.query("select set_config('request.jwt.claim.sub', $1, true)", [F.f1])

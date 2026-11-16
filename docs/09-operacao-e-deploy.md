@@ -20,7 +20,7 @@ VPS com **Coolify** (Docker). A aplicação do Partidou tem projeto, domínio (`
 | `node --env-file=.env.deploy scripts/migrate.mjs` | Aplica migrations pendentes (`--status` lista; `--fresh` só em banco novo e vazio; `--baseline NNNN` marca como aplicadas) |
 | `node --env-file=.env.deploy scripts/backup-supabase.mjs` | Backup completo em `backups/` (fora do Git; contém dados pessoais) |
 
-`.env.deploy` (ignorado pelo Git): `DATABASE_URL` (Supabase → Connect → Session pooler), `COOLIFY_URL`, `COOLIFY_TOKEN`, `COOLIFY_APP_UUID`. Use `node --env-file=`.
+`.env.deploy` (na raiz deste projeto, ignorado pelo Git): `DATABASE_URL` (Supabase → Connect → Session pooler), `COOLIFY_URL`, `COOLIFY_TOKEN`, `COOLIFY_APP_UUID`. Use `node --env-file=`.
 
 ## Testes
 `node supabase/tests/run-tests.mjs` sobe um PostgreSQL embutido, aplica todas as migrations em ordem e executa centenas de verificações (isolamento entre centros, conflito de reservas, financeiro, permissões, página pública, partidas). Deve passar 100% antes de publicar (`npm i --no-save embedded-postgres pg`).
