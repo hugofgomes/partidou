@@ -2,6 +2,19 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.5.4",
+      "date": "2026-11-16",
+      "title": "E-mails do formulário do site com o visual do Partidou",
+      "novidades": [
+        "A confirmação para quem preenche o formulário ganhou um botão: \"Conhecer o Partidou\" (donos de quadra) ou \"Encontrar um Jogo\" (jogadores e organizadores).",
+        "O aviso para a equipe ganhou atalhos \"Responder no WhatsApp\" e \"Responder por e-mail\"."
+      ],
+      "melhorias": [
+        "Os dois e-mails do formulário (confirmação e aviso à equipe) usam o mesmo modelo dos e-mails de senha: cabeçalho verde com a logo, faixa lima, cartão branco, botão lima e rodapé com site e Instagram. Feitos em tabelas, para aparecer igual no Gmail, Outlook e Apple Mail."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.5.3",
       "date": "2026-11-16",
       "title": "Aviso de contato novo do site dentro do sistema",
