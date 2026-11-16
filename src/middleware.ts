@@ -41,7 +41,7 @@ export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname
   const { data: { user } } = await sb.auth.getUser()
   // A confirmação de e-mail abre em qualquer navegador, logado ou não.
-  if (path === "/auth/confirmar") return res
+  if (path === "/auth/confirmar" || path === "/auth/continuar") return res
   // Recuperação de senha: pedir o link (sem login) e definir a nova senha (com a sessão criada pelo link).
   if (path === "/recuperar" || path === "/redefinir-senha") return res
   // Páginas públicas: busca de quadras, página do centro, gestão da partida pelo organizador (código secreto no link) e textos legais.

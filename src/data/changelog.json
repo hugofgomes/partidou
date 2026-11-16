@@ -2,6 +2,19 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.1.1",
+      "date": "2026-11-16",
+      "title": "Link de e-mail à prova de verificadores e comunicados com a marca Partidou",
+      "novidades": [
+        "Links de convite, recuperação de senha e confirmação de e-mail agora abrem uma tela com o botão “Continuar”; o token só é usado no clique. Isso evita o erro de link expirado causado por verificadores de segurança de e-mail (como o do Gmail), que abriam o link antes da pessoa."
+      ],
+      "melhorias": [
+        "E-mail de comunicados do Painel do SaaS com a marca, as cores e o texto do Partidou (remetente padrão Partidou, texto de rodapé para administradores de centros esportivos).",
+        "Textos do Painel do SaaS de comunicados falam em centros esportivos, não em grupos."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.1.0",
       "date": "2026-11-15",
       "title": "Site comercial do Partidou (partidou.com.br)",

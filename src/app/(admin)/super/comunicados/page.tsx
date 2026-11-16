@@ -123,7 +123,7 @@ export default function ComunicadosPage() {
     <>
       <div>
         <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight"><Megaphone className="size-6" aria-hidden /> Comunicados</h1>
-        <p className="text-sm text-muted-foreground">Envie novidades e avisos aos administradores dos grupos clientes, por e-mail e/ou como aviso no painel deles.</p>
+        <p className="text-sm text-muted-foreground">Envie novidades e avisos aos administradores dos centros esportivos clientes, por e-mail e/ou como aviso no painel deles.</p>
       </div>
 
       {progress && (
@@ -163,7 +163,7 @@ export default function ComunicadosPage() {
 
         <fieldset className="space-y-1">
           <legend className="text-sm font-medium">Canais</legend>
-          <label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" className="size-5" checked={email} onChange={(e) => setEmail(e.target.checked)} /> E-mail para os administradores e o responsável de cada grupo</label>
+          <label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" className="size-5" checked={email} onChange={(e) => setEmail(e.target.checked)} /> E-mail para os administradores e o responsável de cada centro</label>
           <label className="flex min-h-11 items-center gap-2 text-sm"><input type="checkbox" className="size-5" checked={inApp} onChange={(e) => setInApp(e.target.checked)} /> Aviso dentro do painel (administrador e diretoria)
             {inApp && <span className="ml-1 flex items-center gap-1 text-xs text-muted-foreground">por <Input aria-label="Dias de exibição" className="h-9 w-16" inputMode="numeric" value={days} onChange={(e) => setDays(e.target.value)} /> dias</span>}</label>
         </fieldset>
@@ -176,7 +176,7 @@ export default function ComunicadosPage() {
         </div>
 
         <p className="rounded-lg bg-secondary/60 px-3 py-2 text-sm">
-          {preview ? <>Vai para <b>{preview.orgs}</b> grupo(s){email ? <> e <b>{preview.emails}</b> e-mail(s)</> : null}. Clientes excluídos e quem pediu para não receber ficam de fora.</> : "Escolha a situação para ver quantos clientes recebem."}
+          {preview ? <>Vai para <b>{preview.orgs}</b> centro(s){email ? <> e <b>{preview.emails}</b> e-mail(s)</> : null}. Clientes excluídos e quem pediu para não receber ficam de fora.</> : "Escolha a situação para ver quantos clientes recebem."}
         </p>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" className="h-11 w-full sm:h-9 sm:w-auto" disabled={!email || uploading || subject.trim().length < 3 || body.trim().length < 3} onClick={test}>Enviar teste para mim</Button>
@@ -192,7 +192,7 @@ export default function ComunicadosPage() {
             <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
               <div className="min-w-0">
                 <button type="button" onClick={() => open(r.id)} className="block min-h-8 text-left font-medium text-primary hover:underline">{r.subject}</button>
-                <p className="text-xs text-muted-foreground">{dtm(r.created_at)} · {r.orgs_count} grupo(s){r.send_email ? ` · ${r.sent_count}/${r.emails_count} e-mails${r.failed_count ? `, ${r.failed_count} com falha` : ""}` : ""}{r.show_in_app ? " · aviso no painel" : ""}</p>
+                <p className="text-xs text-muted-foreground">{dtm(r.created_at)} · {r.orgs_count} centro(s){r.send_email ? ` · ${r.sent_count}/${r.emails_count} e-mails${r.failed_count ? `, ${r.failed_count} com falha` : ""}` : ""}{r.show_in_app ? " · aviso no painel" : ""}</p>
               </div>
               {r.status === "enviando"
                 ? <Button size="sm" variant="outline" className="h-10 sm:h-8" disabled={!!progress} onClick={() => deliver(r.id, r.emails_count - r.sent_count - r.failed_count)}>Continuar envio</Button>
@@ -206,7 +206,7 @@ export default function ComunicadosPage() {
         <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>Enviar comunicado?</DialogTitle><DialogDescription>Esta ação não pode ser desfeita.</DialogDescription></DialogHeader>
           <div className="space-y-1 text-sm"><p className="font-medium">{subject}</p>
-            <p>{preview?.orgs} grupo(s){email ? `, ${preview?.emails} e-mail(s)` : ""}{inApp ? ` · aviso no painel por ${days} dia(s)` : ""}{image ? " · com imagem" : ""}.</p></div>
+            <p>{preview?.orgs} centro(s){email ? `, ${preview?.emails} e-mail(s)` : ""}{inApp ? ` · aviso no painel por ${days} dia(s)` : ""}{image ? " · com imagem" : ""}.</p></div>
           <DialogFooter><Button variant="outline" onClick={() => setConfirm(false)}>Cancelar</Button><Button variant="brand" disabled={busy} onClick={send}>{busy && <Loader2 className="animate-spin" />} Enviar agora</Button></DialogFooter>
         </DialogContent>
       </Dialog>

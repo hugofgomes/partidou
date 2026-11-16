@@ -1,6 +1,6 @@
 {
- "version": "1.1.0",
- "versionDate": "2026-11-15",
+ "version": "1.1.1",
+ "versionDate": "2026-11-16",
  "stack": {
   "next": "15.5.29",
   "react": "19.1.0",
@@ -46,8 +46,8 @@
   {
    "id": "autenticacao",
    "title": "Autenticação e acesso",
-   "revisado": "1.0.0",
-   "markdown": "# Autenticação e acesso\n\nA autenticação é do Supabase Auth (e-mail e senha). **Não há cadastro público de centros**: o dono da plataforma cria o centro e vincula o administrador (Painel do SaaS ou script de implantação). Os funcionários são convidados pelo administrador.\n\n- **Login** (`/login`): e-mail e senha. Conta sem perfil ativo ou bloqueada vai para `/sem-acesso`.\n- **Convite de funcionário** (`POST /api/quadra/funcionarios`): só o administrador; cria a conta pelo e-mail de convite (a pessoa cria a senha) e o perfil em `court_staff`. Bloquear desativa o acesso na hora; reenvio de acesso por `PUT`.\n- **Recuperação de senha**: `/recuperar` envia o link e `/redefinir-senha` define a nova senha. O link abre `/auth/confirmar`.\n- **URLs permitidas** (Supabase → Authentication → URL Configuration): `https://app.partidou.com.br/**`.\n- **Atenção:** o link de e-mail é de uso único; alguns provedores (como o Gmail) abrem o link para verificar segurança e o consomem antes do usuário. Se aparecer `otp_expired`, peça um novo link ou defina a senha pelo painel do Supabase.\n- **E-mails** do Auth saem pelo SMTP padrão do Supabase (limite baixo): configurar SMTP próprio antes de operar com muitos convites."
+   "revisado": "1.1.1",
+   "markdown": "# Autenticação e acesso\n\nA autenticação é do Supabase Auth (e-mail e senha). **Não há cadastro público de centros**: o dono da plataforma cria o centro e vincula o administrador (Painel do SaaS ou script de implantação). Os funcionários são convidados pelo administrador.\n\n- **Login** (`/login`): e-mail e senha. Conta sem perfil ativo ou bloqueada vai para `/sem-acesso`.\n- **Convite de funcionário** (`POST /api/quadra/funcionarios`): só o administrador; cria a conta pelo e-mail de convite (a pessoa cria a senha) e o perfil em `court_staff`. Bloquear desativa o acesso na hora; reenvio de acesso por `PUT`.\n- **Recuperação de senha**: `/recuperar` envia o link e `/redefinir-senha` define a nova senha. O link abre `/auth/confirmar`.\n- **URLs permitidas** (Supabase → Authentication → URL Configuration): `https://app.partidou.com.br/**`.\n- **Links à prova de verificadores:** o link de e-mail é de uso único, e alguns provedores (como o Gmail) abrem o link para verificar segurança, o que o consumia antes da pessoa (erro `otp_expired`). Agora `GET /auth/confirmar` só redireciona para `/auth/continuar`, que mostra o botão \"Continuar\"; o token só é usado quando a pessoa clica (`POST /auth/confirmar`). **Para isso valer, os modelos de e-mail do Supabase (Authentication → Email Templates) precisam apontar para o sistema**, assim: Recuperação de senha: `{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=recovery`; Convite: `{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=invite`; Confirmação de e-mail: `{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=email`. Com o modelo padrão (`{{ .ConfirmationURL }}`) o link vai ao Supabase e o problema continua.\n- **E-mails** do Auth saem pelo SMTP padrão do Supabase (limite baixo): configurar SMTP próprio (Authentication → SMTP Settings) antes de operar com muitos convites. Os **comunicados** do Painel do SaaS usam as variáveis `SMTP_*` do servidor (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_FROM_NAME`)."
   },
   {
    "id": "modulo-quadra-esportiva",
@@ -1287,6 +1287,11 @@
    "description": "Situação do teste/assinatura, escolha do plano e pagamento; também a tela do grupo bloqueado"
   },
   {
+   "path": "/auth/continuar",
+   "access": "Administrador e Diretoria",
+   "description": "Tela do link de e-mail (convite, recuperação, confirmação): botão \"Continuar\" que só então usa o token"
+  },
+  {
    "path": "/conta",
    "access": "Administrador e Diretoria",
    "description": "Minha conta: dados do usuário e troca de senha"
@@ -1577,6 +1582,19 @@
  ],
  "changelog": [
   {
+   "version": "1.1.1",
+   "date": "2026-11-16",
+   "title": "Link de e-mail à prova de verificadores e comunicados com a marca Partidou",
+   "novidades": [
+    "Links de convite, recuperação de senha e confirmação de e-mail agora abrem uma tela com o botão “Continuar”; o token só é usado no clique. Isso evita o erro de link expirado causado por verificadores de segurança de e-mail (como o do Gmail), que abriam o link antes da pessoa."
+   ],
+   "melhorias": [
+    "E-mail de comunicados do Painel do SaaS com a marca, as cores e o texto do Partidou (remetente padrão Partidou, texto de rodapé para administradores de centros esportivos).",
+    "Textos do Painel do SaaS de comunicados falam em centros esportivos, não em grupos."
+   ],
+   "correcoes": []
+  },
+  {
    "version": "1.1.0",
    "date": "2026-11-15",
    "title": "Site comercial do Partidou (partidou.com.br)",
@@ -1615,7 +1633,7 @@
   "migrations": 41,
   "tables": 44,
   "functions": 171,
-  "pages": 31,
+  "pages": 32,
   "apis": 8
  }
 }
