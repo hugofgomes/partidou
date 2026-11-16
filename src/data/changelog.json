@@ -2,6 +2,19 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.2.0",
+      "date": "2026-11-16",
+      "title": "E-mails do formulário do site",
+      "novidades": [
+        "Cada contato do site agora gera um aviso por e-mail para a equipe (com os dados e um botão para abrir o painel) e uma confirmação para quem preencheu, quando a pessoa informa o e-mail.",
+        "Os e-mails só saem se o SMTP estiver configurado no servidor; se não estiver, o contato continua sendo salvo e aparece em Contatos do site."
+      ],
+      "melhorias": [],
+      "correcoes": [
+        "O formulário não enviava nenhum e-mail, então quem preenchia não recebia confirmação e a equipe não era avisada."
+      ]
+    },
+    {
       "version": "1.1.1",
       "date": "2026-11-16",
       "title": "Link de e-mail à prova de verificadores e comunicados com a marca Partidou",

@@ -1,3 +1,5 @@
+import { fromAddress, mailerConfigured, transporter } from "@/lib/broadcast-mail"
+import { leadConfirmation, teamNotification, type LeadInfo } from "@/lib/lead-mail"
 import { createClient } from "@supabase/supabase-js"
 import { NextResponse, type NextRequest } from "next/server"
 
@@ -40,6 +42,15 @@ export async function POST(req: NextRequest) {
     // Mensagens do banco são pensadas para o visitante (nome, e-mail, limite etc.); erros inesperados viram mensagem genérica.
     const known = /nome|consentimento|WhatsApp|e-mail|estabelecimento|Quantidade|Já recebemos|Tipo|Telefone/i.test(error.message)
     return NextResponse.json({ error: known ? error.message : "Não foi possível enviar agora. Tente de novo em instantes." }, { status: known ? 400 : 502 })
+  }
+  // Avisos por e-mail (se o SMTP estiver configurado). Falha de e-mail nunca derruba o envio: o contato já está salvo no banco.
+  const lead: LeadInfo = { audience: audience as LeadInfo["audience"], name: s("name", 120), venue: s("venue", 120) || null, city: s("city", 80) || null, state: s("state", 2) || null,
+    whatsapp: s("whatsapp", 30) || null, email: s("email", 160) || null, courts, message: s("message", 1000) || null, plan: PLANS.includes(s("plan")) ? s("plan") : null }
+  if (mailerConfigured()) {
+    const from = fromAddress(), address = from.match(/<([^<>\s]+@[^<>\s]+)>\s*$/)?.[1] ?? from
+    const notify = process.env.LEAD_NOTIFY_EMAIL || process.env.PLATFORM_ALERT_EMAIL || address
+    const mails = [teamNotification(lead, notify, "https://app.partidou.com.br/super/leads"), leadConfirmation(lead, address)].filter((m) => m !== null)
+    try { const t = transporter(); await Promise.allSettled(mails.map((m) => t.sendMail({ from, to: m.to, replyTo: m.replyTo, subject: m.subject, text: m.text, html: m.html }))) } catch { /* sem e-mail: segue */ }
   }
   return NextResponse.json({ ok: true })
 }

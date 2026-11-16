@@ -1,4 +1,4 @@
-<!-- revisado: 1.1.0 -->
+<!-- revisado: 1.2.0 -->
 # Site comercial (partidou.com.br)
 
 ## O que é
@@ -20,7 +20,8 @@ O site só afirma o que existe. O que ainda está em desenvolvimento aparece com
 - API: `POST /api/site/lead` valida os dados, descarta robôs (campo-isca preenchido ou envio em menos de 2,5 s), limita 5 envios por IP em 10 minutos (em memória, por instância) e chama a função `site_lead_create`.
 - Banco (`0041_site_leads.sql`): tabela `site_leads` **sem acesso direto** (nem para visitantes nem para usuários logados). O visitante só executa `site_lead_create` (valida tudo no servidor, exige consentimento e no máximo 3 contatos por WhatsApp ou e-mail em 24 horas). O dono da plataforma lista e atualiza por `site_leads_list` e `site_lead_update`.
 - Acompanhamento: Painel do SaaS → **Contatos do site** (`/super/leads`): situação (novo, contatado, negociando, ganho, perdido), anotações, links de WhatsApp e e-mail.
-- Ainda não existe: aviso por e-mail ou WhatsApp quando chega um contato novo (confira o painel), captcha (se houver spam, avaliar Turnstile) e integração com CRM externo.
+- **E-mails do formulário:** depois de gravar o contato, a API envia (1) um **aviso à equipe** (para `LEAD_NOTIFY_EMAIL`, ou `PLATFORM_ALERT_EMAIL`, ou o próprio remetente `SMTP_FROM`) com os dados e o botão do painel e (2) uma **confirmação** para quem preencheu, se informou e-mail (com resposta para o remetente). Só saem se o SMTP do servidor estiver configurado (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_FROM_NAME`; no Partidou, via Resend). Falha de e-mail nunca derruba o envio: o contato já está salvo. O conteúdo digitado pelo visitante é escapado nos e-mails. A confirmação vai para qualquer e-mail informado, por isso há limites por IP e por contato.
+- Ainda não existe: aviso por WhatsApp, captcha (se houver spam, avaliar Turnstile) e integração com CRM externo.
 
 ## SEO e desempenho
 Título e descrição definidos, `canonical`, Open Graph e Twitter Cards (imagem `public/brand/og-partidou.png`, 1200×630), dados estruturados JSON-LD (Organization, WebSite, SoftwareApplication e FAQPage, com o mesmo texto da página), HTML semântico, FAQ com `<details>` (acessível e sem JavaScript), imagens do rodapé com carregamento tardio, animações discretas que respeitam "reduzir movimento" e conteúdo visível mesmo sem JavaScript.

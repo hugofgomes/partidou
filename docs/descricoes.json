@@ -60,6 +60,7 @@
     "SMTP_PASS": "Senha do SMTP (chave da Resend)",
     "SMTP_PORT": "Porta do SMTP (465)",
     "SMTP_USER": "Usuário do SMTP",
-    "SUPABASE_SERVICE_ROLE_KEY": "Chave de serviço do Supabase (só servidor; webhooks, rotina diária e criação de acessos)"
+    "SUPABASE_SERVICE_ROLE_KEY": "Chave de serviço do Supabase (só servidor; webhooks, rotina diária e criação de acessos)",
+    "LEAD_NOTIFY_EMAIL": "E-mail da equipe que recebe o aviso de cada contato novo do site (padrão: PLATFORM_ALERT_EMAIL ou o remetente SMTP_FROM)"
   }
 }

@@ -1,5 +1,5 @@
 {
- "version": "1.1.1",
+ "version": "1.2.0",
  "versionDate": "2026-11-16",
  "stack": {
   "next": "15.5.29",
@@ -70,8 +70,8 @@
   {
    "id": "site-comercial",
    "title": "Site comercial (partidou.com.br)",
-   "revisado": "1.1.0",
-   "markdown": "# Site comercial (partidou.com.br)\n\n## O que é\nSite institucional e comercial do Partidou, na raiz de **https://partidou.com.br**. Apresenta os três públicos (donos de quadra, organizadores e jogadores), os planos e um formulário de contato. O sistema continua em **app.partidou.com.br**.\n\n## Como é servido (um só projeto, dois endereços)\n- O código do site é a página `/site` (`src/app/(marketing)/site`) e os componentes de `src/components/site`.\n- O middleware (`src/middleware.ts`) olha o endereço: em `partidou.com.br` a raiz `/` mostra o site; `/privacidade`, `/termos`, `/cookies` e `/api/site/lead` ficam ali mesmo; **todo o resto** (login, busca de quadras, painel) redireciona para `app.partidou.com.br` com o mesmo caminho. `www.partidou.com.br` redireciona para `partidou.com.br`. Em `app.partidou.com.br`, `/site` redireciona para o site.\n- `robots.txt` e `sitemap.xml` mudam conforme o endereço (o site é indexável; o sistema expõe só a busca pública e os textos legais).\n\n## Conteúdo e configuração (`src/lib/site-config.ts`)\nPlanos e preços, perguntas frequentes, modalidades, menu, redes sociais e depoimentos ficam num único arquivo. **Preços**: valores de lançamento (Organizador Pro R$ 29,90, Quadra Pro R$ 99,90 e Arena Business R$ 199,90), sujeitos a confirmação; não há cobrança online: os botões levam ao formulário. **Redes sociais**: só aparecem no rodapé as que tiverem endereço em `SOCIAL`. **Depoimentos**: a seção só é publicada quando `TESTIMONIALS` tiver itens reais e autorizados (hoje está vazia, de propósito).\n\n## Honestidade do conteúdo\nO site só afirma o que existe. O que ainda está em desenvolvimento aparece com a marca **Em breve** (plano Organizador Pro, jogos recorrentes e mensalidades de organizador, perfil e histórico do jogador, faixa etária e nível de partida). Os mockups (celular, dashboard e agenda) são ilustrações em HTML/CSS marcadas como \"Exemplo ilustrativo\", sem números nem clientes reais. A partida com vagas já existe ligada à reserva de uma quadra (ver capítulo do módulo).\n\n## Formulário de contato (captação de leads)\n- Tela: seção `#contato` (componente `lead-form.tsx`). Três perfis (dono de quadra, organizador, jogador); os botões dos planos abrem o formulário já com o perfil e o plano.\n- API: `POST /api/site/lead` valida os dados, descarta robôs (campo-isca preenchido ou envio em menos de 2,5 s), limita 5 envios por IP em 10 minutos (em memória, por instância) e chama a função `site_lead_create`.\n- Banco (`0041_site_leads.sql`): tabela `site_leads` **sem acesso direto** (nem para visitantes nem para usuários logados). O visitante só executa `site_lead_create` (valida tudo no servidor, exige consentimento e no máximo 3 contatos por WhatsApp ou e-mail em 24 horas). O dono da plataforma lista e atualiza por `site_leads_list` e `site_lead_update`.\n- Acompanhamento: Painel do SaaS → **Contatos do site** (`/super/leads`): situação (novo, contatado, negociando, ganho, perdido), anotações, links de WhatsApp e e-mail.\n- Ainda não existe: aviso por e-mail ou WhatsApp quando chega um contato novo (confira o painel), captcha (se houver spam, avaliar Turnstile) e integração com CRM externo.\n\n## SEO e desempenho\nTítulo e descrição definidos, `canonical`, Open Graph e Twitter Cards (imagem `public/brand/og-partidou.png`, 1200×630), dados estruturados JSON-LD (Organization, WebSite, SoftwareApplication e FAQPage, com o mesmo texto da página), HTML semântico, FAQ com `<details>` (acessível e sem JavaScript), imagens do rodapé com carregamento tardio, animações discretas que respeitam \"reduzir movimento\" e conteúdo visível mesmo sem JavaScript.\n\n## Implantação (uma vez)\n1. **DNS (Cloudflare):** registros `A` de `partidou.com.br` e de `www` apontando para o IP da VPS (como o `app`); comece com a nuvem cinza (DNS only) até o HTTPS ser emitido.\n2. **Coolify:** na aplicação do Partidou, acrescentar `https://partidou.com.br` e `https://www.partidou.com.br` à lista de domínios (mantendo `https://app.partidou.com.br`) e fazer o deploy.\n3. **Banco:** aplicar a migration `0041_site_leads.sql` **antes** do deploy (sem ela o formulário responde erro).\n4. **Conferir:** `/` mostra o site, `/login` em partidou.com.br leva ao app, `robots.txt` e `sitemap.xml`, o envio de um contato de teste e o painel Contatos do site."
+   "revisado": "1.2.0",
+   "markdown": "# Site comercial (partidou.com.br)\n\n## O que é\nSite institucional e comercial do Partidou, na raiz de **https://partidou.com.br**. Apresenta os três públicos (donos de quadra, organizadores e jogadores), os planos e um formulário de contato. O sistema continua em **app.partidou.com.br**.\n\n## Como é servido (um só projeto, dois endereços)\n- O código do site é a página `/site` (`src/app/(marketing)/site`) e os componentes de `src/components/site`.\n- O middleware (`src/middleware.ts`) olha o endereço: em `partidou.com.br` a raiz `/` mostra o site; `/privacidade`, `/termos`, `/cookies` e `/api/site/lead` ficam ali mesmo; **todo o resto** (login, busca de quadras, painel) redireciona para `app.partidou.com.br` com o mesmo caminho. `www.partidou.com.br` redireciona para `partidou.com.br`. Em `app.partidou.com.br`, `/site` redireciona para o site.\n- `robots.txt` e `sitemap.xml` mudam conforme o endereço (o site é indexável; o sistema expõe só a busca pública e os textos legais).\n\n## Conteúdo e configuração (`src/lib/site-config.ts`)\nPlanos e preços, perguntas frequentes, modalidades, menu, redes sociais e depoimentos ficam num único arquivo. **Preços**: valores de lançamento (Organizador Pro R$ 29,90, Quadra Pro R$ 99,90 e Arena Business R$ 199,90), sujeitos a confirmação; não há cobrança online: os botões levam ao formulário. **Redes sociais**: só aparecem no rodapé as que tiverem endereço em `SOCIAL`. **Depoimentos**: a seção só é publicada quando `TESTIMONIALS` tiver itens reais e autorizados (hoje está vazia, de propósito).\n\n## Honestidade do conteúdo\nO site só afirma o que existe. O que ainda está em desenvolvimento aparece com a marca **Em breve** (plano Organizador Pro, jogos recorrentes e mensalidades de organizador, perfil e histórico do jogador, faixa etária e nível de partida). Os mockups (celular, dashboard e agenda) são ilustrações em HTML/CSS marcadas como \"Exemplo ilustrativo\", sem números nem clientes reais. A partida com vagas já existe ligada à reserva de uma quadra (ver capítulo do módulo).\n\n## Formulário de contato (captação de leads)\n- Tela: seção `#contato` (componente `lead-form.tsx`). Três perfis (dono de quadra, organizador, jogador); os botões dos planos abrem o formulário já com o perfil e o plano.\n- API: `POST /api/site/lead` valida os dados, descarta robôs (campo-isca preenchido ou envio em menos de 2,5 s), limita 5 envios por IP em 10 minutos (em memória, por instância) e chama a função `site_lead_create`.\n- Banco (`0041_site_leads.sql`): tabela `site_leads` **sem acesso direto** (nem para visitantes nem para usuários logados). O visitante só executa `site_lead_create` (valida tudo no servidor, exige consentimento e no máximo 3 contatos por WhatsApp ou e-mail em 24 horas). O dono da plataforma lista e atualiza por `site_leads_list` e `site_lead_update`.\n- Acompanhamento: Painel do SaaS → **Contatos do site** (`/super/leads`): situação (novo, contatado, negociando, ganho, perdido), anotações, links de WhatsApp e e-mail.\n- **E-mails do formulário:** depois de gravar o contato, a API envia (1) um **aviso à equipe** (para `LEAD_NOTIFY_EMAIL`, ou `PLATFORM_ALERT_EMAIL`, ou o próprio remetente `SMTP_FROM`) com os dados e o botão do painel e (2) uma **confirmação** para quem preencheu, se informou e-mail (com resposta para o remetente). Só saem se o SMTP do servidor estiver configurado (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_FROM_NAME`; no Partidou, via Resend). Falha de e-mail nunca derruba o envio: o contato já está salvo. O conteúdo digitado pelo visitante é escapado nos e-mails. A confirmação vai para qualquer e-mail informado, por isso há limites por IP e por contato.\n- Ainda não existe: aviso por WhatsApp, captcha (se houver spam, avaliar Turnstile) e integração com CRM externo.\n\n## SEO e desempenho\nTítulo e descrição definidos, `canonical`, Open Graph e Twitter Cards (imagem `public/brand/og-partidou.png`, 1200×630), dados estruturados JSON-LD (Organization, WebSite, SoftwareApplication e FAQPage, com o mesmo texto da página), HTML semântico, FAQ com `<details>` (acessível e sem JavaScript), imagens do rodapé com carregamento tardio, animações discretas que respeitam \"reduzir movimento\" e conteúdo visível mesmo sem JavaScript.\n\n## Implantação (uma vez)\n1. **DNS (Cloudflare):** registros `A` de `partidou.com.br` e de `www` apontando para o IP da VPS (como o `app`); comece com a nuvem cinza (DNS only) até o HTTPS ser emitido.\n2. **Coolify:** na aplicação do Partidou, acrescentar `https://partidou.com.br` e `https://www.partidou.com.br` à lista de domínios (mantendo `https://app.partidou.com.br`) e fazer o deploy.\n3. **Banco:** aplicar a migration `0041_site_leads.sql` **antes** do deploy (sem ela o formulário responde erro).\n4. **Conferir:** `/` mostra o site, `/login` em partidou.com.br leva ao app, `robots.txt` e `sitemap.xml`, o envio de um contato de teste e o painel Contatos do site."
   }
  ],
  "migrations": [
@@ -1514,6 +1514,12 @@
    "uses": 2
   },
   {
+   "name": "LEAD_NOTIFY_EMAIL",
+   "scope": "Servidor",
+   "description": "E-mail da equipe que recebe o aviso de cada contato novo do site (padrão: PLATFORM_ALERT_EMAIL ou o remetente SMTP_FROM)",
+   "uses": 1
+  },
+  {
    "name": "NEXT_PUBLIC_SUPABASE_ANON_KEY",
    "scope": "Navegador (gravada no build)",
    "description": "Chave pública do Supabase (navegador)",
@@ -1529,7 +1535,7 @@
    "name": "PLATFORM_ALERT_EMAIL",
    "scope": "Servidor",
    "description": "E-mail que recebe o resumo diário dos avisos enviados",
-   "uses": 1
+   "uses": 2
   },
   {
    "name": "PLATFORM_ORG_SLUG",
@@ -1581,6 +1587,19 @@
   }
  ],
  "changelog": [
+  {
+   "version": "1.2.0",
+   "date": "2026-11-16",
+   "title": "E-mails do formulário do site",
+   "novidades": [
+    "Cada contato do site agora gera um aviso por e-mail para a equipe (com os dados e um botão para abrir o painel) e uma confirmação para quem preencheu, quando a pessoa informa o e-mail.",
+    "Os e-mails só saem se o SMTP estiver configurado no servidor; se não estiver, o contato continua sendo salvo e aparece em Contatos do site."
+   ],
+   "melhorias": [],
+   "correcoes": [
+    "O formulário não enviava nenhum e-mail, então quem preenchia não recebia confirmação e a equipe não era avisada."
+   ]
+  },
   {
    "version": "1.1.1",
    "date": "2026-11-16",
