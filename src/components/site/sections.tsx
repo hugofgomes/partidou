@@ -33,7 +33,7 @@ export function Hero() {
       <svg aria-hidden className="pointer-events-none absolute inset-0 size-full opacity-[0.07]" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="campo" width="120" height="120" patternUnits="userSpaceOnUse"><circle cx="60" cy="60" r="34" fill="none" stroke="#B9F344" strokeWidth="1.5" /><path d="M0 60h26M94 60h26" stroke="#B9F344" strokeWidth="1.5" /></pattern></defs><rect width="100%" height="100%" fill="url(#campo)" /></svg>
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
         <div>
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-lime/40 bg-lime/10 px-3 py-1 text-xs font-semibold text-lime"><Sparkles className="size-3.5" /> O jogo começa aqui</p>
+          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-lime/40 bg-lime/10 px-3 py-1 text-xs font-semibold text-lime"><Sparkles className="size-3.5" /> Maior plataforma de gestão de quadras esportivas do Brasil</p>
           <h1 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Seu próximo jogo <span className="text-lime">começa aqui.</span></h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/80">Encontre quadras, organize partidas, complete seu time e viva o esporte de um jeito mais fácil.</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
