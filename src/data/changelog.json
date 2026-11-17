@@ -2,6 +2,19 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.7.3",
+      "date": "2026-11-17",
+      "title": "Atleta escolhe o próprio nível técnico ao pedir vaga",
+      "novidades": [
+        "No \"Pedir vaga\" das partidas com vagas, o atleta pode escolher o próprio nível técnico (Médio, Bom ou Craque), com a descrição de cada nível.",
+        "Na gestão da partida, o organizador vê o nível informado por cada atleta ao lado do nome."
+      ],
+      "melhorias": [
+        "Os critérios dos níveis ficam num lugar só e são os mesmos na lista de espera, no pedido de vaga e na gestão da partida."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.7.2",
       "date": "2026-11-17",
       "title": "Lista de espera: posições do futsal",

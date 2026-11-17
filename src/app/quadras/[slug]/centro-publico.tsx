@@ -11,6 +11,7 @@ import { addressLine, FLOOR_LABEL, sportName, venueHoursOn, waNumber, type PubMa
 import { formatBRL } from "@/lib/format"
 import { supabase } from "@/lib/supabase/client"
 import { maskPhone } from "@/lib/whatsapp"
+import { LEVELS } from "@/lib/skill-levels"
 import { cn } from "@/lib/utils"
 import { CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Camera, Lightbulb, Loader2, MapPin, MessageCircle, Navigation, Phone, Share2, ShieldCheck, Sun, Sunrise, Sunset, Umbrella, Users } from "lucide-react"
 import Link from "next/link"
@@ -490,13 +491,13 @@ function RequestDialog({ slug, pick, date, tz, venue, onClose, onDone, onConflic
 }
 
 function JoinDialog({ match, tz, onClose, onDone }: { match: PubMatch | null; tz: string; onClose: () => void; onDone: () => void }) {
-  const [v, setV] = React.useState({ name: "", phone: "" })
+  const [v, setV] = React.useState({ name: "", phone: "", skill: "" })
   const [busy, setBusy] = React.useState(false)
   const [msg, setMsg] = React.useState<{ ok: boolean; t: string } | null>(null)
   if (!match) return null
   async function submit(e: React.FormEvent) {
     e.preventDefault(); if (busy) return; setBusy(true); setMsg(null)
-    const r = await supabase().rpc("court_public_match_join", { p_match: match!.id, p_name: v.name, p_phone: v.phone })
+    const r = await supabase().rpc("court_public_match_join", { p_match: match!.id, p_name: v.name, p_phone: v.phone, p_skill: v.skill || null })
     setBusy(false)
     if (r.error) return setMsg({ ok: false, t: r.error.message })
     toast.success("Pedido de vaga enviado!")
@@ -504,12 +505,29 @@ function JoinDialog({ match, tz, onClose, onDone }: { match: PubMatch | null; tz
   }
   return (
     <Dialog open onOpenChange={(o) => { if (!o) { setMsg(null); (msg?.ok ? onDone : onClose)() } }}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
         <DialogHeader><DialogTitle>Pedir vaga · {match.title}</DialogTitle><DialogDescription>{match.court} · {fmtDateBR(localParts(tz, match.starts_at).date)} {fmtRange(tz, match.starts_at, match.ends_at)}</DialogDescription></DialogHeader>
         {msg?.ok ? <p role="status" className="text-sm">{msg.t}</p> : (
           <form onSubmit={submit} className="space-y-3">
             <div className="space-y-1.5"><Label htmlFor="jn">Seu nome</Label><Input id="jn" required minLength={2} maxLength={80} value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} className="h-11" /></div>
             <div className="space-y-1.5"><Label htmlFor="jp">WhatsApp / telefone</Label><Input id="jp" required inputMode="tel" value={v.phone} onChange={(e) => setV({ ...v, phone: maskPhone(e.target.value) })} className="h-11" /></div>
+            <fieldset className="space-y-2">
+              <legend className="text-sm font-medium">Seu nível técnico <span className="font-normal text-muted-foreground">(opcional)</span></legend>
+              <div role="radiogroup" aria-label="Nível técnico" className="space-y-2">
+                {LEVELS.map((l) => {
+                  const on = v.skill === l.k
+                  return (
+                    <button key={l.k} type="button" role="radio" aria-checked={on} onClick={() => setV({ ...v, skill: on ? "" : l.k })}
+                      className={cn("w-full rounded-xl border p-3 text-left transition-colors", on ? "border-forest bg-forest/[0.04] ring-2 ring-lime" : "border-black/10 hover:bg-black/[0.02]")}>
+                      <span className="flex items-center justify-between gap-2"><span className={cn("rounded-full px-2.5 py-0.5 text-xs font-bold", l.cls)}>{l.label}</span>{on && <Check className="size-4 text-forest" />}</span>
+                      <span className="mt-1.5 block text-xs leading-snug text-graphite/75"><strong className="text-graphite">Técnica:</strong> {l.tecnica}</span>
+                      {on && <span className="mt-1 block text-xs leading-snug text-graphite/75"><strong className="text-graphite">Visão de jogo:</strong> {l.visao} <strong className="text-graphite">Regularidade:</strong> {l.regularidade}</span>}
+                    </button>
+                  )
+                })}
+              </div>
+              <p className="text-xs text-muted-foreground">Ajuda o organizador a equilibrar os times. Seja sincero: o nível aparece só para ele.</p>
+            </fieldset>
             <p className="text-xs text-muted-foreground">Seu telefone é mostrado só ao organizador da partida.</p>
             {msg && <p role="alert" className="text-sm text-destructive">{msg.t}</p>}
             <DialogFooter><Button type="button" variant="outline" onClick={onClose}>Voltar</Button><Button type="submit" disabled={busy}>{busy && <Loader2 className="size-4 animate-spin" />} Pedir vaga</Button></DialogFooter>

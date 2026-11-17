@@ -12,6 +12,7 @@ import { useLoad } from "@/hooks/use-load"
 import { KIND_LABEL } from "@/lib/court-booking"
 import { fmtDateBR, fmtRange, localParts } from "@/lib/court-time"
 import { supabase } from "@/lib/supabase/client"
+import { LEVEL, LEVELS } from "@/lib/skill-levels"
 import { cn } from "@/lib/utils"
 import { maskPhone, normalizePhone, waLink } from "@/lib/whatsapp"
 import { Loader2, MessageCircle, Plus } from "lucide-react"
@@ -32,22 +33,6 @@ const POS_FUTSAL: [string, string][] = [["goleiro", "Goleiro"], ["fixo", "Fixo"]
 const positionsFor = (sport: string): [string, string][] => (sport === "futsal" ? POS_FUTSAL : !sport || sport === "futebol_society" || sport === "futebol_campo" ? POS_CAMPO : [])
 const POSITIONS: [string, string][] = [...POS_CAMPO, ...POS_FUTSAL.filter(([k]) => k !== "goleiro")]
 const POSITION_LABEL = Object.fromEntries(POSITIONS) as Record<string, string>
-/** Níveis técnicos: técnica, visão de jogo e regularidade de cada nível (critérios definidos pelo Partidou). */
-const LEVELS = [
-  { k: "medio", label: "Médio", cls: "bg-sky-100 text-sky-900",
-    tecnica: "Domina o básico (passe curto, domínio simples), mas erra sob pressão intensa ou precisa de mais toques na bola.",
-    visao: "Previsível; costuma escolher a opção mais segura e demora um pouco mais para ler o jogo.",
-    regularidade: "Oscila bastante; faz boas partidas, mas tem dificuldade para manter o nível contra adversários fortes." },
-  { k: "bom", label: "Bom", cls: "bg-green-100 text-green-900",
-    tecnica: "Alta precisão nos fundamentos específicos da sua posição (ex.: cruzamento, desarme, finalização).",
-    visao: "Ágil; encontra bons espaços e raramente compromete a posse de bola do time.",
-    regularidade: "Regular; entrega um desempenho confiável na maioria dos jogos e resolve problemas táticos." },
-  { k: "craque", label: "Craque", cls: "bg-lime text-forest",
-    tecnica: "Domínio total e refinado de todos os fundamentos, usando os dois pés e executando jogadas difíceis com naturalidade.",
-    visao: "Antecipa o jogo; enxerga passes e espaços antes dos outros e cria soluções onde não parecia haver saída.",
-    regularidade: "Decisivo; mantém o altíssimo nível mesmo em jogos grandes, sob forte marcação e pressão extrema." },
-] as const
-const LEVEL = Object.fromEntries(LEVELS.map((l) => [l.k, l])) as Record<string, (typeof LEVELS)[number]>
 
 async function load(allowed: boolean) {
   if (!allowed) return null

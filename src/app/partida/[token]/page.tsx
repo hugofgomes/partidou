@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { fmtDateBR, fmtRange, localParts } from "@/lib/court-time"
 import { supabase } from "@/lib/supabase/client"
 import { maskPhone } from "@/lib/whatsapp"
+import { LEVEL } from "@/lib/skill-levels"
 import { cn } from "@/lib/utils"
 import { MessageCircle } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -14,7 +15,7 @@ import { toast } from "sonner"
 
 type M = { id: string; title: string; description: string | null; status: "aberta" | "completa" | "cancelada"; slots_total: number
   booking: { code: string; status: string; starts_at: string; ends_at: string; court: string; venue: string; timezone: string; whatsapp: string | null; slug: string }
-  players: { id: string; name: string; phone: string; status: "pendente" | "aprovado" | "recusado" | "removido" }[] }
+  players: { id: string; name: string; phone: string; status: "pendente" | "aprovado" | "recusado" | "removido"; skill_level?: string | null }[] }
 const ST: Record<string, string> = { pendente: "Pendente", aprovado: "Aprovado", recusado: "Recusado", removido: "Removido" }
 
 /** Gestão da partida pelo organizador, com o código secreto do link (sem login). */
@@ -50,7 +51,7 @@ export default function GerirPartida() {
         <ul className="space-y-2">
           {m.players.map((p) => (
             <li key={p.id} className="rounded-xl border bg-card p-3"><div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="min-w-0"><p className="font-medium">{p.name} <span className={cn("ml-1 rounded-full px-2 py-0.5 text-xs", p.status === "aprovado" ? "bg-green-100 text-green-900" : p.status === "pendente" ? "bg-amber-100 text-amber-900" : "bg-slate-200 text-slate-700")}>{ST[p.status]}</span></p><p className="text-sm text-muted-foreground">{maskPhone(p.phone.replace(/^55/, ""))}</p></div>
+              <div className="min-w-0"><p className="font-medium">{p.name} <span className={cn("ml-1 rounded-full px-2 py-0.5 text-xs", p.status === "aprovado" ? "bg-green-100 text-green-900" : p.status === "pendente" ? "bg-amber-100 text-amber-900" : "bg-slate-200 text-slate-700")}>{ST[p.status]}</span>{p.skill_level && LEVEL[p.skill_level] && <span className={cn("ml-1 rounded-full px-2 py-0.5 text-xs font-semibold", LEVEL[p.skill_level].cls)} title={`Nível informado pelo atleta. Técnica: ${LEVEL[p.skill_level].tecnica}`}>{LEVEL[p.skill_level].label}</span>}</p><p className="text-sm text-muted-foreground">{maskPhone(p.phone.replace(/^55/, ""))}</p></div>
               <div className="flex flex-wrap gap-1">
                 <a className="inline-flex h-8 items-center rounded-lg border px-2 text-sm" target="_blank" rel="noreferrer" href={wa(p)}>WhatsApp</a>
                 {m.status !== "cancelada" && p.status !== "aprovado" && <Button size="sm" disabled={busy === p.id} onClick={() => decide(p.id, "aprovado")}>Aprovar</Button>}
