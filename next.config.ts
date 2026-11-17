@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   experimental: { cpus: 1, webpackMemoryOptimizations: true },
   env: { NEXT_PUBLIC_BUILD_ID: BUILD_ID },
   poweredByHeader: false, // não anuncia o framework
+  // Metadados (título, descrição, Open Graph) sempre no <head> do HTML inicial, para todos os visitantes e ferramentas de SEO
+  // (o padrão do Next 15 adia para quem não parece robô, e auditorias como o Lighthouse deixam de ver a descrição).
+  htmlLimitedBots: /.*/,
   async headers() {
     return [
       // Cabeçalhos de segurança em todas as respostas (sem CSP por enquanto: exigiria mapear Supabase e scripts inline do Next).

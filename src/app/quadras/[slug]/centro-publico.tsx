@@ -24,6 +24,9 @@ type Pick = { slot: PubSlot; court: Court }
 type Cell = { start: number; end: number; free: PubSlot | null }
 
 const money = (cents: number) => formatBRL(cents / 100)
+/** Formatos curtos para os indicadores do topo: "R$ 68/h", "8h–16h" (cabem no celular). */
+const moneyShort = (cents: number) => (cents % 100 === 0 ? `R$ ${cents / 100}` : money(cents))
+const hourShort = (m: number) => (m % 60 === 0 ? `${m / 60}h` : fmtMinutes(m))
 const durLabel = (m: number) => (m % 60 === 0 ? `${m / 60}h` : `${Math.floor(m / 60)}h${String(m % 60).padStart(2, "0")}`)
 const durLong = (m: number) => (m === 60 ? "1 hora" : m % 60 === 0 ? `${m / 60} horas` : `${Math.floor(m / 60)}h${String(m % 60).padStart(2, "0")}`)
 
@@ -43,6 +46,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
   const [checking, setChecking] = React.useState(false)
   const [joinM, setJoinM] = React.useState<PubMatch | null>(null)
   const [done, setDone] = React.useState<Done | null>(null)
+  const [nowMin, setNowMin] = React.useState<number | null>(null)   // hora atual no fuso do centro (só no navegador, evita divergência com o servidor)
   const agendaRef = React.useRef<HTMLElement>(null)
   const stripRef = React.useRef<HTMLDivElement>(null)
 
@@ -57,6 +61,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
 
   const tz = data?.venue.timezone ?? "America/Sao_Paulo"
   const today = todayIn(tz)
+  React.useEffect(() => { const t = () => setNowMin(localParts(tz, new Date()).minutes); t(); const i = window.setInterval(t, 60_000); return () => window.clearInterval(i) }, [tz])
   const maxDate = data ? addDays(today, data.venue.max_advance_days) : today
   React.useEffect(() => { if (data && !date) { const q = sp.get("data"); setDate(q && /^\d{4}-\d{2}-\d{2}$/.test(q) && q >= today && q <= maxDate ? q : today) } }, [data, date, sp, today, maxDate])
 
@@ -94,6 +99,9 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
   const mapsUrl = venue.latitude != null && venue.longitude != null ? `https://www.google.com/maps/dir/?api=1&destination=${venue.latitude},${venue.longitude}` : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(addressLine(venue))}`
   const pageUrl = typeof window === "undefined" ? "" : window.location.href.split("?")[0]
   const todayHours = venueHoursOn(data.hours, dowOf(today))
+  const open = !!todayHours && nowMin !== null && nowMin >= todayHours.opens && nowMin < todayHours.closes
+  const cover = courts.find((c) => c.photos[0])?.photos[0] ?? null
+  const sports = [...new Set(courts.map((c) => sportName(c.sport)))]
   const prices = (cid: string) => { const c = courts.find((x) => x.id === cid)!; const all = [c.price_cents, ...data.prices.filter((r) => r.court_id === null || r.court_id === cid).map((r) => r.price_cents)]; return { lo: Math.min(...all), hi: Math.max(...all) } }
   const hoursOf = (cid: string) => { const own = data.hours.filter((h) => h.court_id === cid); return own.length ? own : data.hours.filter((h) => h.court_id === null) }
 
@@ -127,32 +135,52 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
     setForm({ slot: still, court })
   }
 
-  const btnLight = "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-4 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+  const btnLight = "inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.08] px-5 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/15"
+  const minPrice = Math.min(...courts.map((c) => prices(c.id).lo))
 
   return (
     <div className={cn("min-h-dvh bg-[#F6F8F4] text-graphite", pick && "pb-28 lg:pb-0")}>
-      {/* ───────── 1. Cabeçalho do estabelecimento ───────── */}
-      <header className="bg-forest text-white">
+      {/* ───────── 1. Cabeçalho do estabelecimento: foto real da quadra ao fundo (quando houver), status, indicadores e ações ───────── */}
+      <header className="relative isolate overflow-hidden bg-forest text-white">
+        {cover
+          ? <img src={cover} alt="" aria-hidden fetchPriority="high" className="absolute inset-0 -z-20 size-full object-cover" />
+          : <svg aria-hidden viewBox="0 0 400 220" className="absolute -right-10 top-0 -z-20 hidden h-full text-lime/[0.08] md:block" fill="none" stroke="currentColor" strokeWidth="2"><rect x="20" y="20" width="360" height="180" rx="6" /><line x1="200" y1="20" x2="200" y2="200" /><circle cx="200" cy="110" r="34" /><rect x="20" y="70" width="44" height="80" /><rect x="336" y="70" width="44" height="80" /></svg>}
+        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-forest via-forest/90 to-forest/55" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-forest/80 to-transparent" />
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 pt-4 sm:px-6">
-          <Link href="/quadras" aria-label="Partidou: buscar outras quadras"><img src="/brand/partidou-logo-520.png" alt="Partidou" width={520} height={120} className="h-6 w-auto" /></Link>
-          <button type="button" onClick={share} className="inline-flex min-h-10 items-center gap-2 rounded-full px-3 text-sm font-medium text-white/85 hover:bg-white/10"><Share2 className="size-4" /> Compartilhar</button>
+          <Link href="/quadras" aria-label="Partidou: buscar outras quadras"><img src="/brand/partidou-logo-520.png" alt="Partidou" width={520} height={120} className="h-7 w-auto" /></Link>
+          <Link href="/quadras" className="hidden min-h-10 items-center rounded-full px-3 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex">Buscar outras quadras</Link>
         </div>
-        <div className="mx-auto max-w-6xl px-4 pb-7 pt-5 sm:px-6">
-          <div>
-            <div className="min-w-0">
-              <h1 className="text-2xl font-bold leading-tight tracking-tight text-white sm:text-[2rem]">{venue.name}</h1>
-              <p className="mt-1.5 flex items-start gap-1.5 text-sm text-white/80"><MapPin aria-hidden className="mt-0.5 size-4 shrink-0 text-lime" />{addressLine(venue)}</p>
-              <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/80">
-                <span className="inline-flex items-center gap-1.5"><Clock aria-hidden className="size-4 text-lime" />{todayHours ? `Hoje: ${fmtMinutes(todayHours.opens)} às ${fmtMinutes(todayHours.closes)}` : "Fechado hoje"}</span>
-                {venue.phone && <a href={`tel:${venue.phone}`} className="inline-flex items-center gap-1.5 hover:text-white"><Phone aria-hidden className="size-4 text-lime" />{venue.phone}</a>}
-              </p>
-            </div>
+        <div className="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-12">
+          <div className="flex flex-wrap items-center gap-2">
+            {nowMin !== null && (open
+              ? <span className="inline-flex items-center gap-2 rounded-full bg-lime/15 px-3 py-1 text-xs font-semibold text-lime ring-1 ring-lime/30"><span className="relative flex size-2"><span className="absolute inline-flex size-full rounded-full bg-lime opacity-60 motion-safe:animate-ping" /><span className="relative inline-flex size-2 rounded-full bg-lime" /></span>Aberto agora · até {fmtMinutes(todayHours!.closes)}</span>
+              : <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/85 ring-1 ring-white/15"><span className="size-2 rounded-full bg-white/50" />{todayHours && nowMin < todayHours.opens ? `Fechado · abre às ${fmtMinutes(todayHours.opens)}` : "Fechado agora"}</span>)}
+            {sports.map((s) => <span key={s} className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 ring-1 ring-white/15">{s}</span>)}
           </div>
-          <div className="mt-6 flex flex-wrap gap-2">
-            <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-lime px-5 text-sm font-semibold text-forest transition-colors hover:bg-[#c8f76a]"><Navigation className="size-4" /> Como chegar</a>
-            {wa && <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Olá! Vi a ${venue.name} no Partidou.`)}`} target="_blank" rel="noopener noreferrer" className={btnLight}><MessageCircle className="size-4" /> Falar no WhatsApp</a>}
-            <button type="button" onClick={share} className={btnLight}><Share2 className="size-4" /> Enviar para a galera</button>
+          <h1 className="mt-4 text-4xl font-bold leading-[1.05] tracking-tight text-white text-balance sm:text-5xl">{venue.name}</h1>
+          <p className="mt-3 flex max-w-2xl items-start gap-2 text-[15px] text-white/85"><MapPin aria-hidden className="mt-0.5 size-[18px] shrink-0 text-lime" />{addressLine(venue)}</p>
+
+          <dl className="mt-7 grid max-w-2xl grid-cols-3 gap-2 sm:gap-3">
+            {[
+              { k: courts.length === 1 ? "Quadra" : "Quadras", v: String(courts.length) },
+              { k: "A partir de", v: `${moneyShort(minPrice)}/h` },
+              { k: "Hoje", v: todayHours ? `${hourShort(todayHours.opens)}–${hourShort(todayHours.closes)}` : "Fechado" },
+            ].map((x) => (
+              <div key={x.k} className="rounded-2xl bg-white/[0.07] px-3 py-3 ring-1 ring-white/10 backdrop-blur-sm sm:px-4">
+                <dt className="text-[11px] font-medium uppercase tracking-wide text-white/70 sm:text-xs">{x.k}</dt>
+                <dd className="mt-0.5 truncate text-base font-bold text-white sm:text-xl">{x.v}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div className="mt-7 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
+            <button type="button" onClick={() => agendaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} className="col-span-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-lime px-6 text-[15px] font-bold text-forest shadow-[0_10px_30px_-10px_rgba(185,243,68,0.7)] transition-colors hover:bg-[#c8f76a]"><CalendarDays className="size-5" /> Reservar horário</button>
+            <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className={btnLight}><Navigation className="size-4" /> Como chegar</a>
+            {wa && <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Olá! Vi a ${venue.name} no Partidou.`)}`} target="_blank" rel="noopener noreferrer" className={btnLight}><MessageCircle className="size-4" /> WhatsApp</a>}
+            {venue.phone && <a href={`tel:${venue.phone}`} className={btnLight}><Phone className="size-4" /> Ligar</a>}
             {venue.instagram && <a href={`https://instagram.com/${venue.instagram.replace(/^@/, "")}`} target="_blank" rel="noopener noreferrer" className={btnLight}><Camera className="size-4" /> Instagram</a>}
+            <button type="button" onClick={share} className={btnLight}><Share2 className="size-4" /> Compartilhar</button>
           </div>
         </div>
       </header>

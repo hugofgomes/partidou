@@ -2,6 +2,19 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.6.2",
+      "date": "2026-11-16",
+      "title": "Página pública: topo redesenhado",
+      "novidades": [
+        "Topo da página do centro com a foto real da quadra ao fundo (película verde do Partidou), selo \"Aberto agora · até 16h\" / \"Fechado · abre às 8h\" no horário do centro, modalidades, indicadores (quadras, preço a partir de, horário de hoje) e botão principal \"Reservar horário\"."
+      ],
+      "melhorias": [
+        "Ações organizadas (Reservar horário, Como chegar, WhatsApp, Ligar, Instagram, Compartilhar) e sem botão de compartilhar repetido; no celular, Reservar ocupa a linha inteira.",
+        "Título, descrição e prévia de compartilhamento sempre no cabeçalho do HTML (antes podiam chegar depois para alguns visitantes) e foto de capa baixada com prioridade."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.6.1",
       "date": "2026-11-16",
       "title": "Página pública: cabeçalho só com a logo do Partidou",
