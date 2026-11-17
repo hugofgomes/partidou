@@ -64,7 +64,7 @@ export default function QuadraDashboard() {
   const pending = steps.filter((s) => !s.ok)
   const canSetup = role === "admin" || role === "gerente"
   const kpi = (label: string, value: string, hint?: string, tone?: "bad" | "good") => (
-    <div className="rounded-xl border bg-card p-4"><div className={cn("text-2xl font-bold tabular-nums text-primary sm:text-3xl", tone === "bad" && "text-red-700")}>{value}</div><div className="text-sm text-muted-foreground">{label}</div>{hint && <div className="text-xs text-muted-foreground">{hint}</div>}</div>
+    <div className="rounded-xl border bg-card p-4"><div className={cn("text-2xl font-semibold tabular-nums text-primary", tone === "bad" && "text-red-700")}>{value}</div><div className="text-sm text-muted-foreground">{label}</div>{hint && <div className="text-xs text-muted-foreground">{hint}</div>}</div>
   )
   const rate = dash ? pct(dash.occupancy.booked_min, dash.occupancy.open_min) : 0
   const daily = (dash?.daily ?? []).map((d) => ({ dia: d.day.slice(8) + "/" + d.day.slice(5, 7), taxa: pct(d.booked_min, d.open_min) }))

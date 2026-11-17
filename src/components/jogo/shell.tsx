@@ -52,11 +52,11 @@ export function JogoShell({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-1">
-            {user && staff && <Link href="/quadra" className="hidden min-h-10 items-center gap-2 rounded-full border border-white/20 px-3 text-sm font-medium text-white/85 hover:bg-white/10 sm:inline-flex"><LayoutGrid className="size-4" /> Painel do centro</Link>}
-            {user ? <><NotificationBell /><button type="button" onClick={signOut} className="hidden min-h-10 items-center gap-2 rounded-full px-3 text-sm text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex"><LogOut className="size-4" /> Sair</button></>
+            {user && staff && <Link href="/quadra" className="hidden min-h-10 items-center gap-2 rounded-lg border border-white/20 px-3 text-sm font-medium text-white/85 hover:bg-white/10 sm:inline-flex"><LayoutGrid className="size-4" /> Painel do centro</Link>}
+            {user ? <><NotificationBell /><button type="button" onClick={signOut} className="hidden min-h-10 items-center gap-2 rounded-lg px-3 text-sm text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex"><LogOut className="size-4" /> Sair</button></>
               : user === null && <>
-                <Link href={`/login?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center gap-2 whitespace-nowrap rounded-full px-3 text-sm font-semibold text-white hover:bg-white/10"><LogIn className="size-4" /> Entrar</Link>
-                <Link href={`/cadastro?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center whitespace-nowrap rounded-full bg-[#B9F344] px-4 text-sm font-bold text-[#142C25]"><span className="sm:hidden">Criar conta</span><span className="hidden sm:inline">Criar conta grátis</span></Link>
+                <Link href={`/login?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center gap-2 whitespace-nowrap rounded-lg px-3 text-sm font-semibold text-white hover:bg-white/10"><LogIn className="size-4" /> Entrar</Link>
+                <Link href={`/cadastro?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center whitespace-nowrap rounded-lg bg-[#B9F344] px-4 text-sm font-semibold text-[#142C25]"><span className="sm:hidden">Criar conta</span><span className="hidden sm:inline">Criar conta grátis</span></Link>
               </>}
           </div>
         </div>
@@ -104,7 +104,7 @@ function NotificationBell() {
         {data.unread > 0 && <span className="absolute right-1 top-1 grid min-w-[18px] place-items-center rounded-full bg-[#B9F344] px-1 text-[10px] font-bold leading-[18px] text-[#142C25]">{data.unread > 99 ? "99+" : data.unread}</span>}
       </button>
       {open && (
-        <div role="dialog" aria-label="Notificações" className="absolute right-0 top-12 w-[min(92vw,380px)] overflow-hidden rounded-2xl bg-white text-[#19221D] shadow-2xl ring-1 ring-black/10">
+        <div role="dialog" aria-label="Notificações" className="absolute right-0 top-12 w-[min(92vw,380px)] overflow-hidden rounded-xl bg-white text-[#19221D] shadow-lg ring-1 ring-black/10">
           <div className="flex items-center justify-between border-b px-4 py-3"><p className="font-semibold">Notificações</p>{data.unread > 0 && <button type="button" onClick={readAll} className="text-xs font-semibold text-[#142C25] underline underline-offset-2">Marcar todas como lidas</button>}</div>
           <ul className="max-h-[60vh] overflow-y-auto">
             {data.items.length === 0 && <li className="px-4 py-8 text-center text-sm text-[#19221D]/60">Nenhuma notificação por enquanto.</li>}

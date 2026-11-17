@@ -2,6 +2,24 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "2.0.0",
+      "date": "2026-11-17",
+      "title": "Novo visual do sistema",
+      "novidades": [
+        "Menu lateral reorganizado em grupos (Visão geral, Partidas, Quadra esportiva, Gestão e Sistema), mostrando a cada pessoa só o que o perfil dela permite.",
+        "Design system documentado: cores, tipografia (Sora nos títulos, Inter no texto), botões, tabelas, selos e diálogos padronizados."
+      ],
+      "melhorias": [
+        "Visual mais limpo e profissional em todas as telas: sem sombras pesadas, raios menores e títulos contidos.",
+        "Botão principal agora é lima com texto verde-escuro; secundário neutro com borda; vermelho só para ações destrutivas.",
+        "Tabelas com cabeçalho discreto e linhas mais legíveis; selos de status mais suaves.",
+        "Encontre um Jogo, Minhas Partidas, Organizar, convite e perfil com cabeçalhos simples e botões na altura padrão.",
+        "Manual, login, recuperação de senha e telas de aviso no novo padrão.",
+        "Campos e botões com a mesma altura (40px no celular, 36px no computador)."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.9.2",
       "date": "2026-11-17",
       "title": "Celular mais rápido e SEO 100",

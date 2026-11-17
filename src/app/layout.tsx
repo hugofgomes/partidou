@@ -1,12 +1,14 @@
 import { Toaster } from "@/components/ui/sonner"
 import type { Metadata, Viewport } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Sora } from "next/font/google"
 import { AutoUpdate } from "@/components/auto-update"
 import { PwaRegister } from "@/components/pwa"
 import { BRAND_NAME, BRAND_PRIMARY } from "@/lib/brand"
 import "./globals.css"
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" })
+/** Sora: títulos (sistema e site). Pesos 600 e 700 apenas. */
+const sora = Sora({ variable: "--font-sora", subsets: ["latin"], weight: ["600", "700"], display: "swap" })
 
 export const metadata: Metadata = {
   title: "Partidou · Gestão de quadras",
@@ -20,7 +22,7 @@ export const viewport: Viewport = { themeColor: BRAND_PRIMARY, viewportFit: "cov
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={inter.variable}>
+    <html lang="pt-BR" className={`${inter.variable} ${sora.variable}`}>
       <body className="antialiased">
         {children}
         <AutoUpdate />

@@ -35,8 +35,8 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <main className="grid min-h-dvh place-items-center bg-primary p-4">
-      <div className="w-full max-w-sm space-y-6 rounded-xl bg-card p-6 shadow-xl">
+    <main className="grid min-h-dvh place-items-center bg-background p-4">
+      <div className="w-full max-w-sm space-y-6 rounded-xl border bg-card p-6 shadow-sm">
         <OrgHeading subtitle="Nova senha" />
         {hasSession === null ? <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" /> : !hasSession ? (
           <div className="space-y-3 text-center">

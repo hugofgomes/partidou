@@ -26,8 +26,8 @@ export default function ConvitePage() {
     if (user === null) { router.replace(`/login?next=${encodeURIComponent(`/convite/${id}`)}`); return }
     void load()
   }, [user, id, router, load])
-  if (inv === undefined) return <Skeleton className="h-80 rounded-2xl" />
-  if (inv === null) return <div className="mx-auto max-w-lg rounded-2xl bg-white p-8 text-center ring-1 ring-black/5"><h1 className="text-xl font-bold text-[#142C25]">Convite não encontrado</h1><p className="mt-1 text-[#19221D]/70">Confira se entrou com a conta do e-mail que recebeu o convite.</p><Link href="/jogador" className="mt-4 inline-block font-semibold underline">Ir para Minhas Partidas</Link></div>
+  if (inv === undefined) return <Skeleton className="h-80 rounded-xl" />
+  if (inv === null) return <div className="mx-auto max-w-lg rounded-xl bg-white p-8 text-center ring-1 ring-black/5"><h1 className="text-xl font-bold text-[#142C25]">Convite não encontrado</h1><p className="mt-1 text-[#19221D]/70">Confira se entrou com a conta do e-mail que recebeu o convite.</p><Link href="/jogador" className="mt-4 inline-block font-semibold underline">Ir para Minhas Partidas</Link></div>
   async function respond(accept: boolean) {
     setBusy(accept ? "sim" : "nao")
     const r = await supabase().rpc("invite_respond", { p_invite: id, p_accept: accept })
@@ -44,10 +44,10 @@ export default function ConvitePage() {
       <GameCard g={inv.game} href={`/jogos/${inv.game.id}`} />
       {pending ? (
         <div className="grid grid-cols-2 gap-3">
-          <button type="button" disabled={!!busy} onClick={() => respond(false)} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border bg-white font-semibold hover:bg-[#F6F8F4]">{busy === "nao" ? <Loader2 className="size-5 animate-spin" /> : <XCircle className="size-5" />} Recusar convite</button>
-          <button type="button" disabled={!!busy} onClick={() => respond(true)} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#B9F344] font-bold text-[#142C25] shadow-[0_10px_30px_-10px_rgba(185,243,68,0.8)]">{busy === "sim" ? <Loader2 className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />} Aceitar convite</button>
+          <button type="button" disabled={!!busy} onClick={() => respond(false)} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border bg-white font-semibold hover:bg-[#F6F8F4]">{busy === "nao" ? <Loader2 className="size-5 animate-spin" /> : <XCircle className="size-5" />} Recusar convite</button>
+          <button type="button" disabled={!!busy} onClick={() => respond(true)} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#B9F344] font-semibold text-[#142C25]">{busy === "sim" ? <Loader2 className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />} Aceitar convite</button>
         </div>
-      ) : <p className="rounded-2xl bg-white p-4 text-center font-semibold text-[#142C25] ring-1 ring-black/5">{ST[inv.status] ?? inv.status}</p>}
+      ) : <p className="rounded-xl bg-white p-4 text-center font-semibold text-[#142C25] ring-1 ring-black/5">{ST[inv.status] ?? inv.status}</p>}
       {pending && <p className="text-center text-xs text-[#19221D]/60">O convite vale até {new Date(inv.expires_at).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}. Ao aceitar, você entra na lista de confirmados.</p>}
     </div>
   )

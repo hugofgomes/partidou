@@ -26,9 +26,9 @@ function Card() {
     window.location.href = j.next ?? "/"
   }
   return (
-    <div className="w-full max-w-sm space-y-5 rounded-xl bg-card p-6 text-center shadow-xl">
+    <div className="w-full max-w-sm space-y-5 rounded-xl bg-card p-6 text-center shadow-sm">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <div className="mx-auto rounded-2xl bg-primary px-5 py-4"><img src="/brand/partidou-logo.png" alt="Partidou" className="mx-auto h-12 w-auto" /></div>
+      <div className="mx-auto rounded-xl bg-primary px-5 py-4"><img src="/brand/partidou-logo.png" alt="Partidou" className="mx-auto h-12 w-auto" /></div>
       <h1 className="text-lg font-semibold">{t.title}</h1>
       <p className="text-sm text-muted-foreground">{t.text}</p>
       {error && <p role="alert" className="text-sm text-destructive">{error} <Link href="/recuperar" className="underline">Pedir um novo link</Link></p>}
@@ -39,5 +39,5 @@ function Card() {
 
 /** Tela intermediária do link de e-mail: o token só é usado quando a pessoa clica (evita o link "expirado" por verificadores de e-mail). */
 export default function Continuar() {
-  return <div className="grid min-h-dvh place-items-center bg-primary p-4"><React.Suspense><Card /></React.Suspense></div>
+  return <div className="grid min-h-dvh place-items-center bg-background p-4"><React.Suspense><Card /></React.Suspense></div>
 }

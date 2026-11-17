@@ -38,20 +38,18 @@ export default function ManualPage() {
 function Home() {
   return (
     <div className="space-y-6">
-      <header className="relative overflow-hidden rounded-3xl bg-[#142C25] px-6 py-8 text-white sm:px-10 sm:py-10">
-        <svg aria-hidden viewBox="0 0 200 120" className="absolute -right-6 -top-4 h-48 text-[#B9F344]/10" fill="none" stroke="currentColor" strokeWidth="2"><rect x="10" y="10" width="180" height="100" rx="4" /><line x1="100" y1="10" x2="100" y2="110" /><circle cx="100" cy="60" r="20" /></svg>
-        <div className="relative flex flex-wrap items-end justify-between gap-4">
+      <header className="space-y-5">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-[#B9F344]">Manual</p>
-            <h1 className="mt-1 text-3xl font-bold text-white">Como usar o Partidou</h1>
-            <p className="mt-2 max-w-md text-white/80">Escolha uma seção. Cada uma explica o essencial em poucos passos.</p>
+            <h1 className="text-2xl font-semibold text-[#142C25]">Como usar o Partidou</h1>
+            <p className="mt-1 max-w-md text-muted-foreground">Escolha uma seção. Cada uma explica o essencial em poucos passos.</p>
           </div>
-          <button type="button" onClick={() => window.print()} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/25 px-4 text-sm font-semibold text-white hover:bg-white/10"><Printer className="size-4" /> Salvar PDF</button>
+          <button type="button" onClick={() => window.print()} className="inline-flex h-9 items-center gap-2 rounded-lg border bg-card px-3.5 text-sm font-medium hover:bg-muted"><Printer className="size-4" /> Salvar PDF</button>
         </div>
-        <ol className="relative mt-7 grid gap-2 sm:grid-cols-4">
+        <ol className="grid gap-2 sm:grid-cols-4">
           {FIRST_STEPS.map((f, i) => (
-            <li key={i}><a href={`#${f.id}`} className="flex h-full items-center gap-3 rounded-2xl bg-white/[0.07] p-3 text-sm font-medium text-white ring-1 ring-white/10 transition-colors hover:bg-white/[0.12]">
-              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#B9F344] text-xs font-bold text-[#142C25]">{i + 1}</span>{f.text}</a></li>
+            <li key={i}><a href={`#${f.id}`} className="flex h-full items-center gap-3 rounded-lg border bg-card p-3 text-sm font-medium transition-colors hover:border-[#142C25]/30">
+              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-[#142C25] text-xs font-semibold text-[#B9F344]">{i + 1}</span>{f.text}</a></li>
           ))}
         </ol>
       </header>
@@ -60,7 +58,7 @@ function Home() {
         {MANUAL.map((s) => { const I = ICON[s.id]
           return (
             <li key={s.id}>
-              <a href={`#${s.id}`} className="group flex h-full items-start gap-4 rounded-2xl border bg-card p-5 transition hover:-translate-y-0.5 hover:border-[#142C25]/30 hover:shadow-md">
+              <a href={`#${s.id}`} className="group flex h-full items-start gap-4 rounded-xl border bg-card p-5 transition-colors hover:border-[#142C25]/30">
                 <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#142C25] text-[#B9F344]"><I className="size-5" /></span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center justify-between gap-2 font-semibold text-[#142C25]">{s.title}<ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" /></span>
@@ -78,18 +76,18 @@ function Home() {
 function Chapter({ s, n, prev, next, printing }: { s: ManualSection; n: number; prev?: ManualSection; next?: ManualSection; printing?: boolean }) {
   const I = ICON[s.id]
   return (
-    <article className={cn("space-y-5", printing && "break-inside-avoid rounded-2xl border p-5")}>
+    <article className={cn("space-y-5", printing && "break-inside-avoid rounded-xl border p-5")}>
       {!printing && <a href="#" onClick={(e) => { e.preventDefault(); history.pushState(null, "", window.location.pathname); window.dispatchEvent(new HashChangeEvent("hashchange")) }} className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-[#142C25]"><ArrowLeft className="size-4" /> Todas as seções</a>}
 
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="flex min-w-0 flex-1 items-center gap-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#142C25] text-[#B9F344] sm:size-14"><I className="size-6 sm:size-7" /></span>
+          <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#142C25] text-[#B9F344]"><I className="size-5" /></span>
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Seção {n} de {MANUAL.length}</p>
-            <h1 className="text-2xl font-bold leading-tight text-[#142C25] sm:text-3xl">{s.title}</h1>
+            <h1 className="text-2xl font-semibold leading-tight text-[#142C25]">{s.title}</h1>
           </div>
         </div>
-        {!printing && <Link href={s.href} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#B9F344] px-5 text-sm font-bold text-[#142C25] hover:bg-[#c8f76a] sm:w-auto">Abrir {s.title} <ArrowRight className="size-4" /></Link>}
+        {!printing && <Link href={s.href} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#B9F344] px-5 text-sm font-semibold text-[#142C25] hover:bg-[#c8f76a] sm:w-auto">Abrir {s.title} <ArrowRight className="size-4" /></Link>}
       </header>
       <p className="-mt-2 text-[15px] text-muted-foreground">{s.summary}</p>
 
@@ -100,25 +98,25 @@ function Chapter({ s, n, prev, next, printing }: { s: ManualSection; n: number; 
 
       <ol className="grid gap-3 sm:grid-cols-2">
         {s.steps.map((t, i) => (
-          <li key={i} className="flex gap-3 rounded-2xl border bg-card p-4">
+          <li key={i} className="flex gap-3 rounded-xl border bg-card p-4">
             <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#142C25] text-sm font-bold text-[#B9F344]">{i + 1}</span>
             <span className="pt-1 text-[15px] leading-snug text-foreground/85"><Rich text={t} /></span>
           </li>
         ))}
       </ol>
 
-      {s.tip && <p className="flex gap-3 rounded-2xl bg-[#B9F344]/20 p-4 text-[15px] leading-snug text-[#142C25]"><Lightbulb className="mt-0.5 size-5 shrink-0" /><span>{s.tip}</span></p>}
+      {s.tip && <p className="flex gap-3 rounded-xl bg-[#B9F344]/20 p-4 text-[15px] leading-snug text-[#142C25]"><Lightbulb className="mt-0.5 size-5 shrink-0" /><span>{s.tip}</span></p>}
 
       {s.faq && <div className="space-y-2">{s.faq.map((f) => (
-        <details key={f.q} open={printing} className="group rounded-2xl border bg-card px-4 open:pb-3">
+        <details key={f.q} open={printing} className="group rounded-xl border bg-card px-4 open:pb-3">
           <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-[#142C25] [&::-webkit-details-marker]:hidden">{f.q}<ChevronRight className="size-4 transition-transform group-open:rotate-90" /></summary>
           <p className="text-sm text-muted-foreground">{f.a}</p>
         </details>))}</div>}
 
       {!printing && (
         <nav aria-label="Outras seções" className="grid grid-cols-2 gap-3 border-t pt-5">
-          {prev ? <a href={`#${prev.id}`} className="rounded-2xl border p-3 text-sm hover:bg-secondary"><span className="flex items-center gap-1 text-xs text-muted-foreground"><ArrowLeft className="size-3.5" /> Anterior</span><span className="font-semibold text-[#142C25]">{prev.title}</span></a> : <span />}
-          {next ? <a href={`#${next.id}`} className="rounded-2xl border p-3 text-right text-sm hover:bg-secondary"><span className="flex items-center justify-end gap-1 text-xs text-muted-foreground">Próxima <ArrowRight className="size-3.5" /></span><span className="font-semibold text-[#142C25]">{next.title}</span></a> : <span />}
+          {prev ? <a href={`#${prev.id}`} className="rounded-xl border p-3 text-sm hover:bg-secondary"><span className="flex items-center gap-1 text-xs text-muted-foreground"><ArrowLeft className="size-3.5" /> Anterior</span><span className="font-semibold text-[#142C25]">{prev.title}</span></a> : <span />}
+          {next ? <a href={`#${next.id}`} className="rounded-xl border p-3 text-right text-sm hover:bg-secondary"><span className="flex items-center justify-end gap-1 text-xs text-muted-foreground">Próxima <ArrowRight className="size-3.5" /></span><span className="font-semibold text-[#142C25]">{next.title}</span></a> : <span />}
         </nav>
       )}
     </article>

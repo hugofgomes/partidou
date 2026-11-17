@@ -232,7 +232,7 @@ function Courts({ venue, courts, tenantId, canEdit, onChanged }: { venue: Venue 
       {courts.length === 0 && <p className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">Nenhuma quadra cadastrada ainda.</p>}
       <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {courts.map((c) => (
-          <li key={c.id} className="overflow-hidden rounded-2xl border bg-card">
+          <li key={c.id} className="overflow-hidden rounded-xl border bg-card">
             {c.photos[0]
               // eslint-disable-next-line @next/next/no-img-element
               ? <img src={c.photos[0]} alt={`Foto da ${c.name}`} loading="lazy" className="h-36 w-full object-cover" />

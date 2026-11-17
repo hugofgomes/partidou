@@ -80,7 +80,7 @@ export default function SubscriptionPage() {
       {!b.is_admin && <p role="note" className="rounded-xl border bg-secondary p-4 text-center text-sm">Somente o administrador do grupo pode assinar. Peça a ele para acessar esta página.</p>}
 
       {canPay && (
-        <form onSubmit={subscribe} className="space-y-4 rounded-2xl border bg-card p-5 shadow-sm">
+        <form onSubmit={subscribe} className="space-y-4 rounded-xl border bg-card p-5 shadow-sm">
           <fieldset className="space-y-2">
             <legend className="mb-1 text-sm font-semibold">Escolha o plano</legend>
             {plans.map((p) => (

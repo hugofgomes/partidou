@@ -90,7 +90,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
   if (data === null) return (
     <div className="grid min-h-dvh place-items-center bg-[#F6F8F4] p-6 text-center">
       <div><h1 className="text-2xl font-bold text-forest">Centro esportivo não encontrado</h1><p className="mt-2 text-graphite/70">O endereço pode estar errado ou o centro ainda não publicou a página.</p>
-        <Link href="/quadras" className="mt-5 inline-flex min-h-12 items-center rounded-full bg-forest px-6 font-semibold text-white">Buscar outras quadras</Link></div>
+        <Link href="/quadras" className="mt-5 inline-flex min-h-11 items-center rounded-lg bg-forest px-6 font-semibold text-white">Buscar outras quadras</Link></div>
     </div>
   )
 
@@ -151,7 +151,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
         <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-forest/80 to-transparent" />
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 pt-4 sm:px-6">
           <Link href="/quadras" aria-label="Partidou: buscar outras quadras"><img src="/brand/partidou-logo-520.png" alt="Partidou" width={520} height={120} className="h-7 w-auto" /></Link>
-          <Link href="/quadras" className="hidden min-h-10 items-center rounded-full px-3 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex">Buscar outras quadras</Link>
+          <Link href="/quadras" className="hidden min-h-10 items-center rounded-lg px-3 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex">Buscar outras quadras</Link>
         </div>
         <div className="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-12">
           <div className="flex flex-wrap items-center gap-2">
@@ -169,7 +169,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
               { k: "A partir de", v: `${moneyShort(minPrice)}/h` },
               { k: "Hoje", v: todayHours ? `${hourShort(todayHours.opens)}–${hourShort(todayHours.closes)}` : "Fechado" },
             ].map((x) => (
-              <div key={x.k} className="rounded-2xl bg-white/[0.07] px-3 py-3 ring-1 ring-white/10 backdrop-blur-sm sm:px-4">
+              <div key={x.k} className="rounded-xl bg-white/[0.07] px-3 py-3 ring-1 ring-white/10 backdrop-blur-sm sm:px-4">
                 <dt className="text-[11px] font-medium uppercase tracking-wide text-white/70 sm:text-xs">{x.k}</dt>
                 <dd className="mt-0.5 truncate text-base font-bold text-white sm:text-xl">{x.v}</dd>
               </div>
@@ -177,7 +177,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
           </dl>
 
           <div className="mt-7 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-            <button type="button" onClick={() => agendaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} className="col-span-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-lime px-6 text-[15px] font-bold text-forest shadow-[0_10px_30px_-10px_rgba(185,243,68,0.7)] transition-colors hover:bg-[#c8f76a]"><CalendarDays className="size-5" /> Reservar horário</button>
+            <button type="button" onClick={() => agendaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} className="col-span-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-lime px-6 text-[15px] font-semibold text-forest transition-colors hover:bg-[#c8f76a]"><CalendarDays className="size-5" /> Reservar horário</button>
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className={btnLight}><Navigation className="size-4" /> Como chegar</a>
             {wa && <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Olá! Vi a ${venue.name} no Partidou.`)}`} target="_blank" rel="noopener noreferrer" className={btnLight}><MessageCircle className="size-4" /> WhatsApp</a>}
             {venue.phone && <a href={`tel:${venue.phone}`} className={btnLight}><Phone className="size-4" /> Ligar</a>}
@@ -199,7 +199,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
                 const p = prices(c.id), on = c.id === court?.id
                 return (
                   <li key={c.id}>
-                    <article className={cn("flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(20,44,37,0.06),0_8px_24px_-12px_rgba(20,44,37,0.18)] ring-1 transition", on ? "ring-2 ring-lime" : "ring-black/5 hover:ring-forest/20")}>
+                    <article className={cn("flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_1px_2px_rgba(20,44,37,0.06),0_8px_24px_-12px_rgba(20,44,37,0.18)] ring-1 transition", on ? "ring-2 ring-lime" : "ring-black/5 hover:ring-forest/20")}>
                       <div className="relative aspect-video overflow-hidden bg-forest">
                         {c.photos[0]
                           ? <Image src={c.photos[0]} alt={`Foto da ${c.name}`} fill sizes="(min-width: 640px) 45vw, 100vw" quality={70} className="object-cover" />
@@ -219,7 +219,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
                         <p className="mt-4 text-sm text-graphite/70">{p.lo === p.hi ? "Valor por hora" : "A partir de"}</p>
                         <p className="text-2xl font-bold tracking-tight text-forest">{money(p.lo)}<span className="text-sm font-medium text-graphite/70">/hora{p.lo !== p.hi ? ` · até ${money(p.hi)}` : ""}</span></p>
                         <button type="button" onClick={() => chooseCourt(c.id)} aria-pressed={on}
-                          className={cn("mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full text-[15px] font-semibold transition-colors", on ? "bg-lime text-forest" : "bg-forest text-white hover:bg-[#1d3d33]")}>
+                          className={cn("mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg text-[15px] font-semibold transition-colors", on ? "bg-lime text-forest" : "bg-forest text-white hover:bg-[#1d3d33]")}>
                           <CalendarDays className="size-4" /> {on ? "Quadra selecionada" : "Ver horários disponíveis"}
                         </button>
                       </div>
@@ -236,11 +236,11 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
             {courts.length > 1 && (
               <div role="radiogroup" aria-label="Quadra" className="mt-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]">
                 {courts.map((c) => <button key={c.id} type="button" role="radio" aria-checked={c.id === court?.id} onClick={() => { setCourtId(c.id); setPick(null) }}
-                  className={cn("min-h-10 shrink-0 rounded-full border px-4 text-sm font-semibold transition-colors", c.id === court?.id ? "border-forest bg-forest text-white" : "border-black/10 bg-white text-graphite/80 hover:border-forest/40")}>{c.name}</button>)}
+                  className={cn("min-h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition-colors", c.id === court?.id ? "border-forest bg-forest text-white" : "border-black/10 bg-white text-graphite/80 hover:border-forest/40")}>{c.name}</button>)}
               </div>
             )}
 
-            <div className="mt-5 rounded-2xl bg-white p-4 shadow-[0_1px_2px_rgba(20,44,37,0.06)] ring-1 ring-black/5 sm:p-5">
+            <div className="mt-5 rounded-xl bg-white p-4 shadow-[0_1px_2px_rgba(20,44,37,0.06)] ring-1 ring-black/5 sm:p-5">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-sm font-semibold text-forest">{date ? fmtDateLong(date) : "Carregando…"}</p>
                 <div className="flex items-center gap-1">
@@ -281,7 +281,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
                   <div className="rounded-xl border border-dashed border-black/15 px-4 py-8 text-center">
                     <p className="font-semibold text-forest">{cells.length ? "Todos os horários deste dia já foram reservados." : "A quadra não abre neste dia."}</p>
                     <p className="mt-1 text-sm text-graphite/70">Escolha outro dia ou fale com o centro.</p>
-                    {nextDayWithSlots && <button type="button" onClick={() => setDate(nextDayWithSlots)} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-forest px-5 text-sm font-semibold text-white">Ver {WEEKDAYS[dowOf(nextDayWithSlots)].toLowerCase()}, {fmtDateBR(nextDayWithSlots).slice(0, 5)} <ChevronRight className="size-4" /></button>}
+                    {nextDayWithSlots && <button type="button" onClick={() => setDate(nextDayWithSlots)} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg bg-forest px-5 text-sm font-semibold text-white">Ver {WEEKDAYS[dowOf(nextDayWithSlots)].toLowerCase()}, {fmtDateBR(nextDayWithSlots).slice(0, 5)} <ChevronRight className="size-4" /></button>}
                   </div>
                 ) : (
                   <div className="space-y-5">
@@ -320,12 +320,12 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
               <p className="mt-1 text-sm text-graphite/70">Falta gente nestes jogos. Peça sua vaga ao organizador.</p>
               <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                 {matches.map((m) => (
-                  <li key={m.id} className="flex flex-col rounded-2xl bg-white p-5 ring-1 ring-black/5">
+                  <li key={m.id} className="flex flex-col rounded-xl bg-white p-5 ring-1 ring-black/5">
                     <p className="text-xs font-semibold text-forest/75">{m.sport ? sportName(m.sport) : m.court}</p>
                     <h3 className="mt-1 text-lg font-bold text-forest">{m.title}</h3>
                     <p className="mt-1 text-sm text-graphite/70">{m.court} · {fmtDateBR(localParts(tz, m.starts_at).date).slice(0, 5)} · {fmtRange(tz, m.starts_at, m.ends_at)}</p>
                     <p className="mt-3 text-sm font-semibold text-green-700">{m.slots_total - m.approved} de {m.slots_total} vaga(s) livre(s)</p>
-                    <Button className="mt-4 min-h-11 rounded-full" onClick={() => setJoinM(m)}>Pedir vaga</Button>
+                    <Button className="mt-4 min-h-11 rounded-lg" onClick={() => setJoinM(m)}>Pedir vaga</Button>
                   </li>
                 ))}
               </ul>
@@ -335,10 +335,10 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
 
         {/* ───────── 4. Sua reserva (resumo) ───────── */}
         <aside aria-labelledby="h-resumo" className="hidden lg:block">
-          <div className="sticky top-6 rounded-2xl bg-white p-6 shadow-[0_1px_2px_rgba(20,44,37,0.06),0_12px_32px_-16px_rgba(20,44,37,0.25)] ring-1 ring-black/5">
+          <div className="sticky top-6 rounded-xl bg-white p-6 shadow-[0_1px_2px_rgba(20,44,37,0.06),0_12px_32px_-16px_rgba(20,44,37,0.25)] ring-1 ring-black/5">
             <h2 id="h-resumo" className="text-lg font-bold text-forest">Sua reserva</h2>
             <Summary venue={venue} court={court} date={date} pick={pick} />
-            <Button onClick={confirm} disabled={!pick || checking} className="mt-6 min-h-12 w-full rounded-full bg-lime text-base font-bold text-forest hover:bg-[#c8f76a] disabled:bg-black/10 disabled:text-graphite/50">
+            <Button onClick={confirm} disabled={!pick || checking} className="mt-6 min-h-11 w-full rounded-lg bg-lime text-base font-semibold text-forest hover:bg-[#c8f76a] disabled:bg-black/10 disabled:text-graphite/50">
               {checking && <Loader2 className="size-4 animate-spin" />} {pick ? "Confirmar reserva" : "Escolha um horário"}
             </Button>
             <Policy venue={venue} />
@@ -354,7 +354,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
               <p className="truncate text-sm font-semibold text-forest">{court.name}</p>
               <p className="truncate text-xs text-graphite/70">{WEEKDAYS_SHORT[dowOf(date)]} {fmtDateBR(date).slice(0, 5)} · {fmtMinutes(pick.start_min)}–{fmtMinutes(pick.end_min)} · <strong className="text-forest">{money(pick.price_cents)}</strong></p>
             </div>
-            <Button onClick={confirm} disabled={checking} className="min-h-12 shrink-0 rounded-full bg-lime px-6 text-base font-bold text-forest hover:bg-[#c8f76a]">{checking && <Loader2 className="size-4 animate-spin" />} Confirmar</Button>
+            <Button onClick={confirm} disabled={checking} className="min-h-11 shrink-0 rounded-lg bg-lime px-6 text-base font-semibold text-forest hover:bg-[#c8f76a]">{checking && <Loader2 className="size-4 animate-spin" />} Confirmar</Button>
           </div>
         </div>
       )}
@@ -444,8 +444,8 @@ function Policy({ venue }: { venue: PubVenue["venue"] }) {
 function PageSkeleton() {
   return (
     <div className="min-h-dvh bg-[#F6F8F4]">
-      <div className="bg-forest px-4 py-10"><div className="mx-auto flex max-w-6xl items-center gap-4"><Skeleton className="size-20 rounded-2xl bg-white/10" /><div className="space-y-2"><Skeleton className="h-7 w-56 bg-white/10" /><Skeleton className="h-4 w-72 bg-white/10" /></div></div></div>
-      <div className="mx-auto grid max-w-6xl gap-4 px-4 py-8 sm:grid-cols-2">{[0, 1].map((i) => <Skeleton key={i} className="aspect-video rounded-2xl" />)}</div>
+      <div className="bg-forest px-4 py-10"><div className="mx-auto flex max-w-6xl items-center gap-4"><Skeleton className="size-20 rounded-xl bg-white/10" /><div className="space-y-2"><Skeleton className="h-7 w-56 bg-white/10" /><Skeleton className="h-4 w-72 bg-white/10" /></div></div></div>
+      <div className="mx-auto grid max-w-6xl gap-4 px-4 py-8 sm:grid-cols-2">{[0, 1].map((i) => <Skeleton key={i} className="aspect-video rounded-xl" />)}</div>
     </div>
   )
 }

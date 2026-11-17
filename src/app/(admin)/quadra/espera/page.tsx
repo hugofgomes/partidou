@@ -163,7 +163,7 @@ function EntryForm({ open, entry, courts, onClose, onSaved }: { open: boolean; e
           {positionsFor(v.sport).length > 0 && <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="wpos">Posição{v.sport === "futsal" ? " no futsal" : ""}</Label>
             <div id="wpos" role="radiogroup" aria-label="Posição" className="flex flex-wrap gap-2">
               {[["", "Não informada"] as [string, string], ...positionsFor(v.sport)].map(([k, l]) => <button key={k || "x"} type="button" role="radio" aria-checked={v.position === k} onClick={() => set("position", k)}
-                className={cn("min-h-10 rounded-full border px-4 text-sm font-medium transition-colors", v.position === k ? "border-primary bg-primary text-primary-foreground" : "bg-card hover:bg-secondary")}>{l}</button>)}
+                className={cn("min-h-10 rounded-lg border px-4 text-sm font-medium transition-colors", v.position === k ? "border-primary bg-primary text-primary-foreground" : "bg-card hover:bg-secondary")}>{l}</button>)}
             </div></div>}
           <fieldset className="space-y-1.5 sm:col-span-2"><legend className="mb-1.5 text-sm font-medium">Nível técnico</legend>
             <div role="radiogroup" aria-label="Nível técnico" className="grid gap-2 sm:grid-cols-3">

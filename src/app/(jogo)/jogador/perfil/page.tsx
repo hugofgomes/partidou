@@ -26,13 +26,13 @@ function Chips<T extends string | number>({ items, value, onChange, multi }: { i
       {items.map(([k, l]) => (
         <button key={String(k)} type="button" role={multi ? "checkbox" : "radio"} aria-checked={has(k)}
           onClick={() => multi ? onChange((has(k) ? (value as T[]).filter((x) => x !== k) : [...(value as T[]), k]) as T[]) : onChange(has(k) ? "" : k)}
-          className={cn("min-h-10 rounded-full border px-4 text-sm font-medium transition-colors", has(k) ? "border-[#142C25] bg-[#142C25] text-white" : "bg-white hover:bg-[#F6F8F4]")}>{l}</button>
+          className={cn("min-h-10 rounded-lg border px-4 text-sm font-medium transition-colors", has(k) ? "border-[#142C25] bg-[#142C25] text-white" : "bg-white hover:bg-[#F6F8F4]")}>{l}</button>
       ))}
     </div>
   )
 }
 const Section = ({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) => (
-  <section className="rounded-2xl bg-white p-5 ring-1 ring-black/5 sm:p-6"><h2 className="text-lg font-bold text-[#142C25]">{title}</h2>{hint && <p className="mt-0.5 text-sm text-[#19221D]/65">{hint}</p>}<div className="mt-4 space-y-4">{children}</div></section>
+  <section className="rounded-xl bg-white p-5 ring-1 ring-black/5 sm:p-6"><h2 className="text-lg font-bold text-[#142C25]">{title}</h2>{hint && <p className="mt-0.5 text-sm text-[#19221D]/65">{hint}</p>}<div className="mt-4 space-y-4">{children}</div></section>
 )
 
 /** Cadastro e edição do perfil esportivo (jogador e goleiro). Dados de contato nunca aparecem publicamente. */
@@ -53,7 +53,7 @@ function PerfilPageInner() {
         level: data.level ?? "", age_range: data.age_range ?? "", custom_hours: data.custom_hours ?? "", max_distance_km: data.max_distance_km ? String(data.max_distance_km) : "" })
     })
   }, [user, router])
-  if (!v) return <Skeleton className="h-96 rounded-2xl" />
+  if (!v) return <Skeleton className="h-96 rounded-xl" />
   const set = <K extends keyof P>(k: K, x: P[K]) => setV((s) => (s ? { ...s, [k]: x } : s))
   async function save(e: React.FormEvent) {
     e.preventDefault(); if (busy || !v) return
@@ -74,7 +74,7 @@ function PerfilPageInner() {
   const goalkeeper = v.main_position === "goleiro" || v.other_positions.includes("goleiro")
   return (
     <form onSubmit={save} className="mx-auto max-w-3xl space-y-4">
-      <header><h1 className="text-2xl font-bold text-[#142C25] sm:text-3xl">{isNew ? "Crie seu perfil de jogador" : "Meu perfil"}</h1>
+      <header><h1 className="text-2xl font-semibold text-[#142C25]">{isNew ? "Crie seu perfil de jogador" : "Meu perfil"}</h1>
         <p className="mt-1 text-[#19221D]/70">{isNew ? "Leva 1 minuto. Organizadores usam essas informações para encontrar e convidar você." : "Mantenha a disponibilidade em dia para receber convites certos."}</p></header>
 
       <Section title="Dados pessoais" hint="E-mail e telefone nunca aparecem para outras pessoas. O telefone só é mostrado ao organizador depois que você for confirmado numa partida.">
@@ -116,7 +116,7 @@ function PerfilPageInner() {
         <label className="flex items-start gap-3"><input type="checkbox" className="mt-1 size-5 accent-[#142C25]" checked={v.email_notifications} onChange={(e) => set("email_notifications", e.target.checked)} /><span><strong>Receber avisos por e-mail</strong><span className="block text-sm text-[#19221D]/65">Convites, aprovações e cancelamentos. Os avisos continuam no sino do Partidou.</span></span></label>
       </Section>
 
-      <div className="sticky bottom-16 z-10 md:bottom-4"><Button type="submit" disabled={busy} className="min-h-12 w-full rounded-full bg-[#B9F344] text-base font-bold text-[#142C25] shadow-lg hover:bg-[#c8f76a]">{busy && <Loader2 className="size-4 animate-spin" />} {isNew ? "Criar meu perfil" : "Salvar alterações"}</Button></div>
+      <div className="sticky bottom-16 z-10 md:bottom-4"><Button type="submit" disabled={busy} className="min-h-11 w-full rounded-lg bg-[#B9F344] text-base font-semibold text-[#142C25] shadow-md hover:bg-[#c8f76a]">{busy && <Loader2 className="size-4 animate-spin" />} {isNew ? "Criar meu perfil" : "Salvar alterações"}</Button></div>
     </form>
   )
 }

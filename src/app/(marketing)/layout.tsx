@@ -1,8 +1,4 @@
-import { Sora } from "next/font/google"
-
-const sora = Sora({ variable: "--font-sora", subsets: ["latin"], weight: ["700"], display: "swap" })
-
-/** Fonte de títulos do site comercial (Sora Bold, peso único para carregar menos); o texto corrido usa Inter. */
+/** Site comercial: as fontes (Inter e Sora) vêm do layout raiz; aqui só a classe do site (cores e títulos herdados da seção). */
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
-  return <div className={`${sora.variable} mk bg-ice text-graphite`}>{children}</div>
+  return <div className="mk bg-ice text-graphite">{children}</div>
 }

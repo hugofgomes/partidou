@@ -60,8 +60,8 @@ function Form({ next, erro }: { next: string | null; erro: string | null }) {
 export function LoginPage({ next, erro }: { next: string | null; erro: string | null }) {
   if (!supabaseConfigured) return <SetupNotice />
   return (
-    <main className="grid min-h-dvh place-items-center bg-primary p-4">
-      <div className="w-full max-w-sm space-y-6 rounded-xl bg-card p-6 shadow-xl">
+    <main className="grid min-h-dvh place-items-center bg-background p-4">
+      <div className="w-full max-w-sm space-y-6 rounded-xl border bg-card p-6 shadow-sm">
         <OrgHeading subtitle="Entre para jogar, organizar partidas ou gerenciar seu centro" />
         <Form next={next} erro={erro} />
       </div>

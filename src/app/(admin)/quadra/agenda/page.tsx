@@ -119,6 +119,6 @@ function Filters({ f, setF, courts }: { f: { court: string; sport: string; kind:
 }
 
 function Empty({ text, href, label }: { text: string; href: string; label: string }) {
-  return <div className="mx-auto mt-10 max-w-md space-y-3 rounded-2xl border bg-card p-6 text-center"><p className="text-sm">{text}</p><Link href={href} className="inline-flex min-h-11 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground">{label}</Link></div>
+  return <div className="mx-auto mt-10 max-w-md space-y-3 rounded-xl border bg-card p-6 text-center"><p className="text-sm">{text}</p><Link href={href} className="inline-flex min-h-11 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground">{label}</Link></div>
 }
 

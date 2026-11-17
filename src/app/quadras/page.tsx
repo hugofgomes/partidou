@@ -37,7 +37,7 @@ export default function BuscaQuadras() {
     <div className="min-h-dvh bg-background text-foreground">
       <header className="bg-primary px-4 py-5 text-primary-foreground"><div className="mx-auto max-w-4xl"><div className="flex items-center justify-between gap-3"><img src="/brand/partidou-logo.png" alt="Partidou" className="h-9 w-auto" /><Link href="/login" className="text-sm font-medium underline">Sou um centro esportivo · Entrar</Link></div><h1 className="text-2xl font-bold">Encontre onde jogar</h1><p className="text-sm opacity-90">Veja quadras, horários livres e solicite sua reserva.</p></div></header>
       <main className="mx-auto max-w-4xl space-y-4 px-4 py-6">
-        <form onSubmit={search} className="grid gap-3 rounded-2xl border bg-card p-4 sm:grid-cols-2 lg:grid-cols-3">
+        <form onSubmit={search} className="grid gap-3 rounded-xl border bg-card p-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-1"><Label htmlFor="s">Modalidade</Label><NativeSelect id="s" value={f.sport} onChange={(e) => setF({ ...f, sport: e.target.value })}><option value="">Todas</option>{SPORTS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect></div>
           <div className="space-y-1"><Label htmlFor="c">Cidade</Label><Input id="c" value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} placeholder="Ex.: Joinville" /></div>
           <div className="space-y-1"><Label htmlFor="u">Estado</Label><NativeSelect id="u" value={f.state} onChange={(e) => setF({ ...f, state: e.target.value })}><option value="">Todos</option>{UF.map((u) => <option key={u}>{u}</option>)}</NativeSelect></div>
@@ -49,7 +49,7 @@ export default function BuscaQuadras() {
         {res && res.length === 0 && <p className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">Nenhum centro encontrado com esses filtros.</p>}
         <ul className="grid gap-3 sm:grid-cols-2">
           {(res ?? []).map((r) => (
-            <li key={r.slug}><Link href={`/quadras/${r.slug}${f.date ? `?data=${f.date}` : ""}`} className="flex h-full items-center gap-3 rounded-2xl border bg-card p-4 hover:border-primary">
+            <li key={r.slug}><Link href={`/quadras/${r.slug}${f.date ? `?data=${f.date}` : ""}`} className="flex h-full items-center gap-3 rounded-xl border bg-card p-4 hover:border-primary">
               {r.logo_url ? <img src={r.logo_url} alt="" className="size-14 shrink-0 rounded-xl object-cover" /> : <span aria-hidden className="grid size-14 shrink-0 place-items-center rounded-xl bg-primary text-xl font-bold text-primary-foreground">{r.name.slice(0, 1)}</span>}
               <span className="min-w-0"><span className="block truncate font-semibold">{r.name}</span><span className="block text-sm text-muted-foreground">{[r.city, r.state].filter(Boolean).join("/")}</span>
                 <span className="block text-xs text-muted-foreground">{r.sports.map(sportLabel).join(", ")}{r.min_price_cents != null && ` · a partir de ${formatBRL(r.min_price_cents / 100)}/h`}</span>

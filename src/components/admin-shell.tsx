@@ -10,7 +10,7 @@ import { TrialBanner } from "@/components/trial-banner"
 import { useRole } from "@/hooks/use-role"
 import { supabase } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
-import { Activity, BookOpen, Bell, CalendarRange, ChartColumn, ChevronDown, ClipboardList, Clock, Contact, CreditCard, Crown, Hourglass, Inbox, LayoutDashboard, LogOut, MapPin, Megaphone, Menu as MenuIcon, PanelLeftClose, PanelLeftOpen, Settings2, UserCog, Users, Wallet, X } from "lucide-react"
+import { Activity, BookOpen, Bell, CalendarRange, ChartColumn, ChevronDown, ClipboardList, Contact, CreditCard, Crown, Hourglass, Inbox, LayoutDashboard, LogOut, MapPin, Megaphone, Menu as MenuIcon, PanelLeftClose, PanelLeftOpen, Settings2, UserCog, Users, Wallet, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import * as React from "react"
@@ -43,7 +43,7 @@ const JOGOS = [
   { href: "/jogos", label: "Encontrar um Jogo", icon: Search },
   { href: "/jogador", label: "Minhas Partidas", icon: CalendarCheck },
   { href: "/organizar", label: "Organizar Partidas", icon: Megaphone },
-  { href: "/jogador/perfil", label: "Meu perfil de jogador", icon: UserRound },
+  { href: "/jogador/perfil", label: "Perfil de jogador", icon: UserRound },
 ]
 
 const COURT_ROLE_LABEL = { admin: "Administrador", gerente: "Gerente", recepcionista: "Recepcionista", financeiro: "Financeiro" } as const
@@ -63,8 +63,8 @@ function SignOutButton({ collapsed, onClick }: { collapsed: boolean; onClick: ()
   return (
     <>
       <button type="button" onClick={onClick} aria-label="Sair" {...handlers}
-        className={cn("flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-white/75 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/70", collapsed && "lg:justify-center lg:px-0")}>
-        <LogOut className="size-[18px]" aria-hidden /> <span className={cn(collapsed && "lg:sr-only")}>Sair</span>
+        className={cn("flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-[13.5px] text-white/60 outline-none transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:ring-2 focus-visible:ring-white/70", collapsed && "lg:justify-center lg:px-0")}>
+        <LogOut className="size-4" aria-hidden /> <span className={cn(collapsed && "lg:sr-only")}>Sair</span>
       </button>
       {tip}
     </>
@@ -81,37 +81,6 @@ function useTip(label: string, enabled: boolean) {
   return { handlers: { onMouseEnter: show, onFocus: show, onMouseLeave: hide, onBlur: hide }, tip }
 }
 
-/** Submenu Quadra Esportiva (recolhível). Itens ainda não entregues aparecem desativados, com a marca "em breve". */
-function QuadraMenu({ path }: { path: string }) {
-  const collapsed = React.useContext(CollapsedCtx)
-  const [open, setOpen] = React.useState(path.startsWith("/quadra"))
-  React.useEffect(() => { if (path.startsWith("/quadra")) setOpen(true) }, [path])
-  const { handlers, tip } = useTip("Quadra Esportiva", collapsed)
-  const show = open || collapsed
-  return (
-    <div className="space-y-1">
-      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={show} aria-controls="submenu-quadra" {...handlers}
-        className={cn("flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm font-semibold text-white outline-none transition hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/70", collapsed && "lg:justify-center lg:px-0")}>
-        <LayoutDashboard className="size-[18px] shrink-0" aria-hidden />
-        <span className={cn("flex-1 truncate text-left", collapsed && "lg:sr-only")}>Quadra Esportiva</span>
-        <ChevronDown aria-hidden className={cn("size-4 shrink-0 transition-transform", show && "rotate-180", collapsed && "lg:hidden")} />
-      </button>
-      {tip}
-      <div id="submenu-quadra" className={cn("space-y-1", !show && "hidden", !collapsed && "border-l border-white/10 pl-2 ml-4")}>
-        {QUADRA.map((n) => n.ready
-          ? <SideLink key={n.href} {...n} path={path} />
-          : (
-            <div key={n.href} aria-disabled className={cn("flex h-10 cursor-not-allowed items-center gap-3 rounded-lg px-3 text-sm text-white/35", collapsed && "lg:justify-center lg:px-0")} title="Disponível nas próximas etapas">
-              <n.icon className="size-[18px] shrink-0" aria-hidden />
-              <span className={cn("flex-1 truncate", collapsed && "lg:sr-only")}>{n.label}</span>
-              <Clock aria-label="em breve" className={cn("size-3.5 shrink-0 text-white/40", collapsed && "lg:hidden")} />
-            </div>
-          ))}
-      </div>
-    </div>
-  )
-}
-
 function SideLink({ href, label, icon: Icon, path, badge }: { href: string; label: string; icon: typeof Users; path: string; badge?: number }) {
   const active = isActive(path, href)
   const collapsed = React.useContext(CollapsedCtx)
@@ -123,14 +92,14 @@ function SideLink({ href, label, icon: Icon, path, badge }: { href: string; labe
         aria-current={active ? "page" : undefined}
         {...handlers}
         className={cn(
-          "group relative flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-white/75 outline-none transition-all duration-150 hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/70",
+          "group relative flex h-9 items-center gap-2.5 rounded-md px-2.5 text-[13.5px] text-white/70 outline-none transition-colors duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:ring-2 focus-visible:ring-white/60",
           collapsed && "lg:justify-center lg:px-0",
-          active && "bg-[var(--shell-active)] text-[var(--shell-active-fg)] shadow-sm hover:bg-[var(--shell-active)]",
+          active && "bg-white/[0.09] font-medium text-white before:absolute before:inset-y-2 before:left-0 before:w-[3px] before:rounded-full before:bg-[#B9F344]",
         )}
       >
-        <Icon className="size-[18px] shrink-0" aria-hidden />
+        <Icon className={cn("size-4 shrink-0", active ? "text-[#B9F344]" : "text-white/60 group-hover:text-white/80")} aria-hidden />
         <span className={cn("flex-1 truncate", collapsed && "lg:sr-only")}>{label}</span>
-        {!!badge && <span className={cn("rounded-full px-1.5 text-[11px] font-semibold", active ? "bg-[#142C25] text-[#B9F344]" : "bg-[#B9F344] text-[#142C25]", collapsed && "lg:absolute lg:top-1 lg:right-2 lg:px-1 lg:text-[10px]")} aria-label={`${badge} pendentes`}>{badge}</span>}
+        {!!badge && <span className={cn("rounded-full bg-[#B9F344] px-1.5 text-[11px] font-semibold leading-[18px] text-[#142C25]", collapsed && "lg:absolute lg:top-1 lg:right-2 lg:px-1 lg:text-[10px]")} aria-label={`${badge} pendentes`}>{badge}</span>}
       </Link>
       {tip}
     </>
@@ -217,6 +186,25 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     window.addEventListener("focus", onFocus)
     return () => { alive = false; window.clearInterval(t); window.removeEventListener("focus", onFocus) }
   }, [role, isPlatform, path])
+  // Menu por tarefa, mostrando só o que cada perfil acessa (as permissões reais continuam no banco).
+  type NavItem = { href: string; label: string; icon: typeof Users; badge?: number }
+  const navGroups: { title: string; items: NavItem[] }[] = []
+  if (courtRole) navGroups.push({ title: "Visão geral", items: [{ href: "/quadra", label: "Dashboard", icon: LayoutDashboard }] })
+  navGroups.push({ title: "Partidas", items: JOGOS })
+  if (courtRole) navGroups.push({ title: "Quadra esportiva", items: [
+    { href: "/quadra/agenda", label: "Agenda", icon: CalendarRange }, { href: "/quadra/reservas", label: "Reservas", icon: ClipboardList, badge: pending },
+    { href: "/quadra/centro", label: "Centro Esportivo", icon: MapPin }, { href: "/quadra/clientes", label: "Clientes", icon: Contact },
+    ...(courtRole !== "financeiro" ? [{ href: "/quadra/espera", label: "Lista de Espera", icon: Hourglass }] : []),
+  ] })
+  const gestao: NavItem[] = []
+  if (courtRole && courtRole !== "recepcionista") gestao.push({ href: "/quadra/financeiro", label: "Financeiro", icon: Wallet }, { href: "/quadra/relatorios", label: "Relatórios", icon: ChartColumn })
+  if (courtRole === "admin") gestao.push({ href: "/quadra/funcionarios", label: "Funcionários", icon: Users })
+  if (gestao.length) navGroups.push({ title: "Gestão", items: gestao })
+  navGroups.push({ title: "Sistema", items: [
+    ...(courtRole ? [{ href: "/quadra/configuracoes", label: "Configurações", icon: Settings2 }, { href: "/quadra/manual", label: "Manual", icon: BookOpen }] : []),
+    ...(role === "admin" ? ADMIN : []), ACCOUNT,
+  ] })
+  if (role === "admin" && isPlatform) navGroups.push({ title: "SaaS", items: [PLATFORM, ...SAAS_LINKS.map((n) => (n.href === "/super/leads" ? { ...n, badge: newLeads } : n))] })
   const signOut = async () => {
     await supabase().auth.signOut()
     window.location.href = "/login"
@@ -237,50 +225,39 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         id="menu-lateral"
         aria-label="Menu principal"
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-[var(--shell-bg)] text-white shadow-xl transition-[transform,width] duration-200 ease-out motion-reduce:transition-none lg:translate-x-0 lg:shadow-none",
+          "fixed inset-y-0 left-0 z-40 flex w-60 flex-col bg-[var(--shell-bg)] text-white shadow-xl transition-[transform,width] duration-200 ease-out motion-reduce:transition-none lg:translate-x-0 lg:shadow-none",
           collapsed && "lg:w-[72px]",
           open ? "translate-x-0" : "max-lg:invisible max-lg:-translate-x-full",
         )}
       >
-        <div className={cn("flex h-16 items-center justify-between border-b border-white/10 px-5", collapsed && "lg:justify-center lg:px-0")}>
+        <div className={cn("flex h-14 items-center justify-between border-b border-white/[0.08] px-4", collapsed && "lg:justify-center lg:px-0")}>
           <span className="flex min-w-0 items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={collapsed ? "/brand/partidou-marca-96.png" : "/brand/partidou-logo-520.png"} alt="Partidou" width={collapsed ? 114 : 520} height={collapsed ? 96 : 120} className={cn("w-auto object-contain", collapsed ? "h-8 max-lg:h-9" : "h-9 max-w-44")} />
+            <img src={collapsed ? "/brand/partidou-marca-96.png" : "/brand/partidou-logo-520.png"} alt="Partidou" width={collapsed ? 114 : 520} height={collapsed ? 96 : 120} className={cn("w-auto object-contain", collapsed ? "h-7" : "h-7 max-w-40")} />
           </span>
           <button type="button" onClick={() => setOpen(false)} aria-label="Fechar menu" className="grid size-10 place-items-center rounded-md text-white/80 hover:bg-white/10 hover:text-white lg:hidden">
             <X className="size-5" />
           </button>
         </div>
-        <nav className={cn("flex-1 space-y-6 overflow-y-auto px-3 py-5", collapsed && "lg:space-y-3")} aria-label="Principal">
-          {courtRole && <QuadraMenu path={path} />}
-          <div className="space-y-1">
-            <p className={cn("px-3 pb-1 text-[11px] font-semibold tracking-wider text-white/50 uppercase", collapsed && "lg:hidden")}>Jogos</p>
-            {JOGOS.map((n) => <SideLink key={n.href} {...n} path={path} />)}
-          </div>
-          <div className="space-y-1">
-            <p className={cn("px-3 pb-1 text-[11px] font-semibold tracking-wider text-white/50 uppercase", collapsed && "lg:hidden")}>{role === "admin" ? "Administração" : "Conta"}</p>
-            {role === "admin" && ADMIN.map((n) => <SideLink key={n.href} {...n} path={path} />)}
-            <SideLink {...ACCOUNT} path={path} />
-          </div>
-          {role === "admin" && isPlatform && (
-            <div className="space-y-1">
-              <p className={cn("px-3 pb-1 text-[11px] font-semibold tracking-wider text-white/50 uppercase", collapsed && "lg:hidden")}>SaaS</p>
-              <SideLink {...PLATFORM} path={path} />
-              {SAAS_LINKS.map((n) => <SideLink key={n.href} {...n} path={path} badge={n.href === "/super/leads" ? newLeads : undefined} />)}
+        <nav className={cn("flex-1 space-y-5 overflow-y-auto px-3 py-4", collapsed && "lg:space-y-3")} aria-label="Principal">
+          {navGroups.map((g) => (
+            <div key={g.title} className="space-y-0.5">
+              <p className={cn("px-2.5 pb-1 text-[11px] font-medium tracking-wider text-white/40 uppercase", collapsed && "lg:hidden")}>{g.title}</p>
+              {g.items.map((n) => <SideLink key={n.href} {...n} path={path} />)}
             </div>
-          )}
+          ))}
         </nav>
         <div className="space-y-1 border-t border-white/10 p-3">
           <button type="button" onClick={toggleMenu} aria-pressed={collapsed} aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
-            className={cn("hidden h-10 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-white/70 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/70 lg:flex", collapsed && "lg:justify-center lg:px-0")}>
-            {collapsed ? <PanelLeftOpen className="size-[18px]" aria-hidden /> : <><PanelLeftClose className="size-[18px]" aria-hidden /> Recolher menu</>}
+            className={cn("hidden h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-[13.5px] text-white/60 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/70 lg:flex", collapsed && "lg:justify-center lg:px-0")}>
+            {collapsed ? <PanelLeftOpen className="size-4" aria-hidden /> : <><PanelLeftClose className="size-4" aria-hidden /> Recolher menu</>}
           </button>
           <SignOutButton collapsed={collapsed} onClick={signOut} />
         </div>
       </aside>
 
-      <div className={cn("flex min-h-dvh flex-1 flex-col transition-[padding] duration-200 motion-reduce:transition-none", collapsed ? "lg:pl-[72px]" : "lg:pl-64")}>
-        <header className="sticky top-0 z-20 flex h-[calc(4rem+env(safe-area-inset-top))] items-center gap-3 border-b bg-white px-4 pt-[env(safe-area-inset-top)] shadow-sm sm:px-6">
+      <div className={cn("flex min-h-dvh flex-1 flex-col transition-[padding] duration-200 motion-reduce:transition-none", collapsed ? "lg:pl-[72px]" : "lg:pl-60")}>
+        <header className="sticky top-0 z-20 flex h-[calc(3.5rem+env(safe-area-inset-top))] items-center gap-2 border-b bg-white/95 px-4 pt-[env(safe-area-inset-top)] backdrop-blur sm:px-6">
           <button
             type="button"
             onClick={() => setOpen(true)}
@@ -291,7 +268,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           >
             <MenuIcon className="size-5" />
           </button>
-          <div className="flex-1 truncate text-lg font-semibold tracking-tight text-primary">{titleOf(path)}</div>
+          <div className="flex-1 truncate font-heading text-[15px] font-semibold text-foreground">{titleOf(path)}</div>
           {courtRole && path !== "/quadra/manual" && (() => { const m = manualFor(path); return (
             <Link href={`/quadra/manual${m ? `#${m.id}` : ""}`} aria-label={m ? `Manual: ${m.title}` : "Manual do sistema"} title={m ? `Como usar: ${m.title}` : "Manual do sistema"}
               className="grid size-10 place-items-center rounded-lg text-primary outline-none transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring">
