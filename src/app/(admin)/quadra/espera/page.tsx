@@ -18,14 +18,32 @@ import { Loader2, MessageCircle, Plus } from "lucide-react"
 import * as React from "react"
 import { toast } from "sonner"
 
-type Entry = { id: string; name: string; phone: string | null; email: string | null; sport: string | null; court_id: string | null; weekday: number | null; start_min: number | null; kind: string; notes: string | null; status: string; contact_consent: boolean; created_at: string }
+type Entry = { id: string; name: string; phone: string | null; email: string | null; sport: string | null; court_id: string | null; weekday: number | null; start_min: number | null; kind: string; notes: string | null; status: string; contact_consent: boolean; created_at: string; position: string | null; skill_level: string | null }
 type Match = { waitlist_id: string; court_id: string; court_name: string; starts_at: string; ends_at: string }
 type Court = { id: string; name: string }
 const DAYS = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
 const STATUS: Record<string, string> = { aguardando: "Aguardando", avisado: "Avisado", atendido: "Atendido", cancelado: "Cancelado" }
 const hhmm = (m: number | null) => (m == null ? "—" : `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`)
 const phoneShow = (v: string | null) => (v ? maskPhone(v.replace(/^55/, "")) : "—")
-const EMPTY = { name: "", phone: "", email: "", sport: "", court_id: "", weekday: "", time: "", kind: "avulsa", notes: "", contact_consent: false }
+const EMPTY = { name: "", phone: "", email: "", sport: "", court_id: "", weekday: "", time: "", kind: "avulsa", notes: "", contact_consent: false, position: "", skill_level: "" }
+const POSITIONS: [string, string][] = [["goleiro", "Goleiro"], ["zagueiro", "Zagueiro"], ["lateral", "Lateral"], ["meia", "Meia"], ["atacante", "Atacante"]]
+const POSITION_LABEL = Object.fromEntries(POSITIONS) as Record<string, string>
+/** Níveis técnicos: técnica, visão de jogo e regularidade de cada nível (critérios definidos pelo Partidou). */
+const LEVELS = [
+  { k: "medio", label: "Médio", cls: "bg-sky-100 text-sky-900",
+    tecnica: "Domina o básico (passe curto, domínio simples), mas erra sob pressão intensa ou precisa de mais toques na bola.",
+    visao: "Previsível; costuma escolher a opção mais segura e demora um pouco mais para ler o jogo.",
+    regularidade: "Oscila bastante; faz boas partidas, mas tem dificuldade para manter o nível contra adversários fortes." },
+  { k: "bom", label: "Bom", cls: "bg-green-100 text-green-900",
+    tecnica: "Alta precisão nos fundamentos específicos da sua posição (ex.: cruzamento, desarme, finalização).",
+    visao: "Ágil; encontra bons espaços e raramente compromete a posse de bola do time.",
+    regularidade: "Regular; entrega um desempenho confiável na maioria dos jogos e resolve problemas táticos." },
+  { k: "craque", label: "Craque", cls: "bg-lime text-forest",
+    tecnica: "Domínio total e refinado de todos os fundamentos, usando os dois pés e executando jogadas difíceis com naturalidade.",
+    visao: "Antecipa o jogo; enxerga passes e espaços antes dos outros e cria soluções onde não parecia haver saída.",
+    regularidade: "Decisivo; mantém o altíssimo nível mesmo em jogos grandes, sob forte marcação e pressão extrema." },
+] as const
+const LEVEL = Object.fromEntries(LEVELS.map((l) => [l.k, l])) as Record<string, (typeof LEVELS)[number]>
 
 async function load(allowed: boolean) {
   if (!allowed) return null
@@ -39,7 +57,7 @@ export default function EsperaPage() {
   const role = useCourtRoleCtx()!
   const allowed = role !== "financeiro"
   const { data, error, loading, reload } = useLoad(() => load(allowed), [allowed])
-  const [f, setF] = React.useState({ status: "aguardando", sport: "", court: "", day: "" })
+  const [f, setF] = React.useState({ status: "aguardando", sport: "", court: "", day: "", position: "", level: "" })
   const [edit, setEdit] = React.useState<Entry | "novo" | null>(null)
   if (!allowed) return <p className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">O perfil Financeiro não acessa a lista de espera.</p>
   if (error) return <p role="alert" className="text-sm text-destructive">Erro ao carregar: {error}</p>
@@ -47,7 +65,7 @@ export default function EsperaPage() {
   if (!data) return null
   const { entries, courts, tz, venue, matches } = data
   const courtName = new Map(courts.map((c) => [c.id, c.name]))
-  const rows = entries.filter((x) => (!f.status || x.status === f.status) && (!f.sport || x.sport === f.sport) && (!f.court || x.court_id === f.court) && (!f.day || String(x.weekday) === f.day))
+  const rows = entries.filter((x) => (!f.status || x.status === f.status) && (!f.sport || x.sport === f.sport) && (!f.court || x.court_id === f.court) && (!f.day || String(x.weekday) === f.day) && (!f.position || x.position === f.position) && (!f.level || x.skill_level === f.level))
   const waiting = entries.filter((x) => x.status === "aguardando")
   // Horários mais procurados: dia da semana + horário entre os que aguardam.
   const counts = new Map<string, number>()
@@ -70,11 +88,13 @@ export default function EsperaPage() {
         <Button onClick={() => setEdit("novo")}><Plus className="size-4" /> Novo interessado</Button>
       </div>
       {top.length > 0 && <Card className="p-4"><h2 className="text-sm font-semibold">Horários mais procurados</h2><ul className="mt-2 flex flex-wrap gap-2 text-sm">{top.map(([k, n]) => <li key={k} className="rounded-full bg-muted px-3 py-1">{k} <strong>· {n}</strong></li>)}</ul></Card>}
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
         <NativeSelect aria-label="Situação" value={f.status} onChange={(e) => setF({ ...f, status: e.target.value })}><option value="">Todas as situações</option>{Object.entries(STATUS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect>
         <NativeSelect aria-label="Modalidade" value={f.sport} onChange={(e) => setF({ ...f, sport: e.target.value })}><option value="">Todas as modalidades</option>{SPORTS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect>
         <NativeSelect aria-label="Quadra" value={f.court} onChange={(e) => setF({ ...f, court: e.target.value })}><option value="">Todas as quadras</option>{courts.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</NativeSelect>
         <NativeSelect aria-label="Dia da semana" value={f.day} onChange={(e) => setF({ ...f, day: e.target.value })}><option value="">Todos os dias</option>{DAYS.map((d, i) => <option key={d} value={i}>{d}</option>)}</NativeSelect>
+        <NativeSelect aria-label="Posição" value={f.position} onChange={(e) => setF({ ...f, position: e.target.value })}><option value="">Todas as posições</option>{POSITIONS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect>
+        <NativeSelect aria-label="Nível técnico" value={f.level} onChange={(e) => setF({ ...f, level: e.target.value })}><option value="">Todos os níveis</option>{LEVELS.map((l) => <option key={l.k} value={l.k}>{l.label}</option>)}</NativeSelect>
       </div>
       <p className="text-sm text-muted-foreground">{rows.length} solicitação(ões)</p>
       <ul className="space-y-2">
@@ -84,7 +104,9 @@ export default function EsperaPage() {
             <li key={x.id} className="rounded-xl border bg-card p-3">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="font-semibold">{x.name} <span className={cn("ml-1 rounded-full px-2 py-0.5 text-xs font-medium", x.status === "aguardando" ? "bg-amber-100 text-amber-900" : x.status === "atendido" ? "bg-green-100 text-green-900" : "bg-slate-200 text-slate-700")}>{STATUS[x.status]}</span></p>
+                  <p className="font-semibold">{x.name} <span className={cn("ml-1 rounded-full px-2 py-0.5 text-xs font-medium", x.status === "aguardando" ? "bg-amber-100 text-amber-900" : x.status === "atendido" ? "bg-green-100 text-green-900" : "bg-slate-200 text-slate-700")}>{STATUS[x.status]}</span>
+                    {x.position && <span className="ml-1 rounded-full bg-secondary px-2 py-0.5 text-xs font-medium">{POSITION_LABEL[x.position]}</span>}
+                    {x.skill_level && LEVEL[x.skill_level] && <span className={cn("ml-1 rounded-full px-2 py-0.5 text-xs font-semibold", LEVEL[x.skill_level].cls)} title={LEVEL[x.skill_level].tecnica}>{LEVEL[x.skill_level].label}</span>}</p>
                   <p className="text-sm text-muted-foreground">{phoneShow(x.phone)}{x.email && ` · ${x.email}`}</p>
                   <p className="text-sm">{x.sport ? sportLabel(x.sport) : "Qualquer modalidade"} · {x.court_id ? courtName.get(x.court_id) ?? "quadra" : "qualquer quadra"} · {x.weekday == null ? "qualquer dia" : DAYS[x.weekday]} {hhmm(x.start_min)} · {KIND_LABEL[x.kind as keyof typeof KIND_LABEL]}</p>
                   <p className="text-xs text-muted-foreground">Cadastro em {fmtDateBR(localParts(tz, x.created_at).date)}{x.notes && ` · ${x.notes}`}{!x.contact_consent && " · sem autorização de contato"}</p>
@@ -122,7 +144,7 @@ export default function EsperaPage() {
 }
 
 function EntryForm({ open, entry, courts, onClose, onSaved }: { open: boolean; entry: Entry | null; courts: Court[]; onClose: () => void; onSaved: () => void }) {
-  const [v, setV] = React.useState(() => entry ? { name: entry.name, phone: entry.phone ? phoneShow(entry.phone) : "", email: entry.email ?? "", sport: entry.sport ?? "", court_id: entry.court_id ?? "", weekday: entry.weekday == null ? "" : String(entry.weekday), time: entry.start_min == null ? "" : hhmm(entry.start_min), kind: entry.kind, notes: entry.notes ?? "", contact_consent: entry.contact_consent } : EMPTY)
+  const [v, setV] = React.useState(() => entry ? { name: entry.name, phone: entry.phone ? phoneShow(entry.phone) : "", email: entry.email ?? "", sport: entry.sport ?? "", court_id: entry.court_id ?? "", weekday: entry.weekday == null ? "" : String(entry.weekday), time: entry.start_min == null ? "" : hhmm(entry.start_min), kind: entry.kind, notes: entry.notes ?? "", contact_consent: entry.contact_consent, position: entry.position ?? "", skill_level: entry.skill_level ?? "" } : EMPTY)
   const [busy, setBusy] = React.useState(false)
   const set = <K extends keyof typeof EMPTY>(k: K, x: (typeof EMPTY)[K]) => setV((s) => ({ ...s, [k]: x }))
   async function save(e: React.FormEvent) {
@@ -131,7 +153,7 @@ function EntryForm({ open, entry, courts, onClose, onSaved }: { open: boolean; e
     if (!ph && !v.email) return toast.error("Informe telefone ou e-mail.")
     const [h, m] = v.time ? v.time.split(":").map(Number) : [null, null]
     setBusy(true)
-    const row = { name: v.name, phone: ph, email: v.email || null, sport: v.sport || null, court_id: v.court_id || null, weekday: v.weekday === "" ? null : Number(v.weekday), start_min: h == null ? null : h * 60 + (m ?? 0), kind: v.kind, notes: v.notes || null, contact_consent: v.contact_consent }
+    const row = { name: v.name, phone: ph, email: v.email || null, sport: v.sport || null, court_id: v.court_id || null, weekday: v.weekday === "" ? null : Number(v.weekday), start_min: h == null ? null : h * 60 + (m ?? 0), kind: v.kind, notes: v.notes || null, contact_consent: v.contact_consent, position: v.position || null, skill_level: v.skill_level || null }
     const r = entry ? await supabase().from("court_waitlist").update(row).eq("id", entry.id) : await supabase().from("court_waitlist").insert(row)
     setBusy(false)
     if (r.error) return toast.error(r.error.message)
@@ -139,7 +161,7 @@ function EntryForm({ open, entry, courts, onClose, onSaved }: { open: boolean; e
   }
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader><DialogTitle>{entry ? "Editar solicitação" : "Novo interessado"}</DialogTitle><DialogDescription>Informe o horário desejado para o sistema apontar quando ele ficar livre.</DialogDescription></DialogHeader>
         <form onSubmit={save} className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="wn">Nome</Label><Input id="wn" required minLength={2} maxLength={120} value={v.name} onChange={(e) => set("name", e.target.value)} /></div>
@@ -149,6 +171,30 @@ function EntryForm({ open, entry, courts, onClose, onSaved }: { open: boolean; e
           <div className="space-y-1.5"><Label htmlFor="wc">Quadra desejada</Label><NativeSelect id="wc" value={v.court_id} onChange={(e) => set("court_id", e.target.value)}><option value="">Qualquer</option>{courts.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</NativeSelect></div>
           <div className="space-y-1.5"><Label htmlFor="wd">Dia da semana</Label><NativeSelect id="wd" value={v.weekday} onChange={(e) => set("weekday", e.target.value)}><option value="">Qualquer</option>{DAYS.map((d, i) => <option key={d} value={i}>{d}</option>)}</NativeSelect></div>
           <div className="space-y-1.5"><Label htmlFor="wt">Horário desejado</Label><Input id="wt" type="time" step={1800} value={v.time} onChange={(e) => set("time", e.target.value)} /></div>
+          <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="wpos">Posição</Label>
+            <div id="wpos" role="radiogroup" aria-label="Posição" className="flex flex-wrap gap-2">
+              {[["", "Não informada"] as [string, string], ...POSITIONS].map(([k, l]) => <button key={k || "x"} type="button" role="radio" aria-checked={v.position === k} onClick={() => set("position", k)}
+                className={cn("min-h-10 rounded-full border px-4 text-sm font-medium transition-colors", v.position === k ? "border-primary bg-primary text-primary-foreground" : "bg-card hover:bg-secondary")}>{l}</button>)}
+            </div></div>
+          <fieldset className="space-y-1.5 sm:col-span-2"><legend className="mb-1.5 text-sm font-medium">Nível técnico</legend>
+            <div role="radiogroup" aria-label="Nível técnico" className="grid gap-2 sm:grid-cols-3">
+              {LEVELS.map((l) => {
+                const on = v.skill_level === l.k
+                return (
+                  <button key={l.k} type="button" role="radio" aria-checked={on} onClick={() => set("skill_level", on ? "" : l.k)}
+                    className={cn("rounded-xl border p-3 text-left transition-colors", on ? "border-primary ring-2 ring-primary/30" : "bg-card hover:bg-secondary/60")}>
+                    <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-xs font-bold", l.cls)}>{l.label}</span>
+                    <dl className="mt-2 space-y-1.5 text-xs leading-snug text-muted-foreground">
+                      <div><dt className="font-semibold text-foreground">Técnica</dt><dd>{l.tecnica}</dd></div>
+                      <div><dt className="font-semibold text-foreground">Visão de jogo</dt><dd>{l.visao}</dd></div>
+                      <div><dt className="font-semibold text-foreground">Regularidade</dt><dd>{l.regularidade}</dd></div>
+                    </dl>
+                  </button>
+                )
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground">Toque de novo no nível escolhido para deixar sem nível.</p>
+          </fieldset>
           <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="wk">Tipo de reserva</Label><NativeSelect id="wk" value={v.kind} onChange={(e) => set("kind", e.target.value)}><option value="avulsa">Reserva avulsa</option><option value="mensalista">Mensalista</option><option value="mensalista_professor">Mensalista com professor</option></NativeSelect></div>
           <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="wo">Observações</Label><Input id="wo" maxLength={500} value={v.notes} onChange={(e) => set("notes", e.target.value)} /></div>
           <label className="flex items-start gap-2 text-sm sm:col-span-2"><input type="checkbox" className="mt-1" checked={v.contact_consent} onChange={(e) => set("contact_consent", e.target.checked)} /><span>A pessoa autorizou ser avisada por WhatsApp/e-mail quando surgir um horário. (LGPD)</span></label>

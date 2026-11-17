@@ -112,3 +112,5 @@ A função `court_role()` resolve o perfil e devolve nulo (sem acesso) quando o 
 ## Pendências e riscos conhecidos
 - As partidas (`court_matches`) são uma camada própria do módulo; jogadores não têm conta (ver limites da Fase 6).
 - Pix e gateways: somente preparação de estrutura; nada simulado. Avisos da lista de espera por WhatsApp: apenas links, sem envio automático.
+
+**Lista de espera: posição e nível técnico (1.7.1, `0043_espera_posicao_nivel.sql`).** Cada interessado pode ter **posição** (goleiro, zagueiro, lateral, meia, atacante) e **nível técnico** (Médio, Bom, Craque), ambos opcionais e validados no banco. No formulário, o nível é escolhido em cartões que descrevem, para cada nível, a **técnica**, a **visão de jogo** e a **regularidade** (Médio: domina o básico, previsível, oscila; Bom: alta precisão nos fundamentos da posição, ágil, regular; Craque: domínio total com os dois pés, antecipa o jogo, decisivo). A lista mostra posição e nível em etiquetas e ganhou filtros por posição e por nível.

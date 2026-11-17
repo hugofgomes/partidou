@@ -997,6 +997,10 @@ section("Quadra Esportiva: clientes, lista de espera e equipe (0037)")
   // lista de espera
   await as(S.r1, async () => {
     await db.query(`insert into public.court_waitlist (name, phone, sport, weekday, start_min, contact_consent) values ('Maria Souza','(48) 98888-2222','futsal',6,1200,true), ('Pedro Lima','(48) 97777-3333','futsal',6,1260,true)`)
+    await db.query(`update public.court_waitlist set position = 'goleiro', skill_level = 'craque' where name = 'Maria Souza'`)
+    ok("lista de espera guarda posição e nível técnico", (await one(`select position || '/' || skill_level from public.court_waitlist where name='Maria Souza'`)) === "goleiro/craque")
+    ok("lista de espera recusa posição desconhecida", /check|violat/i.test(await err(`update public.court_waitlist set position = 'centroavante' where name = 'Maria Souza'`) ?? ""))
+    ok("lista de espera recusa nível desconhecido", /check|violat/i.test(await err(`update public.court_waitlist set skill_level = 'lenda' where name = 'Maria Souza'`) ?? ""))
     ok("lista de espera exige telefone ou e-mail", /telefone ou e-mail|check/i.test(await err(`insert into public.court_waitlist (name) values ('Sem Contato')`) ?? ""))
     const m = await q(`select w.name, m.court_name, m.starts_at from public.court_waitlist_matches(3650) m join public.court_waitlist w on w.id = m.waitlist_id order by w.name, m.starts_at`)
     ok("horário ocupado às 20h não é oferecido; às 21h livre é oferecido", !m.some((x) => x.name === "Maria Souza" && new Date(x.starts_at).toISOString() === "2030-06-15T23:00:00.000Z") && m.some((x) => x.name === "Pedro Lima"))

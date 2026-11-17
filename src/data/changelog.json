@@ -2,6 +2,18 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.7.1",
+      "date": "2026-11-17",
+      "title": "Lista de espera: posição e nível técnico",
+      "novidades": [
+        "Cada interessado da lista de espera pode ter posição (goleiro, zagueiro, lateral, meia ou atacante) e nível técnico (Médio, Bom ou Craque).",
+        "No formulário, cada nível mostra os critérios de técnica, visão de jogo e regularidade para padronizar a avaliação da equipe.",
+        "A lista mostra posição e nível em etiquetas e tem filtros por posição e por nível."
+      ],
+      "melhorias": [],
+      "correcoes": []
+    },
+    {
       "version": "1.7.0",
       "date": "2026-11-16",
       "title": "Criar cliente a partir de um contato do site",
