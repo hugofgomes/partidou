@@ -34,6 +34,8 @@ const NAV = [
 export function JogoShell({ children }: { children: React.ReactNode }) {
   const path = usePathname()
   const user = useSession()
+  // Também processa a fila de e-mails quando alguém logado abre a área (retentativas acontecem com o uso, além do agendamento do servidor).
+  React.useEffect(() => { if (user) kickEmails() }, [user, path])
   const active = (h: string) => (h === "/jogador" ? path === "/jogador" : path === h || path.startsWith(h + "/"))
   async function signOut() { await supabase().auth.signOut(); window.location.href = "/jogos" }
   return (
