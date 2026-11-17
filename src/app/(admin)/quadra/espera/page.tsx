@@ -26,7 +26,11 @@ const STATUS: Record<string, string> = { aguardando: "Aguardando", avisado: "Avi
 const hhmm = (m: number | null) => (m == null ? "—" : `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`)
 const phoneShow = (v: string | null) => (v ? maskPhone(v.replace(/^55/, "")) : "—")
 const EMPTY = { name: "", phone: "", email: "", sport: "", court_id: "", weekday: "", time: "", kind: "avulsa", notes: "", contact_consent: false, position: "", skill_level: "" }
-const POSITIONS: [string, string][] = [["goleiro", "Goleiro"], ["zagueiro", "Zagueiro"], ["lateral", "Lateral"], ["meia", "Meia"], ["atacante", "Atacante"]]
+/** Posições conforme a modalidade: futebol de campo/society (e "qualquer") usam as do campo; futsal tem as próprias; outras modalidades não têm posição. */
+const POS_CAMPO: [string, string][] = [["goleiro", "Goleiro"], ["zagueiro", "Zagueiro"], ["lateral", "Lateral"], ["meia", "Meia"], ["atacante", "Atacante"]]
+const POS_FUTSAL: [string, string][] = [["goleiro", "Goleiro"], ["fixo", "Fixo"], ["ala", "Ala"], ["pivo", "Pivô"]]
+const positionsFor = (sport: string): [string, string][] => (sport === "futsal" ? POS_FUTSAL : !sport || sport === "futebol_society" || sport === "futebol_campo" ? POS_CAMPO : [])
+const POSITIONS: [string, string][] = [...POS_CAMPO, ...POS_FUTSAL.filter(([k]) => k !== "goleiro")]
 const POSITION_LABEL = Object.fromEntries(POSITIONS) as Record<string, string>
 /** Níveis técnicos: técnica, visão de jogo e regularidade de cada nível (critérios definidos pelo Partidou). */
 const LEVELS = [
@@ -153,7 +157,7 @@ function EntryForm({ open, entry, courts, onClose, onSaved }: { open: boolean; e
     if (!ph && !v.email) return toast.error("Informe telefone ou e-mail.")
     const [h, m] = v.time ? v.time.split(":").map(Number) : [null, null]
     setBusy(true)
-    const row = { name: v.name, phone: ph, email: v.email || null, sport: v.sport || null, court_id: v.court_id || null, weekday: v.weekday === "" ? null : Number(v.weekday), start_min: h == null ? null : h * 60 + (m ?? 0), kind: v.kind, notes: v.notes || null, contact_consent: v.contact_consent, position: v.position || null, skill_level: v.skill_level || null }
+    const row = { name: v.name, phone: ph, email: v.email || null, sport: v.sport || null, court_id: v.court_id || null, weekday: v.weekday === "" ? null : Number(v.weekday), start_min: h == null ? null : h * 60 + (m ?? 0), kind: v.kind, notes: v.notes || null, contact_consent: v.contact_consent, position: positionsFor(v.sport).some(([k]) => k === v.position) ? v.position : null, skill_level: v.skill_level || null }
     const r = entry ? await supabase().from("court_waitlist").update(row).eq("id", entry.id) : await supabase().from("court_waitlist").insert(row)
     setBusy(false)
     if (r.error) return toast.error(r.error.message)
@@ -167,15 +171,15 @@ function EntryForm({ open, entry, courts, onClose, onSaved }: { open: boolean; e
           <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="wn">Nome</Label><Input id="wn" required minLength={2} maxLength={120} value={v.name} onChange={(e) => set("name", e.target.value)} /></div>
           <div className="space-y-1.5"><Label htmlFor="wp">Telefone</Label><Input id="wp" inputMode="tel" value={v.phone} onChange={(e) => set("phone", maskPhone(e.target.value))} /></div>
           <div className="space-y-1.5"><Label htmlFor="we">E-mail</Label><Input id="we" type="email" value={v.email} onChange={(e) => set("email", e.target.value)} /></div>
-          <div className="space-y-1.5"><Label htmlFor="ws">Modalidade</Label><NativeSelect id="ws" value={v.sport} onChange={(e) => set("sport", e.target.value)}><option value="">Qualquer</option>{SPORTS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect></div>
+          <div className="space-y-1.5"><Label htmlFor="ws">Modalidade</Label><NativeSelect id="ws" value={v.sport} onChange={(e) => { const sp = e.target.value; setV((s) => ({ ...s, sport: sp, position: positionsFor(sp).some(([k]) => k === s.position) ? s.position : "" })) }}><option value="">Qualquer</option>{SPORTS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect></div>
           <div className="space-y-1.5"><Label htmlFor="wc">Quadra desejada</Label><NativeSelect id="wc" value={v.court_id} onChange={(e) => set("court_id", e.target.value)}><option value="">Qualquer</option>{courts.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</NativeSelect></div>
           <div className="space-y-1.5"><Label htmlFor="wd">Dia da semana</Label><NativeSelect id="wd" value={v.weekday} onChange={(e) => set("weekday", e.target.value)}><option value="">Qualquer</option>{DAYS.map((d, i) => <option key={d} value={i}>{d}</option>)}</NativeSelect></div>
           <div className="space-y-1.5"><Label htmlFor="wt">Horário desejado</Label><Input id="wt" type="time" step={1800} value={v.time} onChange={(e) => set("time", e.target.value)} /></div>
-          <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="wpos">Posição</Label>
+          {positionsFor(v.sport).length > 0 && <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="wpos">Posição{v.sport === "futsal" ? " no futsal" : ""}</Label>
             <div id="wpos" role="radiogroup" aria-label="Posição" className="flex flex-wrap gap-2">
-              {[["", "Não informada"] as [string, string], ...POSITIONS].map(([k, l]) => <button key={k || "x"} type="button" role="radio" aria-checked={v.position === k} onClick={() => set("position", k)}
+              {[["", "Não informada"] as [string, string], ...positionsFor(v.sport)].map(([k, l]) => <button key={k || "x"} type="button" role="radio" aria-checked={v.position === k} onClick={() => set("position", k)}
                 className={cn("min-h-10 rounded-full border px-4 text-sm font-medium transition-colors", v.position === k ? "border-primary bg-primary text-primary-foreground" : "bg-card hover:bg-secondary")}>{l}</button>)}
-            </div></div>
+            </div></div>}
           <fieldset className="space-y-1.5 sm:col-span-2"><legend className="mb-1.5 text-sm font-medium">Nível técnico</legend>
             <div role="radiogroup" aria-label="Nível técnico" className="grid gap-2 sm:grid-cols-3">
               {LEVELS.map((l) => {

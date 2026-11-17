@@ -2,6 +2,18 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.7.2",
+      "date": "2026-11-17",
+      "title": "Lista de espera: posições do futsal",
+      "novidades": [
+        "No futsal, as posições passam a ser Goleiro, Fixo, Ala e Pivô."
+      ],
+      "melhorias": [
+        "As posições mudam conforme a modalidade: futebol de campo e society (ou \"Qualquer\") usam Goleiro, Zagueiro, Lateral, Meia e Atacante; vôlei, beach tennis, tênis e demais modalidades não mostram posição. Ao trocar a modalidade, uma posição que não se aplica é limpa."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.7.1",
       "date": "2026-11-17",
       "title": "Lista de espera: posição e nível técnico",
