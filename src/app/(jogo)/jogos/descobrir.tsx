@@ -4,22 +4,21 @@ import { GameCard } from "@/components/jogo/game-card"
 import { NativeSelect } from "@/components/native-select"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import { DAYS, LEVELS, PERIODS, POSITIONS, SPORTS, UFS, type Game } from "@/lib/jogo"
+import { DAYS, FILTER_KEYS, LEVELS, PERIODS, POSITIONS, SPORTS, UFS, type Filters, type Game } from "@/lib/jogo"
 import { supabase } from "@/lib/supabase/client"
 import { Megaphone, Search, SlidersHorizontal, X } from "lucide-react"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import * as React from "react"
 
-const KEYS = ["city", "state", "district", "sport", "date", "weekday", "period", "position", "level"] as const
-type F = Record<(typeof KEYS)[number], string> & { with_slots: boolean }
+const KEYS = FILTER_KEYS
+type F = Filters
 
 /** Encontre um Jogo: partidas reais com vagas, filtráveis; os filtros ficam no endereço (dá para compartilhar a busca). */
-export function Descobrir() {
-  const sp = useSearchParams(), router = useRouter()
-  const initial = React.useMemo(() => { const f = Object.fromEntries(KEYS.map((k) => [k, sp.get(k) ?? ""])) as unknown as F; f.with_slots = sp.get("lotadas") !== "1"; return f }, [sp])
+export function Descobrir({ initial, initialGames }: { initial: F; initialGames: Game[] }) {
+  const router = useRouter()
   const [f, setF] = React.useState<F>(initial)
-  const [games, setGames] = React.useState<Game[] | null>(null)
+  const [games, setGames] = React.useState<Game[] | null>(initialGames)
   const [more, setMore] = React.useState(false)
   const load = React.useCallback(async (q: F) => {
     setGames(null)
@@ -28,9 +27,8 @@ export function Descobrir() {
     const r = await supabase().rpc("games_search", { p })
     setGames(r.error ? [] : ((r.data ?? []) as Game[]))
   }, [])
-  React.useEffect(() => { void load(initial) }, [initial, load])
   function apply(next: F) {
-    setF(next)
+    setF(next); void load(next)
     const u = new URLSearchParams(); for (const k of KEYS) if (next[k]) u.set(k, next[k]); if (!next.with_slots) u.set("lotadas", "1")
     router.replace(`/jogos${u.toString() ? `?${u}` : ""}`, { scroll: false })
   }

@@ -24,6 +24,12 @@ Sino de notificações no topo (não lidas, abrir leva à partida, marcar como l
 - **Área de jogos:** visitante vê **Entrar** e **Criar conta grátis**; quem administra um centro vê **Painel do centro**; no celular, barra inferior.
 - **Página pública do centro:** link **Encontrar um jogo** no rodapé. **Login:** atalho Criar conta grátis e Encontrar um jogo. **Manual:** capítulo Encontre um Jogo com os endereços para divulgar (`/jogos` e `/cadastro`).
 
+## SEO e celular (1.9.2)
+- `/jogos` e `/cadastro` são renderizados no servidor (filtros e "next" lidos do endereço no servidor): a lista de partidas já vem no HTML, sem esperar o JavaScript.
+- `/jogos/<id>`: título, descrição e Open Graph por partida (vagas e posições que faltam) e dados estruturados `SportsEvent`; partida encerrada ou cancelada fica fora do índice.
+- `robots.txt` do app libera `/jogos`, `/quadras`, `/cadastro`, `/login` e textos legais e bloqueia áreas privadas (`/jogador`, `/organizar`, `/convite`, `/partida`, painel, APIs); essas áreas também têm `noindex`.
+- `sitemap.xml` do app inclui os centros publicados e as partidas abertas (revalida a cada hora).
+
 ## Regras (no banco — `0046_encontre_um_jogo.sql`)
 - Tabelas: `players`, `games`, `game_needs` (vagas por posição), `game_participants` (solicitações e confirmados), `game_invites`, `user_notifications`, `email_outbox`, `game_events` (histórico). RLS em todas; o navegador só lê o próprio perfil e as próprias notificações. Todo o resto é por funções `security definer` que validam `auth.uid()`.
 - Sem duplicidade: um registro por jogador e partida; um convite pendente por jogador e partida.

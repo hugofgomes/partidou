@@ -14,6 +14,7 @@ import { maskPhone } from "@/lib/whatsapp"
 import { LEVELS } from "@/lib/skill-levels"
 import { cn } from "@/lib/utils"
 import { CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Camera, Lightbulb, Loader2, MapPin, MessageCircle, Navigation, Phone, Share2, ShieldCheck, Sun, Sunrise, Sunset, Umbrella, Users } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import * as React from "react"
@@ -144,7 +145,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
       {/* ───────── 1. Cabeçalho do estabelecimento: foto real da quadra ao fundo (quando houver), status, indicadores e ações ───────── */}
       <header className="relative isolate overflow-hidden bg-forest text-white">
         {cover
-          ? <img src={cover} alt="" aria-hidden fetchPriority="high" className="absolute inset-0 -z-20 size-full object-cover" />
+          ? <Image src={cover} alt="" aria-hidden fill priority sizes="100vw" quality={60} className="-z-20 object-cover" />
           : <svg aria-hidden viewBox="0 0 400 220" className="absolute -right-10 top-0 -z-20 hidden h-full text-lime/[0.08] md:block" fill="none" stroke="currentColor" strokeWidth="2"><rect x="20" y="20" width="360" height="180" rx="6" /><line x1="200" y1="20" x2="200" y2="200" /><circle cx="200" cy="110" r="34" /><rect x="20" y="70" width="44" height="80" /><rect x="336" y="70" width="44" height="80" /></svg>}
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-forest via-forest/90 to-forest/55" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-forest/80 to-transparent" />
@@ -201,7 +202,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
                     <article className={cn("flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(20,44,37,0.06),0_8px_24px_-12px_rgba(20,44,37,0.18)] ring-1 transition", on ? "ring-2 ring-lime" : "ring-black/5 hover:ring-forest/20")}>
                       <div className="relative aspect-video overflow-hidden bg-forest">
                         {c.photos[0]
-                          ? <img src={c.photos[0]} alt={`Foto da ${c.name}`} loading="lazy" decoding="async" className="size-full object-cover" />
+                          ? <Image src={c.photos[0]} alt={`Foto da ${c.name}`} fill sizes="(min-width: 640px) 45vw, 100vw" quality={70} className="object-cover" />
                           : <CourtFallback sport={c.sport} />}
                         <span className="absolute left-3 top-3 rounded-full bg-forest/85 px-2.5 py-1 text-xs font-semibold text-lime backdrop-blur">{sportName(c.sport)}</span>
                         {on && <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-lime px-2.5 py-1 text-xs font-bold text-forest"><Check className="size-3.5" /> Selecionada</span>}

@@ -2,6 +2,22 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.9.2",
+      "date": "2026-11-17",
+      "title": "Celular mais rápido e SEO 100",
+      "novidades": [
+        "Página de cada partida com título, descrição e prévia própria no WhatsApp e no Google (vagas e posições que faltam) e dados estruturados de evento esportivo.",
+        "Mapa do site do app com os centros publicados e as partidas abertas."
+      ],
+      "melhorias": [
+        "Busca de jogos, cadastro e login chegam prontos do servidor: abrem mais rápido no celular e sem \"pulos\" de layout.",
+        "Fotos das quadras otimizadas automaticamente (WebP/AVIF no tamanho da tela).",
+        "Logos do login e do painel trocadas pela versão leve.",
+        "robots.txt: páginas públicas liberadas (incluindo login e cadastro) e áreas privadas fora do Google."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.9.1",
       "date": "2026-11-17",
       "title": "Caminhos do Encontre um Jogo bem visíveis",

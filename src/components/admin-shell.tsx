@@ -245,7 +245,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <div className={cn("flex h-16 items-center justify-between border-b border-white/10 px-5", collapsed && "lg:justify-center lg:px-0")}>
           <span className="flex min-w-0 items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={collapsed ? "/brand/partidou-marca.png" : "/brand/partidou-logo.png"} alt="Partidou" className={cn("w-auto object-contain", collapsed ? "h-8 max-lg:h-9" : "h-9 max-w-44")} />
+            <img src={collapsed ? "/brand/partidou-marca-96.png" : "/brand/partidou-logo-520.png"} alt="Partidou" width={collapsed ? 114 : 520} height={collapsed ? 96 : 120} className={cn("w-auto object-contain", collapsed ? "h-8 max-lg:h-9" : "h-9 max-w-44")} />
           </span>
           <button type="button" onClick={() => setOpen(false)} aria-label="Fechar menu" className="grid size-10 place-items-center rounded-md text-white/80 hover:bg-white/10 hover:text-white lg:hidden">
             <X className="size-5" />

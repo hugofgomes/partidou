@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
   experimental: { cpus: 1, webpackMemoryOptimizations: true },
   env: { NEXT_PUBLIC_BUILD_ID: BUILD_ID },
   poweredByHeader: false, // não anuncia o framework
+  // Fotos das quadras (Storage público do Supabase) passam pelo otimizador: WebP/AVIF no tamanho da tela.
+  images: { formats: ["image/avif", "image/webp"], remotePatterns: [{ protocol: "https", hostname: "*.supabase.co", pathname: "/storage/v1/object/public/**" }], minimumCacheTTL: 86400 },
   // Metadados (título, descrição, Open Graph) sempre no <head> do HTML inicial, para todos os visitantes e ferramentas de SEO
   // (o padrão do Next 15 adia para quem não parece robô, e auditorias como o Lighthouse deixam de ver a descrição).
   htmlLimitedBots: /.*/,

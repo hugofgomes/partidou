@@ -26,3 +26,7 @@ export const money = (cents: number) => new Intl.NumberFormat("pt-BR", { style: 
 export const slotsLeft = (g: Pick<Game, "slots_total" | "approved">) => Math.max(0, g.slots_total - g.approved)
 /** Partida guardada antes do login/cadastro, para o jogador voltar a ela depois ("o sistema preserva a partida selecionada"). */
 export const PENDING_GAME_KEY = "partidou.jogo.pendente"
+
+/** Filtros da busca de partidas (lidos do endereço no servidor e no cliente). */
+export const FILTER_KEYS = ["city", "state", "district", "sport", "date", "weekday", "period", "position", "level"] as const
+export type Filters = Record<(typeof FILTER_KEYS)[number], string> & { with_slots: boolean }

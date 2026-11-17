@@ -5,7 +5,6 @@ import { createClient } from "@supabase/supabase-js"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
-import { preconnect, preload } from "react-dom"
 import { CentroPublico } from "./centro-publico"
 
 /** Página pública do centro esportivo. O servidor busca os dados (funções públicas do banco, chave anônima) para:
@@ -47,9 +46,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const d = await load(slug)
   if (d && d.venue === null) notFound()   // centro inexistente ou não publicado: 404 de verdade (fora do Google)
   const v = d?.venue
-  // A foto de capa (primeira foto de quadra) é o maior elemento da tela: conexão e download começam já no <head>.
-  const cover = v?.courts.find((c) => c.photos[0])?.photos[0]
-  if (cover) { preconnect(new URL(cover).origin); preload(cover, { as: "image", fetchPriority: "high" }) }
   const jsonLd = v ? {
     "@context": "https://schema.org", "@type": "SportsActivityLocation", name: v.venue.name, url: `${APP_URL}/quadras/${v.slug}`,
     ...(v.venue.description ? { description: v.venue.description } : {}),
