@@ -2,12 +2,12 @@
 
 import { FIRST_STEPS, MANUAL, ROLE_LABEL, type ManualSection } from "@/data/manual-quadra"
 import { cn } from "@/lib/utils"
-import { ArrowLeft, ArrowRight, CalendarRange, ChartColumn, ChevronRight, ClipboardList, Contact, Hourglass, LayoutDashboard, Lightbulb, MapPin, Printer, Settings2, Users, Wallet } from "lucide-react"
+import { ArrowLeft, ArrowRight, CalendarRange, ChartColumn, ChevronRight, ClipboardList, Contact, Hourglass, LayoutDashboard, Lightbulb, MapPin, Printer, Search, Settings2, Users, Wallet } from "lucide-react"
 import Link from "next/link"
 import * as React from "react"
 
 /** Mesmos ícones do menu Quadra Esportiva. */
-const ICON: Record<string, React.ElementType> = { dashboard: LayoutDashboard, agenda: CalendarRange, centro: MapPin, reservas: ClipboardList, espera: Hourglass, clientes: Contact, funcionarios: Users, financeiro: Wallet, relatorios: ChartColumn, configuracoes: Settings2 }
+const ICON: Record<string, React.ElementType> = { dashboard: LayoutDashboard, agenda: CalendarRange, centro: MapPin, reservas: ClipboardList, espera: Hourglass, clientes: Contact, funcionarios: Users, financeiro: Wallet, relatorios: ChartColumn, configuracoes: Settings2, jogos: Search }
 
 function Rich({ text }: { text: string }) {
   return <>{text.split(/(\*\*[^*]+\*\*)/g).map((p, i) => (p.startsWith("**") && p.endsWith("**") ? <strong key={i} className="font-semibold text-[#142C25]">{p.slice(2, -2)}</strong> : <React.Fragment key={i}>{p}</React.Fragment>))}</>

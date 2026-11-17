@@ -21,6 +21,7 @@ export const LINKS = {
   encontrarJogo: `${APP_URL}/jogos`,
   criarPartida: `${APP_URL}/organizar/nova`,
   cadastro: `${APP_URL}/cadastro`,
+  minhasPartidas: `${APP_URL}/jogador`,
   contato: "#contato",
   privacidade: "/privacidade",
   termos: "/termos",
@@ -28,8 +29,8 @@ export const LINKS = {
 }
 
 export const NAV = [
-  { href: "#inicio", label: "Início" },
   { href: "#como-funciona", label: "Como Funciona" },
+  { href: `${APP_URL}/jogos`, label: "Encontrar Jogo" },
   { href: "#para-quadras", label: "Para Quadras" },
   { href: "#para-organizadores", label: "Para Organizadores" },
   { href: "#planos", label: "Planos" },

@@ -5,13 +5,14 @@ const link = "text-sm text-white/70 transition-colors hover:text-white"
 
 export function SiteFooter() {
   const groups = [
-    { label: "Plataforma", items: [["Encontrar um Jogo", LINKS.encontrarJogo], ["Buscar quadras", LINKS.buscarQuadras], ["Gestão de Quadras", "#para-quadras"], ["Para Organizadores", "#para-organizadores"], ["Entrar no sistema", LINKS.entrar]] },
-    { label: "Empresa", items: [["Como Funciona", "#como-funciona"], ["Planos", "#planos"], ["Perguntas frequentes", "#faq"], ["Contato", "#contato"]] },
+    { label: "Jogar e organizar", items: [["Encontrar um Jogo", LINKS.encontrarJogo], ["Criar conta grátis", LINKS.cadastro], ["Criar partida", LINKS.criarPartida], ["Minhas partidas", LINKS.minhasPartidas], ["Buscar quadras", LINKS.buscarQuadras]] },
+    { label: "Centros esportivos", items: [["Gestão de Quadras", "#para-quadras"], ["Planos", "#planos"], ["Falar com a equipe", "#contato"], ["Entrar no painel", LINKS.entrar]] },
+    { label: "Empresa", items: [["Como Funciona", "#como-funciona"], ["Perguntas frequentes", "#faq"], ["Contato", "#contato"]] },
     { label: "Legal", items: [["Política de Privacidade", LINKS.privacidade], ["Termos de Uso", LINKS.termos], ["Política de Cookies", LINKS.cookies]] },
   ]
   return (
     <footer className="bg-forest px-4 pb-8 pt-16 text-white sm:px-6">
-      <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element -- PNG transparente já otimizado */}
           <img src={LOGO.src} alt="Partidou" width={LOGO.width} height={LOGO.height} loading="lazy" className="h-9 w-auto" />

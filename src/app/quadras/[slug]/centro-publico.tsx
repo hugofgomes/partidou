@@ -366,6 +366,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
             <p className="mt-2 text-sm text-white/70">Reservas de quadras esportivas. O jogo começa aqui.</p>
           </div>
           <nav aria-label="Links do Partidou" className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-white/75">
+            <Link href="/jogos" className="hover:text-white">Encontrar um jogo</Link>
             <Link href="/quadras" className="hover:text-white">Buscar outras quadras</Link>
             <a href="https://partidou.com.br" className="hover:text-white">Tenho um centro esportivo</a>
             <a href="/privacidade" className="hover:text-white">Privacidade</a>

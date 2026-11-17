@@ -74,6 +74,31 @@ export function Hero() {
   )
 }
 
+/* ───────── Acesso rápido: os caminhos do app, logo abaixo do topo ───────── */
+export function QuickAccess() {
+  const items = [
+    { i: Search, t: "Encontrar um jogo", d: "Partidas com vagas", href: LINKS.encontrarJogo, track: "qa_encontrar_jogo", main: true },
+    { i: UserCheck, t: "Criar conta grátis", d: "Jogador e goleiro", href: LINKS.cadastro, track: "qa_criar_conta" },
+    { i: Trophy, t: "Criar partida", d: "E convidar jogadores", href: LINKS.criarPartida, track: "qa_criar_partida" },
+    { i: CalendarRange, t: "Minhas partidas", d: "Convites e jogos", href: LINKS.minhasPartidas, track: "qa_minhas_partidas" },
+    { i: LayoutGrid, t: "Dono de quadra", d: "Entrar no painel", href: LINKS.entrar, track: "qa_painel_quadra" },
+  ]
+  return (
+    <section aria-label="Acesso rápido" className="on-light relative z-10 -mt-10 px-4 sm:px-6">
+      <ul className="mx-auto grid max-w-6xl grid-cols-2 gap-2 rounded-3xl bg-white p-2 shadow-[0_20px_50px_-20px_rgba(20,44,37,0.35)] ring-1 ring-black/5 sm:gap-3 sm:p-3 lg:grid-cols-5">
+        {items.map((x) => (
+          <li key={x.t} className={x.main ? "col-span-2 lg:col-span-1" : undefined}>
+            <a href={x.href} data-track={x.track} className={cn("flex h-full items-center gap-3 rounded-2xl p-3 transition-colors sm:p-4", x.main ? "bg-lime text-forest hover:bg-[#c8f76a]" : "hover:bg-ice")}>
+              <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl", x.main ? "bg-forest text-lime" : "bg-forest text-lime")}><x.i aria-hidden className="size-5" /></span>
+              <span className="min-w-0"><span className="block text-sm font-bold text-forest">{x.t}</span><span className="block text-xs leading-snug text-graphite/70">{x.d}</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 /* ───────── 2. Como funciona: os três públicos ───────── */
 export function HowItWorks() {
   const cards = [

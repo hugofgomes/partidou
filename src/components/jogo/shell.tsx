@@ -3,7 +3,7 @@
 
 import { supabase } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
-import { Bell, CalendarCheck, LogIn, LogOut, Megaphone, Search, UserRound } from "lucide-react"
+import { Bell, CalendarCheck, LayoutGrid, LogIn, LogOut, Megaphone, Search, UserRound } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import * as React from "react"
@@ -38,6 +38,9 @@ export function JogoShell({ children }: { children: React.ReactNode }) {
   React.useEffect(() => { if (user) kickEmails() }, [user, path])
   const active = (h: string) => (h === "/jogador" ? path === "/jogador" : path === h || path.startsWith(h + "/"))
   async function signOut() { await supabase().auth.signOut(); window.location.href = "/jogos" }
+  // Quem também administra um centro esportivo ganha o atalho de volta ao painel.
+  const [staff, setStaff] = React.useState(false)
+  React.useEffect(() => { if (user) supabase().from("profiles").select("id").eq("id", user.id).maybeSingle().then(({ data }) => setStaff(!!data), () => {}) }, [user])
   return (
     <div className="min-h-dvh bg-[#F6F8F4] text-[#19221D]">
       <header className="sticky top-0 z-40 bg-[#142C25] text-white shadow-[0_1px_0_rgba(255,255,255,0.06)]">
@@ -49,8 +52,12 @@ export function JogoShell({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-1">
+            {user && staff && <Link href="/quadra" className="hidden min-h-10 items-center gap-2 rounded-full border border-white/20 px-3 text-sm font-medium text-white/85 hover:bg-white/10 sm:inline-flex"><LayoutGrid className="size-4" /> Painel do centro</Link>}
             {user ? <><NotificationBell /><button type="button" onClick={signOut} className="hidden min-h-10 items-center gap-2 rounded-full px-3 text-sm text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex"><LogOut className="size-4" /> Sair</button></>
-              : user === null && <Link href={`/login?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center gap-2 rounded-full bg-[#B9F344] px-4 text-sm font-semibold text-[#142C25]"><LogIn className="size-4" /> Entrar</Link>}
+              : user === null && <>
+                <Link href={`/login?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center gap-2 whitespace-nowrap rounded-full px-3 text-sm font-semibold text-white hover:bg-white/10"><LogIn className="size-4" /> Entrar</Link>
+                <Link href={`/cadastro?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center whitespace-nowrap rounded-full bg-[#B9F344] px-4 text-sm font-bold text-[#142C25]"><span className="sm:hidden">Criar conta</span><span className="hidden sm:inline">Criar conta grátis</span></Link>
+              </>}
           </div>
         </div>
       </header>

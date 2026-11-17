@@ -17,7 +17,7 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import { toast } from "sonner"
 import { manualFor } from "@/data/manual-quadra"
-import { CircleHelp } from "lucide-react"
+import { CalendarCheck, CircleHelp, Search, UserRound } from "lucide-react"
 
 const ADMIN = [
   { href: "/assinatura", label: "Assinatura", icon: CreditCard },
@@ -36,6 +36,14 @@ const QUADRA = [
   { href: "/quadra/relatorios", label: "Relatórios", icon: ChartColumn, ready: true },
   { href: "/quadra/configuracoes", label: "Configurações", icon: Settings2, ready: true },
   { href: "/quadra/manual", label: "Manual", icon: BookOpen, ready: true },
+]
+
+/** Encontre um Jogo: a mesma conta do painel também joga e organiza partidas (área própria, fora do painel do centro). */
+const JOGOS = [
+  { href: "/jogos", label: "Encontrar um Jogo", icon: Search },
+  { href: "/jogador", label: "Minhas Partidas", icon: CalendarCheck },
+  { href: "/organizar", label: "Organizar Partidas", icon: Megaphone },
+  { href: "/jogador/perfil", label: "Meu perfil de jogador", icon: UserRound },
 ]
 
 const COURT_ROLE_LABEL = { admin: "Administrador", gerente: "Gerente", recepcionista: "Recepcionista", financeiro: "Financeiro" } as const
@@ -245,6 +253,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
         <nav className={cn("flex-1 space-y-6 overflow-y-auto px-3 py-5", collapsed && "lg:space-y-3")} aria-label="Principal">
           {courtRole && <QuadraMenu path={path} />}
+          <div className="space-y-1">
+            <p className={cn("px-3 pb-1 text-[11px] font-semibold tracking-wider text-white/50 uppercase", collapsed && "lg:hidden")}>Jogos</p>
+            {JOGOS.map((n) => <SideLink key={n.href} {...n} path={path} />)}
+          </div>
           <div className="space-y-1">
             <p className={cn("px-3 pb-1 text-[11px] font-semibold tracking-wider text-white/50 uppercase", collapsed && "lg:hidden")}>{role === "admin" ? "Administração" : "Conta"}</p>
             {role === "admin" && ADMIN.map((n) => <SideLink key={n.href} {...n} path={path} />)}

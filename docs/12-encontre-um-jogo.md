@@ -18,6 +18,12 @@ Conecta jogadores de linha e goleiros que procuram partidas com organizadores qu
 
 Sino de notificações no topo (não lidas, abrir leva à partida, marcar como lidas). No celular, barra inferior com Jogos, Minhas Partidas, Organizar e Perfil.
 
+## Onde os caminhos aparecem (1.9.1)
+- **Site partidou.com.br:** item **Encontrar Jogo** no menu; faixa **Acesso rápido** logo abaixo do topo (Encontrar um jogo, Criar conta grátis, Criar partida, Minhas partidas, Dono de quadra → painel); botões das seções de organizadores e jogadores; rodapé com o grupo **Jogar e organizar** e o grupo **Centros esportivos**; plano Jogador → Criar conta grátis.
+- **Painel do centro (menu lateral):** grupo **Jogos** (Encontrar um Jogo, Minhas Partidas, Organizar Partidas, Meu perfil de jogador), para dono e equipe também jogarem com a mesma conta.
+- **Área de jogos:** visitante vê **Entrar** e **Criar conta grátis**; quem administra um centro vê **Painel do centro**; no celular, barra inferior.
+- **Página pública do centro:** link **Encontrar um jogo** no rodapé. **Login:** atalho Criar conta grátis e Encontrar um jogo. **Manual:** capítulo Encontre um Jogo com os endereços para divulgar (`/jogos` e `/cadastro`).
+
 ## Regras (no banco — `0046_encontre_um_jogo.sql`)
 - Tabelas: `players`, `games`, `game_needs` (vagas por posição), `game_participants` (solicitações e confirmados), `game_invites`, `user_notifications`, `email_outbox`, `game_events` (histórico). RLS em todas; o navegador só lê o próprio perfil e as próprias notificações. Todo o resto é por funções `security definer` que validam `auth.uid()`.
 - Sem duplicidade: um registro por jogador e partida; um convite pendente por jogador e partida.
