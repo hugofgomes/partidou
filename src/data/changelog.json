@@ -2,6 +2,19 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.7.0",
+      "date": "2026-11-16",
+      "title": "Criar cliente a partir de um contato do site",
+      "novidades": [
+        "Em Contatos do site, o botão \"Criar cliente\" (contatos de dono de quadra) cria o centro esportivo, envia o convite de acesso ao e-mail do dono e o vincula como administrador em uma única ação; o contato fica como \"Ganho\" com o endereço do cliente anotado."
+      ],
+      "melhorias": [
+        "A janela já vem preenchida com o nome do estabelecimento, o endereço da página e o e-mail do contato, e lembra os próximos passos para o centro aparecer na busca de quadras.",
+        "Se o e-mail já tiver acesso a outro centro, nada é criado; se algo falhar no meio, o convite é desfeito."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.6.2",
       "date": "2026-11-16",
       "title": "Página pública: topo redesenhado",

@@ -14,3 +14,6 @@ Observação: alguns textos e indicadores do painel ainda vêm da base herdada (
 
 ## Avisos de contatos do site
 O menu **Contatos do site** mostra um número com os contatos em situação "novo", somado ao sino do topo, e um aviso na tela aparece quando chega um contato com o sistema aberto (detalhes no capítulo do site comercial).
+
+## Criar cliente a partir de um contato do site
+Em **Contatos do site**, o botão **Criar cliente** (contatos de dono de quadra) cria o centro, envia o convite de acesso ao e-mail do dono e o vincula como administrador, numa única ação. O cliente aparece na hora em **Gerenciar clientes**. Detalhes no capítulo do site comercial.
