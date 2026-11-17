@@ -54,13 +54,13 @@ function Form() {
 export default function LoginPage() {
   if (!supabaseConfigured) return <SetupNotice />
   return (
-    <div className="grid min-h-dvh place-items-center bg-primary p-4">
+    <main className="grid min-h-dvh place-items-center bg-primary p-4">
       <div className="w-full max-w-sm space-y-6 rounded-xl bg-card p-6 shadow-xl">
         <OrgHeading subtitle="Gestão de quadras e centros esportivos" />
         <React.Suspense>
           <Form />
         </React.Suspense>
       </div>
-    </div>
+    </main>
   )
 }

@@ -44,7 +44,8 @@
     "/api/super/comunicados/enviar": "Envia o próximo lote de e-mails de um comunicado (somente dono da plataforma)",
     "/api/super/comunicados/teste": "Envia o comunicado de teste só para o e-mail do dono",
     "/api/site/lead": "Recebe o formulário do site comercial (valida, protege contra spam e grava o contato); sem login",
-    "/api/super/leads/converter": "Cria um cliente (centro esportivo) a partir de um contato do site: convite de acesso ao dono, grupo e vínculo como administrador; só o dono da plataforma"
+    "/api/super/leads/converter": "Cria um cliente (centro esportivo) a partir de um contato do site: convite de acesso ao dono, grupo e vínculo como administrador; só o dono da plataforma",
+    "/api/super/clientes/convidar": "Convida e vincula o administrador de um centro existente (convite por e-mail para criar a senha); só o dono da plataforma"
   },
   "env": {
     "APP_URL": "Endereço público usado nos links dos e-mails de aviso (padrão: domínio principal)",

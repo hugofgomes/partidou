@@ -1,3 +1,4 @@
+import { inviteAdmin } from "@/lib/invite-admin"
 import { publicOrigin } from "@/lib/origin"
 import { platformOwner } from "@/lib/server-auth"
 import { serviceClient } from "@/lib/supabase/service"
@@ -30,32 +31,15 @@ export async function POST(req: NextRequest) {
   const { data: free } = await owner.sb.rpc("slug_available", { p_slug: slug })
   if (free !== true) return NextResponse.json({ error: `O endereço "${slug}" já está em uso. Escolha outro.` }, { status: 409 })
 
-  // 1) Convite: cria a conta e manda o e-mail "Você foi convidado" (modelo Partidou). Conta já existente é reaproveitada.
-  let newUserId: string | null = null
-  const inv = await svc.auth.admin.inviteUserByEmail(email, { data: { full_name: lead.name }, redirectTo: `${publicOrigin(req)}/redefinir-senha` })
-  if (inv.error) {
-    if (!/already|registered|exists/i.test(inv.error.message)) return NextResponse.json({ error: `Não foi possível enviar o convite: ${inv.error.message}` }, { status: 502 })
-    // Conta já existe: só serve se ainda não pertence a nenhum grupo (confere ANTES de criar o centro, para não deixar centro sem dono).
-    const { data: list } = await svc.auth.admin.listUsers({ page: 1, perPage: 1000 })
-    const existing = list?.users.find((u) => u.email?.toLowerCase() === email)
-    if (existing) {
-      const { data: prof } = await svc.from("profiles").select("id").eq("id", existing.id).maybeSingle()
-      if (prof) return NextResponse.json({ error: `O e-mail ${email} já tem acesso a outro centro no Partidou. Use outro e-mail para o administrador.` }, { status: 409 })
-    }
-  } else newUserId = inv.data.user?.id ?? null
-  const undoInvite = async () => { if (newUserId) await svc.auth.admin.deleteUser(newUserId) }
-
-  // 2) Grupo (centro esportivo) e 3) administrador — pelas funções do painel, com auditoria.
+  // Centro primeiro (pela função do painel, com auditoria); depois convite + vínculo do administrador (desfaz o convite se falhar).
   const org = await owner.sb.rpc("sa_create_org", { p_slug: slug, p_name: name, p_plan: plan })
-  if (org.error) { await undoInvite(); return NextResponse.json({ error: org.error.message }, { status: 400 }) }
-  const adm = await owner.sb.rpc("sa_assign_admin", { p_org: org.data as string, p_email: email })
-  if (adm.error) {
-    await undoInvite()
-    return NextResponse.json({ error: `Centro "${name}" criado, mas o administrador não foi vinculado: ${adm.error.message}. Vincule outro e-mail pela página do cliente.`, partial: true }, { status: 409 })
-  }
+  if (org.error) return NextResponse.json({ error: org.error.message }, { status: 400 })
+  const adm = await inviteAdmin(owner.sb, svc, org.data as string, email, lead.name, `${publicOrigin(req)}/redefinir-senha`)
+  if (!adm.ok) return NextResponse.json({ error: `Centro "${name}" criado, mas ${adm.error.charAt(0).toLowerCase()}${adm.error.slice(1)} Use "Convidar administrador" no menu do cliente.`, partial: true }, { status: adm.status })
+  const newUserId = adm.invited
 
   const where = [lead.city, lead.state].filter(Boolean).join("/")
   const note = [lead.notes?.trim(), `Cliente criado em ${new Date().toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}: ${slug}${where ? ` (${where})` : ""}`].filter(Boolean).join(" · ").slice(0, 1000)
   await owner.sb.rpc("site_lead_update", { p_id: lead.id, p_status: "ganho", p_notes: note })
-  return NextResponse.json({ ok: true, slug, org_id: org.data, invited: !!newUserId })
+  return NextResponse.json({ ok: true, slug, org_id: org.data, invited: newUserId })
 }

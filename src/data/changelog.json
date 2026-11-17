@@ -2,6 +2,22 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.8.2",
+      "date": "2026-11-17",
+      "title": "Administrador do centro por convite",
+      "novidades": [
+        "Ação \"Convidar administrador\" no menu de cada cliente, para centros que ainda não têm dono com acesso.",
+        "Etiqueta \"Sem administrador · convidar\" na lista de clientes."
+      ],
+      "melhorias": [
+        "Ao criar um centro pelo Painel do SaaS, o e-mail do administrador recebe um convite para criar a senha (não precisa mais ter conta antes).",
+        "Telas de entrar, recuperar e redefinir senha com a área principal marcada para leitores de tela."
+      ],
+      "correcoes": [
+        "Centros criados pelo formulário \"Novo grupo\" com o e-mail de alguém sem conta ficavam sem administrador, sem aviso."
+      ]
+    },
+    {
       "version": "1.8.1",
       "date": "2026-11-17",
       "title": "Manual mais curto e bonito",

@@ -17,3 +17,8 @@ O menu **Contatos do site** mostra um número com os contatos em situação "nov
 
 ## Criar cliente a partir de um contato do site
 Em **Contatos do site**, o botão **Criar cliente** (contatos de dono de quadra) cria o centro, envia o convite de acesso ao e-mail do dono e o vincula como administrador, numa única ação. O cliente aparece na hora em **Gerenciar clientes**. Detalhes no capítulo do site comercial.
+
+## Administrador do centro: sempre por convite (1.8.2)
+- **Novo cliente (formulário "Novo grupo")**: o e-mail do administrador agora recebe um **convite** para criar a senha (antes era preciso a pessoa já ter conta; sem conta, o centro era criado **sem administrador**). Sem e-mail, o centro é criado e o painel avisa.
+- **Convidar administrador** (menu ⋯ do cliente): convida o dono de um centro já existente. Clientes sem administrador mostram a etiqueta vermelha **"Sem administrador · convidar"** na lista.
+- A rotina é única para os três caminhos (`src/lib/invite-admin.ts`): convite pelo servidor com a chave de serviço, reaproveita conta existente só se ela não pertencer a outro centro, vincula por `sa_assign_admin` e desfaz o convite se o vínculo falhar. Rota: `POST /api/super/clientes/convidar` (só o dono da plataforma).

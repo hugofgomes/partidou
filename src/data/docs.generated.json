@@ -1,5 +1,5 @@
 {
- "version": "1.8.1",
+ "version": "1.8.2",
  "versionDate": "2026-11-17",
  "stack": {
   "next": "15.5.29",
@@ -41,7 +41,7 @@
    "id": "painel-do-saas",
    "title": "Painel do SaaS (dono da plataforma)",
    "revisado": "1.3.0",
-   "markdown": "# Painel do SaaS (dono da plataforma)\n\nAcesso: só quem está em `platform_admins`. Menu \"SaaS\".\n\n- **Dashboard** (`/super`): clientes, situação, receita estimada e atividade.\n- **Gerenciar clientes** (lista em `/super`): menu de ações (⋯) em cada cliente com **Editar cliente** (nome, site, lema, cor e logo), contato do responsável, anotação, +7 dias de teste, ativar, suspender/reativar, **Excluir cliente** e, para excluídos, **Restaurar cliente**. A exclusão da lista é **lógica**: confirma mostrando os dados afetados (quadras, reservas, clientes, funcionários, usuários, lançamentos e pagamentos), oferece exportar em JSON, exige motivo, prazo de recuperação (7 a 365 dias) e a digitação do nome do cliente; o acesso é bloqueado e nada é apagado. O próprio centro do dono não pode ser excluído. A **exclusão definitiva** (que apaga os dados) só é liberada depois do prazo de recuperação, na página do cliente.\n- **Clientes** (`/super/clientes/[id]`): dados, plano, tipo da organização (`quadra`), suspensão e reativação, mais dias de teste, vincular administrador, modo espião, exportação e exclusão lógica ou definitiva.\n- **Log de acessos** (`/super/acessos`): uso por cliente.\n- **Comunicados** (`/super/comunicados`): e-mails em massa aos clientes (SMTP), com teste e descadastro.\n- **Documentação** (`/super/documentacao`): esta documentação.\n\nObservação: alguns textos e indicadores do painel ainda vêm da base herdada (por exemplo, contagem de \"atletas\"); a revisão desses rótulos para o contexto de quadras está pendente.\n\n## Avisos de contatos do site\nO menu **Contatos do site** mostra um número com os contatos em situação \"novo\", somado ao sino do topo, e um aviso na tela aparece quando chega um contato com o sistema aberto (detalhes no capítulo do site comercial).\n\n## Criar cliente a partir de um contato do site\nEm **Contatos do site**, o botão **Criar cliente** (contatos de dono de quadra) cria o centro, envia o convite de acesso ao e-mail do dono e o vincula como administrador, numa única ação. O cliente aparece na hora em **Gerenciar clientes**. Detalhes no capítulo do site comercial."
+   "markdown": "# Painel do SaaS (dono da plataforma)\n\nAcesso: só quem está em `platform_admins`. Menu \"SaaS\".\n\n- **Dashboard** (`/super`): clientes, situação, receita estimada e atividade.\n- **Gerenciar clientes** (lista em `/super`): menu de ações (⋯) em cada cliente com **Editar cliente** (nome, site, lema, cor e logo), contato do responsável, anotação, +7 dias de teste, ativar, suspender/reativar, **Excluir cliente** e, para excluídos, **Restaurar cliente**. A exclusão da lista é **lógica**: confirma mostrando os dados afetados (quadras, reservas, clientes, funcionários, usuários, lançamentos e pagamentos), oferece exportar em JSON, exige motivo, prazo de recuperação (7 a 365 dias) e a digitação do nome do cliente; o acesso é bloqueado e nada é apagado. O próprio centro do dono não pode ser excluído. A **exclusão definitiva** (que apaga os dados) só é liberada depois do prazo de recuperação, na página do cliente.\n- **Clientes** (`/super/clientes/[id]`): dados, plano, tipo da organização (`quadra`), suspensão e reativação, mais dias de teste, vincular administrador, modo espião, exportação e exclusão lógica ou definitiva.\n- **Log de acessos** (`/super/acessos`): uso por cliente.\n- **Comunicados** (`/super/comunicados`): e-mails em massa aos clientes (SMTP), com teste e descadastro.\n- **Documentação** (`/super/documentacao`): esta documentação.\n\nObservação: alguns textos e indicadores do painel ainda vêm da base herdada (por exemplo, contagem de \"atletas\"); a revisão desses rótulos para o contexto de quadras está pendente.\n\n## Avisos de contatos do site\nO menu **Contatos do site** mostra um número com os contatos em situação \"novo\", somado ao sino do topo, e um aviso na tela aparece quando chega um contato com o sistema aberto (detalhes no capítulo do site comercial).\n\n## Criar cliente a partir de um contato do site\nEm **Contatos do site**, o botão **Criar cliente** (contatos de dono de quadra) cria o centro, envia o convite de acesso ao e-mail do dono e o vincula como administrador, numa única ação. O cliente aparece na hora em **Gerenciar clientes**. Detalhes no capítulo do site comercial.\n\n## Administrador do centro: sempre por convite (1.8.2)\n- **Novo cliente (formulário \"Novo grupo\")**: o e-mail do administrador agora recebe um **convite** para criar a senha (antes era preciso a pessoa já ter conta; sem conta, o centro era criado **sem administrador**). Sem e-mail, o centro é criado e o painel avisa.\n- **Convidar administrador** (menu ⋯ do cliente): convida o dono de um centro já existente. Clientes sem administrador mostram a etiqueta vermelha **\"Sem administrador · convidar\"** na lista.\n- A rotina é única para os três caminhos (`src/lib/invite-admin.ts`): convite pelo servidor com a chave de serviço, reaproveita conta existente só se ela não pertencer a outro centro, vincula por `sa_assign_admin` e desfaz o convite se o vínculo falhar. Rota: `POST /api/super/clientes/convidar` (só o dono da plataforma)."
   },
   {
    "id": "autenticacao",
@@ -1489,6 +1489,13 @@
    "description": "Recebe o formulário do site comercial (valida, protege contra spam e grava o contato); sem login"
   },
   {
+   "path": "/api/super/clientes/convidar",
+   "methods": [
+    "POST"
+   ],
+   "description": "Convida e vincula o administrador de um centro existente (convite por e-mail para criar a senha); só o dono da plataforma"
+  },
+  {
    "path": "/api/super/comunicados/enviar",
    "methods": [
     "POST"
@@ -1615,6 +1622,22 @@
   }
  ],
  "changelog": [
+  {
+   "version": "1.8.2",
+   "date": "2026-11-17",
+   "title": "Administrador do centro por convite",
+   "novidades": [
+    "Ação \"Convidar administrador\" no menu de cada cliente, para centros que ainda não têm dono com acesso.",
+    "Etiqueta \"Sem administrador · convidar\" na lista de clientes."
+   ],
+   "melhorias": [
+    "Ao criar um centro pelo Painel do SaaS, o e-mail do administrador recebe um convite para criar a senha (não precisa mais ter conta antes).",
+    "Telas de entrar, recuperar e redefinir senha com a área principal marcada para leitores de tela."
+   ],
+   "correcoes": [
+    "Centros criados pelo formulário \"Novo grupo\" com o e-mail de alguém sem conta ficavam sem administrador, sem aviso."
+   ]
+  },
   {
    "version": "1.8.1",
    "date": "2026-11-17",
@@ -1788,18 +1811,6 @@
     "Fotos em WebP com vários tamanhos (o celular baixa a versão menor) e carregamento sob demanda abaixo da primeira dobra; Lighthouse continua 100 em desempenho e acessibilidade."
    ],
    "correcoes": []
-  },
-  {
-   "version": "1.4.1",
-   "date": "2026-11-16",
-   "title": "Site: Instagram oficial no rodapé",
-   "novidades": [
-    "Link do Instagram oficial (@partidouoo) no rodapé do site, abrindo em nova aba."
-   ],
-   "melhorias": [
-    "O perfil também entrou nos dados estruturados da organização (sameAs), o que ajuda o Google a associar a rede social à marca."
-   ],
-   "correcoes": []
   }
  ],
  "stats": {
@@ -1807,6 +1818,6 @@
   "tables": 44,
   "functions": 171,
   "pages": 33,
-  "apis": 9
+  "apis": 10
  }
 }

@@ -17,7 +17,7 @@ import { supabase } from "@/lib/supabase/client"
 import { slugify } from "@/lib/tenant"
 import { maskPhone } from "@/lib/whatsapp"
 import { Menu } from "@base-ui/react/menu"
-import { Download, ExternalLink, MoreHorizontal, Pencil, RotateCcw, StickyNote, Trash2, UserPen } from "lucide-react"
+import { Download, ExternalLink, Loader2, MoreHorizontal, Pencil, RotateCcw, StickyNote, Trash2, UserPen, UserPlus } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import * as React from "react"
@@ -190,6 +190,7 @@ export default function SuperPage() {
   const [edit, setEdit] = React.useState<Org | null>(null)
   const [editOrg, setEditOrg] = React.useState<Org | null>(null)
   const [delOrg, setDelOrg] = React.useState<Org | null>(null)
+  const [invOrg, setInvOrg] = React.useState<Org | null>(null)
   const [busy, setBusy] = React.useState(false)
   const [nw, setNw] = React.useState({ name: "", slug: "", plan: "teste", email: "" })
 
@@ -254,6 +255,7 @@ export default function SuperPage() {
       <Menu.Portal><Menu.Positioner align="end" sideOffset={6} className="z-50"><Menu.Popup className="min-w-56 rounded-xl border bg-popover p-1 text-popover-foreground shadow-lg outline-none">
         <Menu.Item onClick={() => router.push(`/super/clientes/${g.id}`)} className={itemCls}><ExternalLink className="size-4" /> {g.status === "excluida" ? "Recuperar ou excluir definitivamente" : "Abrir cliente"}</Menu.Item>
         {g.status !== "excluida" && <>
+          <Menu.Item onClick={() => setInvOrg(g)} className={itemCls}><UserPlus className="size-4" /> Convidar administrador</Menu.Item>
           <Menu.Item onClick={() => setEditOrg(g)} className={itemCls}><Pencil className="size-4" /> Editar cliente</Menu.Item>
           <Menu.Item onClick={() => setEdit(g)} className={itemCls}><UserPen className="size-4" /> Contato do responsável</Menu.Item>
           <Menu.Item onClick={() => { const n = window.prompt("Anotação interna (só você vê):", g.notes ?? ""); if (n !== null) act(() => db().rpc("sa_set_notes", { p_org: g.id, p_notes: n }), "Anotação salva.") }} className={itemCls}><StickyNote className="size-4" /> Anotação interna</Menu.Item>
@@ -394,6 +396,7 @@ export default function SuperPage() {
                     <div className="min-w-0 leading-tight">
                       <Link href={`/super/clientes/${g.id}`} className="block max-w-40 truncate font-medium text-foreground hover:text-primary hover:underline" title={g.name}>{g.name}</Link>
                       <div className="mt-0.5 max-w-44 truncate text-xs text-muted-foreground" title={g.slug}>{g.slug}</div>
+                      {g.admins === 0 && g.status !== "excluida" && <button type="button" onClick={() => setInvOrg(g)} className="mt-1 inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-semibold text-red-800 ring-1 ring-red-200 hover:bg-red-100"><UserPlus className="size-3" /> Sem administrador · convidar</button>}
                       <div className="max-w-44 truncate text-xs text-muted-foreground">cadastro {dts(g.created_at)}</div>
                       <div className="max-w-44 truncate text-xs text-muted-foreground">acesso {ago(g.last_access)}{inactive(g) && <span className="ml-1 rounded bg-amber-100 px-1 text-amber-800">inativo</span>}</div>
                     </div>
@@ -420,6 +423,7 @@ export default function SuperPage() {
               <div className="min-w-0 flex-1 leading-tight">
                 <Link href={`/super/clientes/${g.id}`} className="block truncate py-0.5 font-semibold hover:text-primary hover:underline">{g.name}</Link>
                 <div className="truncate text-xs text-muted-foreground">{g.slug} · cadastro {dt(g.created_at)}</div>
+                {g.admins === 0 && g.status !== "excluida" && <button type="button" onClick={() => setInvOrg(g)} className="mt-1 inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-semibold text-red-800 ring-1 ring-red-200 hover:bg-red-100"><UserPlus className="size-3" /> Sem administrador · convidar</button>}
                 <div className="truncate text-xs text-muted-foreground">acesso {ago(g.last_access)}{inactive(g) ? " · inativo" : ""}</div>
               </div>
               {menu(g)}
@@ -447,20 +451,25 @@ export default function SuperPage() {
       )}
       <ContactDialog org={edit} onClose={() => setEdit(null)} onSaved={reload} />
       <EditOrgDialog org={editOrg} onClose={() => setEditOrg(null)} onSaved={reload} />
+      <InviteAdminDialog org={invOrg} onClose={() => setInvOrg(null)} onDone={() => { setInvOrg(null); reload() }} />
       {delOrg && <DeleteDialog org={delOrg} mode="soft" onClose={() => setDelOrg(null)} onDone={() => { setDelOrg(null); reload() }} />}
 
       <Card><CardContent className="space-y-3 pt-4">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">Novo grupo</h2>
         <form className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-4" onSubmit={(e) => { e.preventDefault(); act(async () => {
           const r = await db().rpc("sa_create_org", { p_slug: nw.slug, p_name: nw.name, p_plan: nw.plan })
-          if (r.error || !nw.email.trim()) return r
-          return db().rpc("sa_assign_admin", { p_org: r.data as string, p_email: nw.email.trim() })
-        }, "Grupo criado.").then(() => setNw({ name: "", slug: "", plan: "teste", email: "" })) }}>
+          if (r.error) return r
+          if (!nw.email.trim()) { toast.warning("Centro criado sem administrador.", { description: "Use \"Convidar administrador\" no menu do cliente." }); return r }
+          // Convite pelo servidor: cria a conta e envia o e-mail para a pessoa criar a senha (não exige conta prévia).
+          const res = await fetch("/api/super/clientes/convidar", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ org_id: r.data, email: nw.email.trim(), name: nw.name }) })
+          const j = (await res.json().catch(() => ({}))) as { error?: string }
+          return { error: res.ok ? null : { message: `Centro criado, mas o convite falhou: ${j.error ?? "erro desconhecido"}. Use "Convidar administrador" no menu do cliente.` } }
+        }, nw.email.trim() ? "Centro criado e convite enviado ao administrador." : "Centro criado.").then(() => setNw({ name: "", slug: "", plan: "teste", email: "" })) }}>
           <div className="space-y-1.5"><Label htmlFor="nn">Nome</Label><Input id="nn" required maxLength={80} value={nw.name} onChange={(e) => setNw((x) => ({ ...x, name: e.target.value, slug: slugify(e.target.value) }))} /></div>
           <div className="space-y-1.5"><Label htmlFor="ns">Endereço</Label><Input id="ns" required maxLength={40} value={nw.slug} onChange={(e) => setNw((x) => ({ ...x, slug: slugify(e.target.value) }))} /></div>
           <div className="space-y-1.5"><Label htmlFor="np">Plano</Label>
             <NativeSelect id="np" className="w-full" value={nw.plan} onChange={(e) => setNw((x) => ({ ...x, plan: e.target.value }))}>{plans.filter((p) => p.active).map((p) => <option key={p.code} value={p.code}>{p.name}</option>)}</NativeSelect></div>
-          <div className="space-y-1.5"><Label htmlFor="ne">E-mail do administrador <span className="font-normal text-muted-foreground">(conta já cadastrada)</span></Label><Input id="ne" type="email" value={nw.email} onChange={(e) => setNw((x) => ({ ...x, email: e.target.value }))} /></div>
+          <div className="space-y-1.5"><Label htmlFor="ne">E-mail do administrador <span className="font-normal text-muted-foreground">(recebe o convite para criar a senha)</span></Label><Input id="ne" type="email" value={nw.email} onChange={(e) => setNw((x) => ({ ...x, email: e.target.value }))} /></div>
           <div className="sm:col-span-2 2xl:col-span-4"><Button type="submit" variant="brand" disabled={busy}>Criar grupo</Button></div>
         </form>
       </CardContent></Card>
@@ -531,5 +540,36 @@ function PlanRow({ p, busy, onSave, isNew }: { p: Plan; busy: boolean; isNew?: b
       </summary>
       <div className="pt-3">{body}</div>
     </details>
+  )
+}
+
+/** Convida o administrador de um centro existente: o servidor cria a conta, envia o e-mail para a pessoa criar a senha e a vincula ao centro. */
+function InviteAdminDialog({ org, onClose, onDone }: { org: Org | null; onClose: () => void; onDone: () => void }) {
+  const [v, setV] = React.useState({ name: "", email: "" })
+  const [busy, setBusy] = React.useState(false)
+  const [err, setErr] = React.useState("")
+  React.useEffect(() => { if (org) { setV({ name: org.contact_name ?? "", email: org.contact_email ?? "" }); setErr("") } }, [org])
+  if (!org) return null
+  async function submit(e: React.FormEvent) {
+    e.preventDefault(); if (busy) return; setBusy(true); setErr("")
+    const r = await fetch("/api/super/clientes/convidar", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ org_id: org!.id, ...v }) })
+    const j = (await r.json().catch(() => ({}))) as { error?: string; invited?: boolean }
+    setBusy(false)
+    if (!r.ok) return setErr(j.error ?? "Não foi possível convidar.")
+    toast.success(j.invited ? `Convite enviado para ${v.email}.` : `${v.email} vinculado como administrador.`)
+    onDone()
+  }
+  return (
+    <Dialog open onOpenChange={(o) => !o && !busy && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader><DialogTitle>Convidar administrador</DialogTitle><DialogDescription>{org.name}{org.admins > 0 ? ` já tem ${org.admins} administrador(es); este será mais um.` : " ainda não tem administrador."} A pessoa recebe um e-mail para criar a senha.</DialogDescription></DialogHeader>
+        <form onSubmit={submit} className="space-y-3">
+          <div className="space-y-1.5"><Label htmlFor="ia-n">Nome</Label><Input id="ia-n" maxLength={120} value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} placeholder="Nome do responsável" /></div>
+          <div className="space-y-1.5"><Label htmlFor="ia-e">E-mail</Label><Input id="ia-e" type="email" required value={v.email} onChange={(e) => setV({ ...v, email: e.target.value })} /></div>
+          {err && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">{err}</p>}
+          <DialogFooter><Button type="button" variant="outline" onClick={onClose} disabled={busy}>Cancelar</Button><Button type="submit" variant="brand" disabled={busy}>{busy && <Loader2 className="size-4 animate-spin" />} Enviar convite</Button></DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 }
