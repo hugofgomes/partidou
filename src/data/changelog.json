@@ -2,6 +2,25 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.9.0",
+      "date": "2026-11-17",
+      "title": "Encontre um Jogo: jogadores, goleiros e organizadores",
+      "novidades": [
+        "Página pública Encontre seu próximo jogo! com partidas reais e filtros (cidade, bairro, modalidade, data, dia, horário, posição, nível, com vagas).",
+        "Conta grátis de jogador e perfil esportivo (posições, nível, modalidades, dias e horários, convites e e-mails), com identificação de goleiros.",
+        "Quero Jogar: solicitação com posição e recado; quem não está logado entra ou se cadastra e volta para a mesma partida.",
+        "Organizador cria partidas (local livre ou reserva numa quadra do Partidou), aprova ou recusa pedidos e usa Preciso de Goleiro e Encontrar Jogadores para convidar compatíveis.",
+        "Convites com aceitar/recusar, expiração e cancelamento; Minhas Partidas (próximas, solicitações, convites, histórico, disponibilidade) e painel do organizador com indicadores.",
+        "E-mails reais para convite, solicitação, aprovação, recusa, convite aceito/recusado e cancelamento, com fila, novas tentativas e registro; central de notificações (sino)."
+      ],
+      "melhorias": [
+        "Partida ligada a reserva acompanha remarcações e é cancelada se a reserva for cancelada; só mostra quadra reservada com a reserva confirmada.",
+        "Site: Encontrar um Jogo leva à nova busca de partidas e o plano Jogador grátis já está disponível.",
+        "Login volta para a página de origem e tem atalho para criar conta de jogador."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.8.2",
       "date": "2026-11-17",
       "title": "Administrador do centro por convite",

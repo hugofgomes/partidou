@@ -11,6 +11,9 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import * as React from "react"
 
+/** Só aceita voltar para uma página do próprio sistema (evita redirecionamento para fora). */
+const safeNext = (n: string | null) => (n && n.startsWith("/") && !n.startsWith("//") ? n : null)
+
 function Form() {
   const params = useSearchParams()
   const [email, setEmail] = React.useState("")
@@ -28,7 +31,7 @@ function Form() {
       setBusy(false)
       return
     }
-    window.location.href = "/"
+    window.location.href = safeNext(params.get("next")) ?? "/"
   }
 
   return (
@@ -46,7 +49,11 @@ function Form() {
         {busy && <Loader2 className="animate-spin" />} Entrar
       </Button>
       <p className="text-center text-sm"><Link href="/recuperar" className="text-muted-foreground underline">Esqueci minha senha</Link></p>
-      <p className="text-center text-sm text-muted-foreground">Quer ver quadras e horários? <Link href="/quadras" className="underline">Buscar quadras</Link></p>
+      <div className="rounded-lg bg-secondary/60 p-3 text-center text-sm">
+        <p className="font-medium">Jogador ou organizador de partidas?</p>
+        <Link href={`/cadastro${params.get("next") ? `?next=${encodeURIComponent(params.get("next")!)}` : ""}`} className="mt-1 inline-block font-semibold text-primary underline">Criar conta grátis</Link>
+        <span className="text-muted-foreground"> · </span><Link href="/jogos" className="text-muted-foreground underline">Encontrar um jogo</Link>
+      </div>
     </form>
   )
 }
@@ -56,7 +63,7 @@ export default function LoginPage() {
   return (
     <main className="grid min-h-dvh place-items-center bg-primary p-4">
       <div className="w-full max-w-sm space-y-6 rounded-xl bg-card p-6 shadow-xl">
-        <OrgHeading subtitle="Gestão de quadras e centros esportivos" />
+        <OrgHeading subtitle="Entre para jogar, organizar partidas ou gerenciar seu centro" />
         <React.Suspense>
           <Form />
         </React.Suspense>

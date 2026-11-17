@@ -1,5 +1,5 @@
 {
- "version": "1.8.2",
+ "version": "1.9.0",
  "versionDate": "2026-11-17",
  "stack": {
   "next": "15.5.29",
@@ -72,6 +72,12 @@
    "title": "Site comercial (partidou.com.br)",
    "revisado": "1.5.0",
    "markdown": "# Site comercial (partidou.com.br)\n\n## O que é\nSite institucional e comercial do Partidou, na raiz de **https://partidou.com.br**. Apresenta os três públicos (donos de quadra, organizadores e jogadores), os planos e um formulário de contato. O sistema continua em **app.partidou.com.br**.\n\n## Como é servido (um só projeto, dois endereços)\n- O código do site é a página `/site` (`src/app/(marketing)/site`) e os componentes de `src/components/site`.\n- O middleware (`src/middleware.ts`) olha o endereço: em `partidou.com.br` a raiz `/` mostra o site; `/privacidade`, `/termos`, `/cookies` e `/api/site/lead` ficam ali mesmo; **todo o resto** (login, busca de quadras, painel) redireciona para `app.partidou.com.br` com o mesmo caminho. `www.partidou.com.br` redireciona para `partidou.com.br`. Em `app.partidou.com.br`, `/site` redireciona para o site.\n- `robots.txt` e `sitemap.xml` mudam conforme o endereço (o site é indexável; o sistema expõe só a busca pública e os textos legais).\n\n## Conteúdo e configuração (`src/lib/site-config.ts`)\nPlanos e preços, perguntas frequentes, modalidades, menu, redes sociais e depoimentos ficam num único arquivo. **Preços**: valores de lançamento (Organizador Pro R$ 29,90, Quadra Pro R$ 99,90 e Arena Business R$ 199,90), sujeitos a confirmação; não há cobrança online: os botões levam ao formulário. **Redes sociais**: só aparecem no rodapé as que tiverem endereço em `SOCIAL` (hoje: Instagram [@partidouoo](https://www.instagram.com/partidouoo/)); também entram no JSON-LD da organização (`sameAs`). **Depoimentos**: a seção só é publicada quando `TESTIMONIALS` tiver itens reais e autorizados (hoje está vazia, de propósito).\n\n## Honestidade do conteúdo\nO site só afirma o que existe. O que ainda está em desenvolvimento aparece com a marca **Em breve** (plano Organizador Pro, jogos recorrentes e mensalidades de organizador, perfil e histórico do jogador, faixa etária e nível de partida). Os mockups (celular, dashboard e agenda) são ilustrações em HTML/CSS marcadas como \"Exemplo ilustrativo\", sem números nem clientes reais. A partida com vagas já existe ligada à reserva de uma quadra (ver capítulo do módulo). Exceção decidida pelo dono: o selo da primeira dobra diz \"Maior plataforma de gestão de quadras esportivas do Brasil\" (`Hero` em `src/components/site/sections.tsx`). É uma afirmação comparativa: pelo Código do CONAR, precisa de comprovação (número de centros/quadras ativos frente aos concorrentes). Se não houver, trocar por algo como \"Plataforma completa de gestão de quadras esportivas\".\n\n## Formulário de contato (captação de leads)\n- Tela: seção `#contato` (componente `lead-form.tsx`). Três perfis (dono de quadra, organizador, jogador); os botões dos planos abrem o formulário já com o perfil e o plano.\n- API: `POST /api/site/lead` valida os dados, descarta robôs (campo-isca preenchido ou envio em menos de 2,5 s), limita 5 envios por IP em 10 minutos (em memória, por instância) e chama a função `site_lead_create`.\n- Banco (`0041_site_leads.sql`): tabela `site_leads` **sem acesso direto** (nem para visitantes nem para usuários logados). O visitante só executa `site_lead_create` (valida tudo no servidor, exige consentimento e no máximo 3 contatos por WhatsApp ou e-mail em 24 horas). O dono da plataforma lista e atualiza por `site_leads_list` e `site_lead_update`.\n- Acompanhamento: Painel do SaaS → **Contatos do site** (`/super/leads`): situação (novo, contatado, negociando, ganho, perdido), anotações, links de WhatsApp e e-mail.\n- **Criar cliente a partir do contato (1.7.0):** em Contatos do site, contatos de dono de quadra têm o botão **Criar cliente**. A janela já vem preenchida (nome do estabelecimento, endereço da página, plano Teste gratuito e e-mail do contato). A rotina `POST /api/super/leads/converter` (só o dono da plataforma) confere se o endereço está livre, envia o **convite de acesso** (modelo \"Você foi convidado\", a pessoa cria a própria senha), cria o grupo por `sa_create_org`, vincula o administrador por `sa_assign_admin` e marca o contato como **ganho** com a anotação \"Cliente criado em … : endereço\". Se o e-mail já tiver acesso a outro centro, nada é criado. Se algo falhar depois do convite, o convite recém-criado é desfeito. **Marcar \"ganho\" sozinho não cria cliente.** O centro só aparece na busca `/quadras` depois que o administrador cadastra endereço, quadras e horários e ativa a Página pública.\n- **Aviso dentro do sistema (1.5.3):** para o dono da plataforma, o menu \"Contatos do site\" mostra quantos estão com situação **novo** e esse número soma no **sino** do topo (que leva a `/super/leads` quando não há reservas pendentes). A contagem é refeita a cada minuto, ao navegar e ao voltar para a aba; quando chega um contato novo com o sistema aberto, aparece um aviso na tela com o botão \"Abrir\". O número some quando o contato muda de situação (ex.: contatado).\n- **Diagnóstico de e-mail:** cada envio grava no log do servidor (Coolify → aplicação → Logs) `[lead] e-mail … enviado`, `[lead] e-mail … falhou: motivo` ou `[lead] SMTP não configurado`.\n- **E-mails do formulário:** depois de gravar o contato, a API envia (1) um **aviso à equipe** (para `LEAD_NOTIFY_EMAIL`, ou `PLATFORM_ALERT_EMAIL`, ou o próprio remetente `SMTP_FROM`) com os dados e o botão do painel e (2) uma **confirmação** para quem preencheu, se informou e-mail (com resposta para o remetente). Só saem se o SMTP do servidor estiver configurado (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_FROM_NAME`; no Partidou, via Resend). Falha de e-mail nunca derruba o envio: o contato já está salvo. O conteúdo digitado pelo visitante é escapado nos e-mails. **Visual (1.5.4):** os dois e-mails (`src/lib/lead-mail.ts`) usam o mesmo modelo dos e-mails do Auth (`supabase/email-templates`): logo no cabeçalho verde, faixa lima, cartão branco, botão lima e rodapé com site e Instagram; a confirmação tem botão \"Conhecer o Partidou\" (quadra) ou \"Encontrar um Jogo\" (demais) e o aviso à equipe tem atalhos para responder no WhatsApp e por e-mail. A confirmação vai para qualquer e-mail informado, por isso há limites por IP e por contato.\n- Ainda não existe: aviso por WhatsApp, captcha (se houver spam, avaliar Turnstile) e integração com CRM externo.\n\n## Estrutura da página (1.4.0)\nOrdem comercial, uma seção por objetivo: **Hero** (título, subtítulo, \"Encontrar um Jogo\" → `/quadras` e \"Sou Dono de Quadra\" → formulário) → **Como funciona** (os três públicos) → **Para donos de quadras** (mockup do painel + 8 recursos; \"Quero Gerenciar Minha Quadra\") → **Agenda e reservas** → **Para organizadores** (\"Organize menos. Jogue mais.\"; o que ainda não existe tem selo Em breve; botão leva à lista de espera) → **Para jogadores** (\"Encontrar um Jogo\" → `/quadras`) → **Principais funcionalidades** (+ modalidades) → **Planos** (no celular o Quadra Pro aparece primeiro) → Depoimentos (só com itens reais) → **FAQ** → **Chamada final com o formulário** (`#contato`) → Rodapé (logo, slogan, links, `contato@partidou.com.br`, redes, textos legais, ano automático).\nMenu: Início, Como Funciona, Para Quadras, Para Organizadores, Planos, Contato; botões Entrar e Começar Agora (lima). No celular, menu em gaveta (Esc fecha e devolve o foco).\n\n## Fotos (1.5.0)\nFotos reais em `public/site/` (WebP, larguras 480/800; o fundo do topo em 828/1280/1920), declaradas em `PHOTOS` (site-config) com texto alternativo e crédito, e exibidas pelo componente `photo.tsx` (`srcset`/`sizes`; o topo carrega com prioridade, as demais sob demanda). Origem: **Unsplash** (licença permite uso comercial sem crédito obrigatório). Créditos: topo — Tahamie Farooqui; quadra society — Arpit Sharma; amigos jogando — Attareza Naufal; futsal (lance e bola) — Alfonso Scarpa; vôlei de praia — Andrew Lvov; campo à noite — Abigail Keenan.\n**Trocar por fotos próprias** (recomendado, ex.: centros clientes com autorização de imagem): gerar com o mesmo nome e larguras (`npx sharp`/script em `node -e` com `sharp`, WebP qualidade 60–70) e ajustar `alt`/`credit` em `PHOTOS`.\nTopo: foto em tela cheia com película verde da marca (garante contraste do texto) e, em primeiro plano, o **painel ilustrativo** `HeroAppMockup` (`mockups.tsx`): mesmo layout e menu das telas reais de `/quadra`, com **dados de exemplo** e o selo \"Exemplo ilustrativo\" (não são números de clientes). Planos: dois planos de centros esportivos lado a lado (Arena Business mostra só o que acrescenta ao Quadra Pro) e faixa compacta \"em breve\" com Jogador e Organizador Pro.\n\n## Medição de conversão\nBotões importantes têm `data-track=\"nome\"` e um único ouvinte (`src/components/site/analytics.tsx`) gera o evento `cta_click`; o envio do formulário gera `generate_lead`. **Nenhuma ferramenta de análise está instalada**: sem `window.dataLayer`, nada é enviado nem gravado. Ao instalar GA4/Tag Manager, carregá-lo só após o consentimento do visitante (LGPD) e ele passa a receber os eventos.\n\n## SEO, desempenho e acessibilidade\nTítulo \"Partidou | Gestão de Quadras e Organização de Partidas\" e descrição em `SEO` (site-config), `canonical`, Open Graph e Twitter Cards (imagem `public/brand/og-partidou.png`, 1200×630), JSON-LD (Organization, WebSite, SoftwareApplication e FAQPage), um único `h1`, `h2` por seção ligado por `aria-labelledby`, FAQ com `<details>` (sem JavaScript), página 404 própria (`src/app/not-found.tsx`, fora do índice). Palavras-chave usadas no texto de forma natural (sistema de gestão de quadras, agenda de quadras, software para quadras esportivas, organizar partidas esportivas, encontrar jogadores de futebol, futebol society).\nDesempenho: logo do topo e do rodapé em `partidou-logo-520.png` (19 KB; o original de 223 KB era quase metade da página), Sora só no peso 700, sem animações de entrada (o componente Reveal foi removido) e sem brilhos animados. Foco visível em todos os elementos clicáveis e respeito a \"reduzir movimento\".\nCabeçalhos de segurança (em `next.config.ts`, valem para site e sistema): HSTS, `X-Content-Type-Options`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy`, `Permissions-Policy` e sem `X-Powered-By`. CSP ainda não (exige mapear Supabase e scripts do Next).\n\n**Medições (Lighthouse 13.6, 16/11/2026):** antes, em produção: Desempenho 100, Acessibilidade 91, Boas práticas 100, SEO 100; página com 500 KB. Depois, no build local: Desempenho 100, Acessibilidade 97→100 após ajuste de contraste, SEO 100; página com 273 KB (Boas práticas só cai no teste local por ser HTTP). Sem rolagem horizontal em 320, 375, 390, 768, 1024, 1440 e 1920 px.\n\n## Implantação (uma vez)\n1. **DNS (Cloudflare):** registros `A` de `partidou.com.br` e de `www` apontando para o IP da VPS (como o `app`); comece com a nuvem cinza (DNS only) até o HTTPS ser emitido.\n2. **Coolify:** na aplicação do Partidou, acrescentar `https://partidou.com.br` e `https://www.partidou.com.br` à lista de domínios (mantendo `https://app.partidou.com.br`) e fazer o deploy.\n3. **Banco:** aplicar a migration `0041_site_leads.sql` **antes** do deploy (sem ela o formulário responde erro).\n4. **Conferir:** `/` mostra o site, `/login` em partidou.com.br leva ao app, `robots.txt` e `sitemap.xml`, o envio de um contato de teste e o painel Contatos do site."
+  },
+  {
+   "id": "encontre-um-jogo",
+   "title": "Encontre um Jogo (jogadores, goleiros e organizadores)",
+   "revisado": "1.9.0",
+   "markdown": "# Encontre um Jogo (jogadores, goleiros e organizadores)\n\nConecta jogadores de linha e goleiros que procuram partidas com organizadores que precisam completar o time. É uma área própria do sistema, para **contas de jogador** (qualquer pessoa, grátis), separada dos centros esportivos.\n\n## Telas\n| Rota | Quem | O que faz |\n|---|---|---|\n| `/jogos` | público | **Encontre seu próximo jogo!** Busca de partidas reais com filtros (cidade, UF, bairro/região, modalidade, data, dia da semana, período, posição necessária, nível, só com vagas). Filtros ficam no endereço. |\n| `/jogos/<id>` | público | Detalhe da partida e **Quero Jogar** (escolhe a posição e manda recado). Visitante entra/cadastra e volta para a mesma partida (`?quero=1` + partida guardada no navegador). |\n| `/cadastro` | público | Conta de jogador (nome, e-mail, senha, aceite de Termos/Privacidade). Confirmação por e-mail (modelo Partidou). |\n| `/jogador` | logado | **Minhas Partidas**: Próximas, Solicitações, Convites (aceitar/recusar), Histórico e Disponibilidade. Primeiro acesso leva ao perfil. |\n| `/jogador/perfil` | logado | Perfil esportivo: dados pessoais (contato nunca público), posição principal e secundárias, nível, modalidades, faixa etária, dias, períodos, horários personalizados, distância máxima, aceitar convites, receber e-mails. Goleiro = posição principal ou secundária \"goleiro\". |\n| `/organizar` | logado | Painel do organizador: partidas criadas, confirmados, solicitações pendentes, convites enviados, vagas disponíveis, goleiros necessários. |\n| `/organizar/nova` | logado | **Criar partida**: local livre ou reserva própria numa quadra do Partidou; vagas, valor por jogador, nível, informações e posições necessárias (**Preciso de goleiro**). |\n| `/organizar/<id>` | organizador | Aprovar/recusar solicitações, confirmados (WhatsApp, remover), convites (cancelar), **Preciso de Goleiro** e **Encontrar Jogadores** (compatíveis + **Enviar convite**), encerrar/reabrir inscrições, cancelar partida, divulgar link. |\n| `/convite/<id>` | convidado | Aceitar ou recusar o convite (só o próprio convidado vê; exige login). |\n\nSino de notificações no topo (não lidas, abrir leva à partida, marcar como lidas). No celular, barra inferior com Jogos, Minhas Partidas, Organizar e Perfil.\n\n## Regras (no banco — `0046_encontre_um_jogo.sql`)\n- Tabelas: `players`, `games`, `game_needs` (vagas por posição), `game_participants` (solicitações e confirmados), `game_invites`, `user_notifications`, `email_outbox`, `game_events` (histórico). RLS em todas; o navegador só lê o próprio perfil e as próprias notificações. Todo o resto é por funções `security definer` que validam `auth.uid()`.\n- Sem duplicidade: um registro por jogador e partida; um convite pendente por jogador e partida.\n- Vagas: aprovar e aceitar convite **travam a linha da partida** (`for update`); nunca há mais confirmados que vagas. Lotada some da busca \"com vagas\" e recusa novos pedidos; pendentes continuam e podem ser aprovados se alguém sair.\n- Conflito: o mesmo jogador não é confirmado em duas partidas sobrepostas.\n- Inscrições: só em partida aberta e futura; encerrar/reabrir pelo organizador; cancelar avisa todos.\n- Convites expiram no início da partida ou em 3 dias (o que vier antes); terceiros não veem nem respondem.\n- Limites: 10 partidas/dia, 20 solicitações/dia e 40 convites/dia por pessoa.\n- Privacidade: na busca, organizador aparece pelo primeiro nome; nas buscas do organizador, jogadores aparecem como \"Nome S.\"; telefone só para o organizador e só de confirmados; e-mail nunca.\n- Integração com a Quadra Esportiva: `player_court_bookings()` lista as reservas futuras no telefone do perfil; a partida criada a partir delas mostra a quadra e só diz \"Quadra reservada\" com a reserva **confirmada**. Gatilho `gm_booking_sync`: remarcação atualiza a partida e avisa os confirmados; reserva cancelada cancela a partida (com e-mail).\n\n## E-mails (fila real, sem simulação)\n- Eventos gravados em `email_outbox` pela própria transação (chave `dedupe_key` única = sem envio duplicado; respeita \"receber avisos por e-mail\").\n- `POST /api/cron/emails` processa a fila: reserva lote (`email_claim`, com o e-mail do destinatário lido no servidor), monta o modelo (`src/lib/game-mail.ts`, visual de `src/lib/mail-layout.ts`), envia pelo SMTP do Resend e registra (`email_mark`): enviado + id do provedor, ou erro com novas tentativas em 2, 4, 8 e 16 min; após 5, \"falhou\". Acionado logo após cada ação (usuário logado) e pelo agendamento do servidor (`Authorization: Bearer CRON_SECRET`).\n- Modelos: convite (Evento 1), solicitação recebida (2), participação aprovada (3), convite recusado (4), convite aceito, solicitação não aprovada (5), partida cancelada (6, sem afirmar reembolso).\n- Se o e-mail falhar, a ação já está gravada e aparece no painel e no sino.\n\n## Testes\n`supabase/tests/run-tests.mjs`, seção \"Encontre um Jogo\": cenários 1 a 6 do pedido (encontrar e aprovar, goleiro convidado, convite recusado, lotada, e-mail indisponível com retentativas, segurança), conflito de horário, expiração, cancelamento, notificações, preferências e integração com reservas.\n\n## Pendências conhecidas\n- Distância aproximada (geolocalização) não implementada: a busca usa cidade e bairro.\n- Foto de perfil: campo existe, sem envio de arquivo ainda.\n- Status de entrega do provedor: guardamos o id da mensagem; o webhook de entrega do Resend não está ligado.\n- Partidas recorrentes e mensalidades de organizador (Organizador Pro) seguem para depois."
   }
  ],
  "migrations": [
@@ -254,6 +260,10 @@
   {
    "file": "0045_partida_nivel_atleta.sql",
    "summary": "Partidas com vagas: o próprio atleta informa o nível técnico ao pedir vaga (Médio, Bom ou Craque), e o organizador vê o nível de cada pedido na gestão da partida. Campo opcional; pedidos existentes não mudam."
+  },
+  {
+   "file": "0046_encontre_um_jogo.sql",
+   "summary": "════════════════════════════════════════════════════════════════════════════════════════════════ ENCONTRE UM JOGO — jogadores, goleiros e organizadores (conta de jogador, fora dos centros esportivos)."
   }
  ],
  "tables": [
@@ -354,8 +364,32 @@
    "file": "0037_quadra_fase3.sql"
   },
   {
+   "name": "email_outbox",
+   "file": "0046_encontre_um_jogo.sql"
+  },
+  {
    "name": "expenses",
    "file": "0001_schema.sql"
+  },
+  {
+   "name": "game_events",
+   "file": "0046_encontre_um_jogo.sql"
+  },
+  {
+   "name": "game_invites",
+   "file": "0046_encontre_um_jogo.sql"
+  },
+  {
+   "name": "game_needs",
+   "file": "0046_encontre_um_jogo.sql"
+  },
+  {
+   "name": "game_participants",
+   "file": "0046_encontre_um_jogo.sql"
+  },
+  {
+   "name": "games",
+   "file": "0046_encontre_um_jogo.sql"
   },
   {
    "name": "match_lineups",
@@ -418,6 +452,10 @@
    "file": "0027_super_exclusao.sql"
   },
   {
+   "name": "players",
+   "file": "0046_encontre_um_jogo.sql"
+  },
+  {
    "name": "profiles",
    "file": "0001_schema.sql"
   },
@@ -432,6 +470,10 @@
   {
    "name": "support_sessions",
    "file": "0029_modo_espiao.sql"
+  },
+  {
+   "name": "user_notifications",
+   "file": "0046_encontre_um_jogo.sql"
   }
  ],
  "functions": [
@@ -881,6 +923,16 @@
    "area": "Geral"
   },
   {
+   "name": "email_claim",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "email_mark",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
    "name": "enforce_admin_limit",
    "file": "0028_planos_modulos.sql",
    "area": "Geral"
@@ -896,8 +948,158 @@
    "area": "Geral"
   },
   {
+   "name": "game_cancel",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "game_create",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "game_decide",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "game_get",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "game_invite",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "game_leave",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "game_manage",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "game_request",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "game_set_status",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "game_update",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "games_search",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
    "name": "generate_charges",
    "file": "0016_multitenant.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_approved",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_booking_sync",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_cancel_internal",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_conflict",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_email",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_event",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_expire_invites",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_first_name",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_game_for_organizer",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_game_public",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_levels",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_mail_game",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_notify",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_period",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_positions",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_public_name",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_require_player",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_sports",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "gm_ufs",
+   "file": "0046_encontre_um_jogo.sql",
    "area": "Geral"
   },
   {
@@ -908,6 +1110,21 @@
   {
    "name": "handle_signup_form",
    "file": "0032_cadastro_fone.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "invite_cancel",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "invite_get",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "invite_respond",
+   "file": "0046_encontre_um_jogo.sql",
    "area": "Geral"
   },
   {
@@ -961,6 +1178,11 @@
    "area": "Geral"
   },
   {
+   "name": "my_games",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
    "name": "my_modules",
    "file": "0029_modo_espiao.sql",
    "area": "Geral"
@@ -968,6 +1190,16 @@
   {
    "name": "my_org_block",
    "file": "0027_super_exclusao.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "notification_read",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "notifications_list",
+   "file": "0046_encontre_um_jogo.sql",
    "area": "Geral"
   },
   {
@@ -991,8 +1223,28 @@
    "area": "Geral"
   },
   {
+   "name": "organizer_overview",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
    "name": "plan_modules_valid",
    "file": "0035_quadra_fase1.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "player_court_bookings",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "player_save",
+   "file": "0046_encontre_um_jogo.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "players_search",
+   "file": "0046_encontre_um_jogo.sql",
    "area": "Geral"
   },
   {
@@ -1093,6 +1345,11 @@
   {
    "name": "top_scorers",
    "file": "0016_multitenant.sql",
+   "area": "Geral"
+  },
+  {
+   "name": "unaccent_lower",
+   "file": "0046_encontre_um_jogo.sql",
    "area": "Geral"
   },
   {
@@ -1308,14 +1565,44 @@
    "description": "Tela do link de e-mail (convite, recuperação, confirmação): botão \"Continuar\" que só então usa o token"
   },
   {
+   "path": "/cadastro",
+   "access": "Administrador e Diretoria",
+   "description": "Cadastro de conta de jogador"
+  },
+  {
    "path": "/conta",
    "access": "Administrador e Diretoria",
    "description": "Minha conta: dados do usuário e troca de senha"
   },
   {
+   "path": "/convite/[id]",
+   "access": "Administrador e Diretoria",
+   "description": "Aceitar ou recusar convite"
+  },
+  {
    "path": "/cookies",
    "access": "Administrador e Diretoria",
    "description": "Política de cookies"
+  },
+  {
+   "path": "/jogador",
+   "access": "Administrador e Diretoria",
+   "description": "Minhas Partidas (próximas, solicitações, convites, histórico, disponibilidade)"
+  },
+  {
+   "path": "/jogador/perfil",
+   "access": "Administrador e Diretoria",
+   "description": "Perfil esportivo do jogador/goleiro"
+  },
+  {
+   "path": "/jogos",
+   "access": "Administrador e Diretoria",
+   "description": "Encontre um Jogo: busca pública de partidas com vagas e filtros"
+  },
+  {
+   "path": "/jogos/[id]",
+   "access": "Administrador e Diretoria",
+   "description": "Detalhe da partida e Quero Jogar (com login/cadastro preservando a partida)"
   },
   {
    "path": "/login",
@@ -1326,6 +1613,21 @@
    "path": "/offline",
    "access": "Público",
    "description": "Tela de \"Sem conexão\" do app instalável (pública, sem dados)"
+  },
+  {
+   "path": "/organizar",
+   "access": "Administrador e Diretoria",
+   "description": "Painel do organizador com indicadores"
+  },
+  {
+   "path": "/organizar/[id]",
+   "access": "Administrador e Diretoria",
+   "description": "Gestão da partida: solicitações, confirmados, convites, Preciso de Goleiro e Encontrar Jogadores"
+  },
+  {
+   "path": "/organizar/nova",
+   "access": "Administrador e Diretoria",
+   "description": "Criar partida (local livre ou reserva do Partidou; Preciso de goleiro)"
   },
   {
    "path": "/partida/[token]",
@@ -1467,6 +1769,13 @@
    "description": "Cria a assinatura no Asaas e devolve o link de pagamento"
   },
   {
+   "path": "/api/cron/emails",
+   "methods": [
+    "POST"
+   ],
+   "description": "Processa a fila de e-mails do Encontre um Jogo (agendamento com CRON_SECRET ou usuário logado)"
+  },
+  {
    "path": "/api/docs",
    "methods": [
     "GET"
@@ -1549,6 +1858,12 @@
    "uses": 2
   },
   {
+   "name": "CRON_SECRET",
+   "scope": "Servidor",
+   "description": "Segredo da rotina diária de avisos",
+   "uses": 1
+  },
+  {
    "name": "LEAD_NOTIFY_EMAIL",
    "scope": "Servidor",
    "description": "E-mail da equipe que recebe o aviso de cada contato novo do site (padrão: PLATFORM_ALERT_EMAIL ou o remetente SMTP_FROM)",
@@ -1558,13 +1873,13 @@
    "name": "NEXT_PUBLIC_SUPABASE_ANON_KEY",
    "scope": "Navegador (gravada no build)",
    "description": "Chave pública do Supabase (navegador)",
-   "uses": 7
+   "uses": 8
   },
   {
    "name": "NEXT_PUBLIC_SUPABASE_URL",
    "scope": "Navegador (gravada no build)",
    "description": "Endereço do projeto Supabase",
-   "uses": 8
+   "uses": 9
   },
   {
    "name": "PLATFORM_ALERT_EMAIL",
@@ -1622,6 +1937,25 @@
   }
  ],
  "changelog": [
+  {
+   "version": "1.9.0",
+   "date": "2026-11-17",
+   "title": "Encontre um Jogo: jogadores, goleiros e organizadores",
+   "novidades": [
+    "Página pública Encontre seu próximo jogo! com partidas reais e filtros (cidade, bairro, modalidade, data, dia, horário, posição, nível, com vagas).",
+    "Conta grátis de jogador e perfil esportivo (posições, nível, modalidades, dias e horários, convites e e-mails), com identificação de goleiros.",
+    "Quero Jogar: solicitação com posição e recado; quem não está logado entra ou se cadastra e volta para a mesma partida.",
+    "Organizador cria partidas (local livre ou reserva numa quadra do Partidou), aprova ou recusa pedidos e usa Preciso de Goleiro e Encontrar Jogadores para convidar compatíveis.",
+    "Convites com aceitar/recusar, expiração e cancelamento; Minhas Partidas (próximas, solicitações, convites, histórico, disponibilidade) e painel do organizador com indicadores.",
+    "E-mails reais para convite, solicitação, aprovação, recusa, convite aceito/recusado e cancelamento, com fila, novas tentativas e registro; central de notificações (sino)."
+   ],
+   "melhorias": [
+    "Partida ligada a reserva acompanha remarcações e é cancelada se a reserva for cancelada; só mostra quadra reservada com a reserva confirmada.",
+    "Site: Encontrar um Jogo leva à nova busca de partidas e o plano Jogador grátis já está disponível.",
+    "Login volta para a página de origem e tem atalho para criar conta de jogador."
+   ],
+   "correcoes": []
+  },
   {
    "version": "1.8.2",
    "date": "2026-11-17",
@@ -1797,27 +2131,13 @@
     "O celular ilustrativo do topo foi trocado por uma captura real do sistema (módulo Financeiro), em moldura de navegador, sem o menu administrativo da plataforma."
    ],
    "correcoes": []
-  },
-  {
-   "version": "1.5.0",
-   "date": "2026-11-16",
-   "title": "Site: fotos reais, topo com mais impacto e planos reorganizados",
-   "novidades": [
-    "Fotos reais de quadras e pessoas jogando (licença Unsplash, uso comercial livre): fundo do topo, cards de Como funciona e faixa de modalidades."
-   ],
-   "melhorias": [
-    "Topo em tela cheia: foto aérea de uma quadra society iluminada à noite, título maior, botões maiores e o app em primeiro plano.",
-    "Planos reorganizados: primeiro os dois planos para centros esportivos lado a lado (Quadra Pro em destaque; Arena Business como \"Tudo do Quadra Pro, mais\"), depois Jogador e Organizador Pro em uma faixa compacta \"em breve\".",
-    "Fotos em WebP com vários tamanhos (o celular baixa a versão menor) e carregamento sob demanda abaixo da primeira dobra; Lighthouse continua 100 em desempenho e acessibilidade."
-   ],
-   "correcoes": []
   }
  ],
  "stats": {
-  "migrations": 45,
-  "tables": 44,
-  "functions": 171,
-  "pages": 33,
-  "apis": 10
+  "migrations": 46,
+  "tables": 52,
+  "functions": 214,
+  "pages": 42,
+  "apis": 11
  }
 }

@@ -1413,6 +1413,150 @@ section("Teste de 10 dias e assinatura (0022)")
   })
 }
 
+// ───────── Encontre um Jogo (0046): perfis, partidas, solicitações, convites, vagas, conflitos, notificações e fila de e-mails ─────────
+{
+  section("Encontre um Jogo")
+  const J = { org: uid(9001), bia: uid(9002), gol: uid(9003), dani: uid(9004), eve: uid(9005) }
+  await db.query(`insert into auth.users (id, email) values ($1,'org@jogo'),($2,'bia@jogo'),($3,'gol@jogo'),($4,'dani@jogo'),($5,'eve@jogo')`, [J.org, J.bia, J.gol, J.dani, J.eve])
+  async function anon(fn) { await db.query("begin"); try { await db.query("set local role anon"); await db.query("select set_config('request.jwt.claim.sub', '', true)"); return await fn() } finally { await db.query("rollback") } }
+  const save = (who, p) => as(who, async () => { await db.query(`select public.player_save($1)`, [JSON.stringify(p)]) }, true)
+  const base = { city: "Florianópolis", state: "SC", sports: ["futebol_society"], days: [0,1,2,3,4,5,6], periods: ["manha","tarde","noite"], level: "recreativo" }
+  await save(J.org, { ...base, full_name: "Otávio Organizador", phone: "(48) 99999-1000", main_position: "meio_campo" })
+  await save(J.bia, { ...base, full_name: "Bia Lateral Souza", main_position: "lateral" })
+  await save(J.gol, { ...base, city: "florianopolis", full_name: "Gustavo Goleiro", main_position: "goleiro" })
+  await save(J.dani, { ...base, full_name: "Dani Sem Convite", main_position: "goleiro", accepts_invites: false })
+  ok("perfil exige login", /Entre na sua conta|permission denied/.test(await anon(async () => err(`select public.player_save('{}'::jsonb)`)) ?? ""))
+  ok("jogador sem perfil não pede vaga", /Complete o seu perfil/.test(await as(J.eve, async () => err(`select public.game_request($1)`, [uid(1)])) ?? ""))
+  ok("cada um lê só o próprio perfil (sem e-mail/telefone de outros)", (await as(J.bia, async () => one(`select count(*)::int from public.players`))) === 1)
+  ok("visitante não lê as tabelas de partidas", /permission denied/.test(await anon(async () => err(`select * from public.games`)) ?? ""))
+
+  const at = (h) => new Date(Date.now() + h * 3600e3).toISOString()
+  const create = (who, p) => as(who, async () => one(`select public.game_create($1)`, [JSON.stringify(p)]), true)
+  const G1 = await create(J.org, { title: "Society de quarta", sport: "futebol_society", starts_at: at(48), ends_at: at(49), location_name: "Arena Teste", city: "Florianópolis", state: "SC", slots_total: 2, level: "recreativo", needs: [{ position: "goleiro", quantity: 1 }, { position: "lateral", quantity: 1 }] })
+  ok("organizador cria a partida", !!G1)
+  ok("partida no passado é recusada", /30 minutos/.test(await as(J.org, async () => err(`select public.game_create($1)`, [JSON.stringify({ title: "Antiga", sport: "futsal", starts_at: at(-2), ends_at: at(-1), location_name: "X", city: "Floripa", state: "SC", slots_total: 5 })])) ?? ""))
+  ok("posições não podem somar mais que as vagas", /somam mais/.test(await as(J.org, async () => err(`select public.game_create($1)`, [JSON.stringify({ title: "Errada", sport: "futsal", starts_at: at(30), ends_at: at(31), location_name: "X", city: "Floripa", state: "SC", slots_total: 1, needs: [{ position: "goleiro", quantity: 2 }] })])) ?? ""))
+  const found = await anon(async () => (await q(`select public.games_search($1) v`, [JSON.stringify({ city: "florianopolis", position: "goleiro" })]))[0].v)
+  ok("visitante encontra a partida (cidade sem acento, posição goleiro)", found.length === 1 && found[0].id === G1 && found[0].needs.length === 2 && found[0].organizer === "Otávio")
+  ok("busca não expõe telefone nem e-mail", !JSON.stringify(found).includes("99999") && !JSON.stringify(found).includes("@jogo"))
+
+  // Cenário 1 — jogador encontra partida, pede vaga, organizador aprova
+  await as(J.bia, async () => { await db.query(`select public.game_request($1,'lateral','Chego cedo')`, [G1]) }, true)
+  ok("solicitação duplicada é recusada", /já pediu/.test(await as(J.bia, async () => err(`select public.game_request($1)`, [G1])) ?? ""))
+  ok("organizador não pede vaga na própria partida", /organizador desta partida/.test(await as(J.org, async () => err(`select public.game_request($1)`, [G1])) ?? ""))
+  ok("organizador recebe notificação da solicitação", (await one(`select count(*)::int from public.user_notifications where user_id=$1 and kind='nova_solicitacao'`, [J.org])) === 1)
+  ok("e-mail da solicitação vai para a fila do organizador", (await one(`select count(*)::int from public.email_outbox where user_id=$1 and template='solicitacao_recebida'`, [J.org])) === 1)
+  const pBia = await one(`select id from public.game_participants where game_id=$1 and player_id=$2`, [G1, J.bia])
+  ok("jogador não aprova a própria solicitação", /Apenas o organizador/.test(await as(J.bia, async () => err(`select public.game_decide($1,'aprovado')`, [pBia])) ?? ""))
+  ok("ninguém altera participantes por acesso direto", /permission denied/.test(await as(J.bia, async () => err(`update public.game_participants set status='aprovado'`)) ?? ""))
+  await as(J.org, async () => { await db.query(`select public.game_decide($1,'aprovado')`, [pBia]) }, true)
+  ok("aprovado: jogador recebe notificação e e-mail", (await one(`select count(*)::int from public.user_notifications where user_id=$1 and kind='solicitacao_aprovada'`, [J.bia])) === 1 && (await one(`select count(*)::int from public.email_outbox where user_id=$1 and template='participacao_aprovada'`, [J.bia])) === 1)
+  ok("vaga atualizada (1 de 2)", (await anon(async () => (await q(`select public.game_get($1) v`, [G1]))[0].v)).approved === 1)
+
+  // Cenário 2 — Preciso de goleiro: busca, convite, aceite
+  const gks = await as(J.org, async () => (await q(`select public.players_search($1,'goleiro') v`, [G1]))[0].v)
+  ok("busca de goleiros traz o compatível e esconde quem não aceita convites", gks.length === 1 && gks[0].id === J.gol && gks[0].name === "Gustavo G.")
+  ok("só o organizador busca jogadores para a partida", /Apenas o organizador/.test(await as(J.bia, async () => err(`select public.players_search($1,'goleiro')`, [G1])) ?? ""))
+  ok("convite para quem não aceita convites é recusado", /não está recebendo convites/.test(await as(J.org, async () => err(`select public.game_invite($1,$2,'goleiro')`, [G1, J.dani])) ?? ""))
+  const inv = await as(J.org, async () => one(`select public.game_invite($1,$2,'goleiro')`, [G1, J.gol]), true)
+  ok("convite registrado, notificação e e-mail ao goleiro", !!inv && (await one(`select count(*)::int from public.email_outbox where user_id=$1 and template='convite'`, [J.gol])) === 1)
+  ok("convite duplicado é recusado", /pendente/.test(await as(J.org, async () => err(`select public.game_invite($1,$2,'goleiro')`, [G1, J.gol])) ?? ""))
+  ok("terceiro não vê o convite", (await as(J.bia, async () => one(`select public.invite_get($1)`, [inv]))) === null)
+  ok("terceiro não responde o convite", /Convite não encontrado/.test(await as(J.bia, async () => err(`select public.invite_respond($1,true)`, [inv])) ?? ""))
+  await as(J.gol, async () => { await db.query(`select public.invite_respond($1,true)`, [inv]) }, true)
+  ok("goleiro aceita e aparece entre os confirmados", (await one(`select status from public.game_participants where game_id=$1 and player_id=$2`, [G1, J.gol])) === "aprovado")
+  ok("organizador recebe a resposta (notificação + e-mail)", (await one(`select count(*)::int from public.user_notifications where user_id=$1 and kind='convite_aceito'`, [J.org])) === 1 && (await one(`select count(*)::int from public.email_outbox where user_id=$1 and template='convite_aceito'`, [J.org])) === 1)
+
+  // Cenário 4 — partida lotada
+  ok("partida lotada avisa o organizador", (await one(`select count(*)::int from public.user_notifications where user_id=$1 and kind='vagas_preenchidas'`, [J.org])) === 1)
+  await save(J.eve, { ...base, full_name: "Eve Atacante", main_position: "atacante" })
+  ok("lotada: nova solicitação é recusada", /lotada/.test(await as(J.eve, async () => err(`select public.game_request($1)`, [G1])) ?? ""))
+  ok("lotada: some da busca com vagas", (await anon(async () => (await q(`select public.games_search('{}') v`))[0].v)).every((g) => g.id !== G1))
+  ok("nunca mais confirmados que vagas", (await one(`select count(*)::int from public.game_participants where game_id=$1 and status='aprovado'`, [G1])) === 2)
+
+  // Conflito de horário e desistência
+  const G2 = await create(J.org, { title: "Mesmo horário", sport: "futebol_society", starts_at: at(48.5), ends_at: at(49.5), location_name: "Outra", city: "Florianópolis", state: "SC", slots_total: 5 })
+  await as(J.bia, async () => { await db.query(`select public.game_request($1)`, [G2]) }, true)
+  const pBia2 = await one(`select id from public.game_participants where game_id=$1 and player_id=$2`, [G2, J.bia])
+  ok("jogador não é confirmado em duas partidas no mesmo horário", /mesmo horário/.test(await as(J.org, async () => err(`select public.game_decide($1,'aprovado')`, [pBia2])) ?? ""))
+  await as(J.bia, async () => { await db.query(`select public.game_leave($1)`, [G1]) }, true)
+  ok("desistência reabre a vaga e avisa o organizador", (await anon(async () => (await q(`select public.game_get($1) v`, [G1]))[0].v)).approved === 1 && (await one(`select count(*)::int from public.user_notifications where user_id=$1 and kind='participante_cancelou'`, [J.org])) === 1)
+
+  // Cenário 3 — convite recusado
+  const G3 = await create(J.org, { title: "Futsal de sexta", sport: "futebol_society", starts_at: at(72), ends_at: at(73), location_name: "Ginásio", city: "Florianópolis", state: "SC", slots_total: 3 })
+  const inv3 = await as(J.org, async () => one(`select public.game_invite($1,$2,'goleiro')`, [G3, J.gol]), true)
+  await as(J.gol, async () => { await db.query(`select public.invite_respond($1,false)`, [inv3]) }, true)
+  ok("convite recusado muda de status, avisa e a vaga continua", (await one(`select status from public.game_invites where id=$1`, [inv3])) === "recusado" && (await one(`select count(*)::int from public.email_outbox where user_id=$1 and template='convite_recusado'`, [J.org])) === 1 && (await anon(async () => (await q(`select public.game_get($1) v`, [G3]))[0].v)).approved === 0)
+  const inv3b = await as(J.org, async () => one(`select public.game_invite($1,$2,null)`, [G3, J.eve]), true)
+  await as(J.org, async () => { await db.query(`select public.invite_cancel($1)`, [inv3b]) }, true)
+  ok("organizador cancela convite pendente", (await one(`select status from public.game_invites where id=$1`, [inv3b])) === "cancelado" && /cancelado/.test(await as(J.eve, async () => err(`select public.invite_respond($1,true)`, [inv3b])) ?? ""))
+  await db.query(`update public.game_invites set expires_at = now() - interval '1 minute' where id = $1`, [inv3b])
+  const inv3c = await as(J.org, async () => one(`select public.game_invite($1,$2,null)`, [G3, J.eve]), true)
+  await db.query(`update public.game_invites set expires_at = now() - interval '1 minute' where id = $1`, [inv3c])
+  ok("convite vencido expira e não pode ser aceito", /expirou/.test(await as(J.eve, async () => err(`select public.invite_respond($1,true)`, [inv3c])) ?? ""))
+
+  // Painéis e notificações
+  const mg = await as(J.gol, async () => (await q(`select public.my_games() v`))[0].v)
+  ok("Minhas Partidas: próximas e histórico do goleiro", mg.upcoming.length === 1 && mg.upcoming[0].id === G1)
+  const ov = await as(J.org, async () => (await q(`select public.organizer_overview() v`))[0].v)
+  ok("painel do organizador: indicadores reais", ov.games_total === 3 && ov.confirmed === 1 && ov.goalkeepers_needed === 0)
+  const man = await as(J.org, async () => (await q(`select public.game_manage($1) v`, [G1]))[0].v)
+  ok("gestão: telefone só de confirmados", man.participants.find((p) => p.player_id === J.gol).phone === null || man.participants.find((p) => p.player_id === J.gol).status === "aprovado")
+  ok("organizador não abre a gestão de partida alheia", /Apenas o organizador/.test(await as(J.bia, async () => err(`select public.game_manage($1)`, [G1])) ?? ""))
+  const nl = await as(J.org, async () => (await q(`select public.notifications_list(10) v`))[0].v)
+  await as(J.org, async () => { await db.query(`select public.notification_read(null)`) }, true)
+  ok("central de notificações: não lidas e marcar como lidas", nl.unread >= 4 && (await as(J.org, async () => (await q(`select public.notifications_list(10) v`))[0].v)).unread === 0)
+  ok("ninguém lê notificação de outra pessoa", (await as(J.bia, async () => one(`select count(*)::int from public.user_notifications where user_id <> $1`, [J.bia]))) === 0)
+
+  // Cancelamento
+  await as(J.org, async () => { await db.query(`select public.game_cancel($1,'Chuva forte')`, [G1]) }, true)
+  ok("cancelamento avisa os confirmados por notificação e e-mail", (await one(`select count(*)::int from public.email_outbox where user_id=$1 and template='partida_cancelada'`, [J.gol])) === 1)
+  ok("partida cancelada não aceita solicitações", /encerradas/.test(await as(J.eve, async () => err(`select public.game_request($1)`, [G1])) ?? ""))
+
+  // Integração com a Quadra Esportiva: partida a partir de reserva (telefone do organizador), remarcação acompanha, cancelamento da reserva cancela a partida
+  {
+    const bk = (await q(`select id, client_phone from public.court_bookings where status in ('pendente','confirmada') and kind <> 'bloqueio' and client_phone is not null and starts_at > now() + interval '2 hours' and not exists (select 1 from public.games g where g.booking_id = court_bookings.id) order by starts_at limit 1`))[0]
+    if (!bk) ok("há reserva para testar a integração", false)
+    else {
+      await save(J.org, { ...base, full_name: "Otávio Organizador", phone: bk.client_phone.replace(/^55/, ""), main_position: "meio_campo" })
+      const mine = await as(J.org, async () => (await q(`select public.player_court_bookings() v`))[0].v)
+      ok("organizador vê a própria reserva no Partidou (pelo telefone)", mine.some((x) => x.id === bk.id))
+      ok("reserva de outro telefone não pode virar partida", /não está no seu telefone/.test(await as(J.gol, async () => err(`select public.game_create($1)`, [JSON.stringify({ title: "Pegando reserva", sport: "futebol_society", booking_id: bk.id, slots_total: 4 })])) ?? ""))
+      const GB = await create(J.org, { title: "Racha na quadra", sport: "futebol_society", booking_id: bk.id, slots_total: 4 })
+      const pub = await anon(async () => (await q(`select public.game_get($1) v`, [GB]))[0].v)
+      const bst = await one(`select status from public.court_bookings where id=$1`, [bk.id])
+      ok("partida mostra a quadra e só diz 'reservada' com a reserva confirmada", !!pub.court && pub.court.reserved === (bst === "confirmada"))
+      await save(J.bia, { ...base, full_name: "Bia Lateral Souza", main_position: "lateral" })
+      await as(J.bia, async () => { await db.query(`select public.game_request($1)`, [GB]) }, true)
+      const pB = await one(`select id from public.game_participants where game_id=$1 and player_id=$2`, [GB, J.bia])
+      await as(J.org, async () => { await db.query(`select public.game_decide($1,'aprovado')`, [pB]) }, true)
+      await db.query(`update public.court_bookings set starts_at = starts_at + interval '7 days', ends_at = ends_at + interval '7 days' where id = $1`, [bk.id])
+      ok("reserva remarcada: partida acompanha e confirmados são avisados", (await one(`select (g.starts_at = b.starts_at)::text from public.games g join public.court_bookings b on b.id = g.booking_id where g.id=$1`, [GB])) === "true"
+        && (await one(`select count(*)::int from public.user_notifications where user_id=$1 and kind='partida_alterada' and game_id=$2`, [J.bia, GB])) === 1)
+      await db.query(`update public.court_bookings set status = 'cancelada' where id = $1`, [bk.id])
+      ok("reserva cancelada no centro cancela a partida e avisa por e-mail", (await one(`select status from public.games where id=$1`, [GB])) === "cancelada" && (await one(`select count(*)::int from public.email_outbox where dedupe_key=$1`, [`cancel:${GB}:${J.bia}`])) === 1)
+    }
+  }
+
+  // Cenário 5 — fila de e-mails: só o servidor; falha registrada; retentativas controladas; sem duplicidade; preferência respeitada
+  ok("usuário comum não lê nem processa a fila de e-mails", /permission denied/.test(await as(J.org, async () => err(`select * from public.email_outbox`)) ?? "") && /permission denied/.test(await as(J.org, async () => err(`select * from public.email_claim(5)`)) ?? ""))
+  const batch = await as("service", async () => q(`select * from public.email_claim(50)`), true)
+  ok("servidor reserva o lote com o e-mail do destinatário", batch.length >= 8 && batch.every((b) => b.email && b.email.endsWith("@jogo")))
+  ok("lote reservado não é pego duas vezes", (await as("service", async () => q(`select * from public.email_claim(50)`), true)).length === 0)
+  const e0 = batch[0].id
+  for (let i = 0; i < 5; i++) { await as("service", async () => { await db.query(`select public.email_mark($1,false,'SMTP fora do ar')`, [e0]); await db.query(`update public.email_outbox set status='pendente', next_attempt_at=now() where id=$1 and status='pendente'`, [e0]) }, true); if (i < 4) await as("service", async () => q(`select * from public.email_claim(50)`), true) }
+  const st0 = (await q(`select status, attempts, last_error from public.email_outbox where id=$1`, [e0]))[0]
+  ok("falha é registrada e, após 5 tentativas, o e-mail fica como falhou", st0.status === "falhou" && st0.attempts === 5 && st0.last_error === "SMTP fora do ar")
+  await as("service", async () => { await db.query(`select public.email_mark($1,true,null,'msg-123')`, [batch[1].id]) }, true)
+  ok("envio bem-sucedido registra data e identificador do provedor", (await one(`select status || '|' || provider_id from public.email_outbox where id=$1`, [batch[1].id])) === "enviado|msg-123")
+  ok("convite continua registrado mesmo com e-mail falhando", (await one(`select count(*)::int from public.game_invites`)) >= 3)
+  await db.query(`select public.gm_email($1,'teste','{}','dup-1')`, [J.bia]); await db.query(`select public.gm_email($1,'teste','{}','dup-1')`, [J.bia])
+  ok("mesma chave nunca gera dois e-mails", (await one(`select count(*)::int from public.email_outbox where dedupe_key='dup-1'`)) === 1)
+  await save(J.bia, { ...base, full_name: "Bia Lateral Souza", main_position: "lateral", email_notifications: false })
+  await db.query(`select public.gm_email($1,'teste','{}','pref-1')`, [J.bia])
+  ok("quem desligou e-mails não recebe (preferência respeitada)", (await one(`select count(*)::int from public.email_outbox where dedupe_key='pref-1'`)) === 0)
+}
+
 console.log(`\n${pass} aprovados, ${fail} falharam`)
 await db.end(); await server.stop()
 process.exit(fail ? 1 : 0)

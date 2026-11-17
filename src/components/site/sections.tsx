@@ -63,7 +63,7 @@ export function Hero() {
           <h1 id="hero-titulo" className="font-display text-[2.9rem] font-bold leading-[1.02] tracking-tight text-balance sm:text-7xl lg:text-[4.5rem] xl:text-[5rem]">Seu próximo jogo <span className="text-lime">começa aqui.</span></h1>
           <p className="mt-7 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl">Encontre quadras, organize partidas e conecte jogadores em uma única plataforma.</p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <a href={LINKS.buscarQuadras} data-track="hero_encontrar_jogo" className={cn(btnLime, "min-h-14 px-8 text-base")}>Encontrar um Jogo <ArrowRight aria-hidden className="size-5" /></a>
+            <a href={LINKS.encontrarJogo} data-track="hero_encontrar_jogo" className={cn(btnLime, "min-h-14 px-8 text-base")}>Encontrar um Jogo <ArrowRight aria-hidden className="size-5" /></a>
             <LeadLink audience="quadra" track="hero_dono_quadra" className={cn(btnGhostDark, "min-h-14 bg-forest/40 px-8 text-base backdrop-blur")}>Sou Dono de Quadra</LeadLink>
           </div>
           <p className="mt-10 text-sm text-white/75">Futebol society · Futsal · Vôlei · Beach tennis · Basquete · Tênis</p>
@@ -78,8 +78,8 @@ export function Hero() {
 export function HowItWorks() {
   const cards = [
     { i: LayoutGrid, photo: PHOTOS.quadra, who: "Donos de quadras", t: "Gestão completa do seu centro esportivo", d: "Agenda, reservas, clientes, equipe e financeiro no mesmo lugar.", cta: "Para quadras", href: "#para-quadras" },
-    { i: Users, photo: PHOTOS.amigos, who: "Organizadores", t: "Partidas organizadas sem planilha", d: "Abra vagas na sua reserva e aprove quem quer jogar.", cta: "Para organizadores", href: "#para-organizadores" },
-    { i: Search, photo: PHOTOS.futsal, who: "Jogadores", t: "Um jogo perto de você", d: "Veja quadras, horários livres e partidas com vagas.", cta: "Para jogadores", href: "#para-jogadores" },
+    { i: Users, photo: PHOTOS.amigos, who: "Organizadores", t: "Partidas organizadas sem planilha", d: "Crie a partida, aprove quem pede vaga e convide jogadores e goleiros.", cta: "Para organizadores", href: "#para-organizadores" },
+    { i: Search, photo: PHOTOS.futsal, who: "Jogadores e goleiros", t: "Um jogo perto de você", d: "Encontre partidas com vagas na sua cidade e receba convites.", cta: "Para jogadores", href: "#para-jogadores" },
   ]
   return (
     <Section id="como-funciona" labelledBy="como-titulo">
@@ -155,10 +155,10 @@ export function SmartAgenda() {
 /* ───────── 5. Para organizadores ───────── */
 export function ForOrganizers() {
   const items = [
-    { i: Trophy, t: "Criação de partidas", d: "Abra vagas na reserva feita com um centro parceiro." },
-    { i: UserCheck, t: "Controle de jogadores", d: "Aprove ou recuse quem pede para entrar." },
-    { i: Link2, t: "Convites por WhatsApp", d: "Compartilhe o link da partida com o grupo." },
-    { i: Check, t: "Confirmação de presença", soon: true },
+    { i: Trophy, t: "Criação de partidas", d: "Em qualquer local ou numa reserva de quadra do Partidou." },
+    { i: UserCheck, t: "Controle de jogadores", d: "Aprove ou recuse quem pede vaga; as vagas se atualizam sozinhas." },
+    { i: ShieldCheck, t: "Preciso de goleiro", d: "Encontre goleiros disponíveis no dia e convide por e-mail." },
+    { i: Link2, t: "Convites e WhatsApp", d: "Convide jogadores compatíveis ou divulgue o link no grupo." },
     { i: Repeat, t: "Jogos recorrentes", soon: true },
     { i: Wallet, t: "Controle de pagamentos", soon: true },
   ]
@@ -169,8 +169,8 @@ export function ForOrganizers() {
           <Heading id="org-titulo" eyebrow="Para organizadores" title="Organize menos. Jogue mais." sub="Chega de lista no grupo e cobrança no privado: o Partidou ajuda a organizar partidas esportivas do início ao fim." />
           <div className="mt-10"><FeatureList items={items} /></div>
           <div className="mt-10 flex flex-col items-start gap-2">
-            <LeadLink audience="organizador" plan="organizador_pro" track="org_organizar_partida" className={btnForest}>Quero Organizar Partidas</LeadLink>
-            <p className="text-sm text-graphite/70">O plano Organizador Pro está em desenvolvimento: entre na lista e avisamos.</p>
+            <a href={LINKS.criarPartida} data-track="org_criar_partida" className={btnForest}>Criar Minha Partida</a>
+            <p className="text-sm text-graphite/70">Grátis para organizar partidas avulsas. Jogos recorrentes e mensalidades chegam com o Organizador Pro.</p>
           </div>
         </div>
         <figure className="rounded-3xl bg-forest p-6 text-white sm:p-8 lg:order-1">
@@ -195,12 +195,12 @@ export function ForOrganizers() {
 /* ───────── 6. Para jogadores ───────── */
 export function ForPlayers() {
   const cards = [
-    { i: Search, t: "Partidas com vagas", d: "Veja jogos abertos nos centros parceiros." },
-    { i: Clock, t: "Dias e horários", d: "Consulte quando dá para jogar." },
-    { i: UserCheck, t: "Peça para participar", d: "Solicite a vaga e aguarde a aprovação." },
-    { i: LayoutGrid, t: "Escolha a modalidade", d: "Society, futsal, vôlei, beach tennis e mais.", soon: true },
-    { i: MapPin, t: "Partidas perto de você", d: "Busca pela sua localização.", soon: true },
-    { i: Users, t: "Conecte-se com jogadores", d: "Perfil e histórico de partidas.", soon: true },
+    { i: Search, t: "Partidas com vagas", d: "Filtre por cidade, bairro, dia, horário e posição." },
+    { i: LayoutGrid, t: "Escolha a modalidade", d: "Society, futsal, vôlei, beach tennis e mais." },
+    { i: UserCheck, t: "Peça para participar", d: "Toque em Quero Jogar e receba a aprovação por e-mail." },
+    { i: ShieldCheck, t: "Goleiros em destaque", d: "Goleiros recebem convites de quem precisa no dia." },
+    { i: Users, t: "Perfil e histórico", d: "Posição, nível, disponibilidade e suas partidas." },
+    { i: MapPin, t: "Distância até o jogo", d: "Busca pela sua localização.", soon: true },
   ]
   return (
     <Section id="para-jogadores" tone="dark" labelledBy="jog-titulo">
@@ -213,7 +213,7 @@ export function ForPlayers() {
           </li>
         ))}
       </ul>
-      <div className="mt-12 text-center"><a href={LINKS.buscarQuadras} data-track="jog_encontrar_jogo" className={btnLime}>Encontrar um Jogo</a></div>
+      <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row"><a href={LINKS.encontrarJogo} data-track="jog_encontrar_jogo" className={btnLime}>Encontrar um Jogo</a><a href={LINKS.cadastro} data-track="jog_criar_conta" className={btnGhostDark}>Criar conta grátis</a></div>
     </Section>
   )
 }
@@ -292,7 +292,7 @@ export function Plans() {
         </li>
       </ul>
 
-      <h3 className="mt-16 text-center text-sm font-semibold text-lime">Para jogadores e organizadores · em breve</h3>
+      <h3 className="mt-16 text-center text-sm font-semibold text-lime">Para jogadores e organizadores</h3>
       <ul className="mx-auto mt-6 grid max-w-4xl gap-4 md:grid-cols-2">
         {soon.map((p) => (
           <li key={p.id} className="flex flex-col gap-5 rounded-2xl border border-white/10 p-6 sm:flex-row sm:items-center">
@@ -300,7 +300,9 @@ export function Plans() {
               <p className="font-display text-lg font-bold">{p.name} <span className="whitespace-nowrap font-sans text-base font-semibold text-lime">{p.price}<span className="text-sm font-normal text-white/70">{p.period === "gratuito" ? " · gratuito" : p.period}</span></span></p>
               <p className="mt-1 text-sm text-white/70">{p.items.slice(0, 3).join(" · ")}</p>
             </div>
-            <LeadLink audience={p.audience} plan={p.id} track={`plano_${p.id}`} className={cn(btn, "min-h-11 shrink-0 bg-white/10 px-5 text-sm text-white hover:bg-white/15")}>{p.cta}</LeadLink>
+            {p.id === "jogador"
+              ? <a href={LINKS.cadastro} data-track="plano_jogador" className={cn(btn, "min-h-11 shrink-0 bg-lime px-5 text-sm text-forest hover:bg-[#c8f76a]")}>{p.cta}</a>
+              : <LeadLink audience={p.audience} plan={p.id} track={`plano_${p.id}`} className={cn(btn, "min-h-11 shrink-0 bg-white/10 px-5 text-sm text-white hover:bg-white/15")}>{p.cta}</LeadLink>}
           </li>
         ))}
       </ul>

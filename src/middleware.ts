@@ -46,9 +46,18 @@ export async function middleware(req: NextRequest) {
   if (path === "/recuperar" || path === "/redefinir-senha") return res
   // Páginas públicas: busca de quadras, página do centro, gestão da partida pelo organizador (código secreto no link) e textos legais.
   if (path === "/quadras" || path.startsWith("/quadras/") || path.startsWith("/partida/") || path === "/privacidade" || path === "/termos" || path === "/cookies" || path === "/api/site/lead") return res
-  // Quem não está logado vê a busca de quadras; o resto pede login.
+  // Encontre um Jogo: busca e partida são públicas; cadastro de jogador também.
+  if (path === "/jogos" || path.startsWith("/jogos/") || path === "/cadastro") return res
+  const playerArea = path === "/jogador" || path.startsWith("/jogador/") || path === "/organizar" || path.startsWith("/organizar/") || path.startsWith("/convite/")
+  // Quem não está logado vê a busca de quadras; o resto pede login (voltando depois para a página pedida).
   if (!user && path === "/") return go("/quadras")
-  if (!user) return path === "/login" ? res : go("/login")
+  if (!user) {
+    if (path === "/login") return res
+    const u = req.nextUrl.clone(); u.pathname = "/login"; u.search = playerArea ? `?next=${encodeURIComponent(path + req.nextUrl.search)}` : ""
+    return NextResponse.redirect(u)
+  }
+  // Área do jogador/organizador: qualquer conta logada (as permissões de cada ação ficam no banco).
+  if (playerArea) return res
 
   // organizations(id) só volta se o estabelecimento estiver utilizável (ativo ou teste dentro do prazo): é assim que o bloqueio automático chega à tela.
   const first = await sb.from("profiles").select("role, active, organizations(id)").eq("id", user.id).maybeSingle()
@@ -62,8 +71,10 @@ export async function middleware(req: NextRequest) {
   if (blocked && (await sb.rpc("my_support_session")).data?.length) blocked = false
   // Teste vencido, pagamento pendente ou cadastro cancelado: só a tela de assinatura (e sua API) ficam acessíveis.
   if (blocked) return path === "/assinatura" || path.startsWith("/api/assinatura") ? res : go("/assinatura")
-  // Sem perfil liberado (acesso bloqueado, revogado ou ainda não vinculado a um estabelecimento).
-  if (!p?.active || !isStaff(p.role)) return path === "/sem-acesso" ? res : go("/sem-acesso")
+  // Conta sem vínculo com um centro esportivo = jogador: vai para a área do jogador.
+  if (!p) return go("/jogador")
+  // Perfil de centro bloqueado ou revogado.
+  if (!p.active || !isStaff(p.role)) return path === "/sem-acesso" ? res : go("/sem-acesso")
   if (path === "/login" || path === "/sem-acesso") return go("/")
   // Equipe (gerente, recepcionista, financeiro) não acessa a administração da plataforma nem a assinatura.
   if (p.role === "diretoria" && isAdminOnlyPath(path)) return go("/quadra")

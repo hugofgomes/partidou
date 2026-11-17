@@ -5,7 +5,7 @@ const link = "text-sm text-white/70 transition-colors hover:text-white"
 
 export function SiteFooter() {
   const groups = [
-    { label: "Plataforma", items: [["Encontrar um Jogo", LINKS.buscarQuadras], ["Gestão de Quadras", "#para-quadras"], ["Para Organizadores", "#para-organizadores"], ["Entrar no sistema", LINKS.entrar]] },
+    { label: "Plataforma", items: [["Encontrar um Jogo", LINKS.encontrarJogo], ["Buscar quadras", LINKS.buscarQuadras], ["Gestão de Quadras", "#para-quadras"], ["Para Organizadores", "#para-organizadores"], ["Entrar no sistema", LINKS.entrar]] },
     { label: "Empresa", items: [["Como Funciona", "#como-funciona"], ["Planos", "#planos"], ["Perguntas frequentes", "#faq"], ["Contato", "#contato"]] },
     { label: "Legal", items: [["Política de Privacidade", LINKS.privacidade], ["Termos de Uso", LINKS.termos], ["Política de Cookies", LINKS.cookies]] },
   ]
