@@ -2,6 +2,18 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.8.0",
+      "date": "2026-11-17",
+      "title": "Manual do usuário dentro do sistema",
+      "novidades": [
+        "Novo item Manual no menu Quadra Esportiva: primeiros passos, quem pode fazer o quê e um capítulo para cada seção (Dashboard, Agenda de Quadras, Centro Esportivo, Reservas, Lista de Espera, Clientes, Funcionários, Financeiro, Relatórios e Configurações), com passo a passo, dicas e perguntas frequentes.",
+        "Ícone de ajuda (?) no topo de cada tela do módulo, que abre direto o capítulo daquela seção.",
+        "Botão para imprimir ou salvar o manual em PDF."
+      ],
+      "melhorias": [],
+      "correcoes": []
+    },
+    {
       "version": "1.7.3",
       "date": "2026-11-17",
       "title": "Atleta escolhe o próprio nível técnico ao pedir vaga",

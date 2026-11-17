@@ -16,6 +16,8 @@ import { usePathname, useRouter } from "next/navigation"
 import * as React from "react"
 import { createPortal } from "react-dom"
 import { toast } from "sonner"
+import { manualFor } from "@/data/manual-quadra"
+import { CircleHelp } from "lucide-react"
 
 const ADMIN = [
   { href: "/assinatura", label: "Assinatura", icon: CreditCard },
@@ -33,6 +35,7 @@ const QUADRA = [
   { href: "/quadra/financeiro", label: "Financeiro", icon: Wallet, ready: true },
   { href: "/quadra/relatorios", label: "Relatórios", icon: ChartColumn, ready: true },
   { href: "/quadra/configuracoes", label: "Configurações", icon: Settings2, ready: true },
+  { href: "/quadra/manual", label: "Manual", icon: BookOpen, ready: true },
 ]
 
 const COURT_ROLE_LABEL = { admin: "Administrador", gerente: "Gerente", recepcionista: "Recepcionista", financeiro: "Financeiro" } as const
@@ -277,6 +280,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <MenuIcon className="size-5" />
           </button>
           <div className="flex-1 truncate text-lg font-semibold tracking-tight text-primary">{titleOf(path)}</div>
+          {courtRole && path !== "/quadra/manual" && (() => { const m = manualFor(path); return (
+            <Link href={`/quadra/manual${m ? `#${m.id}` : ""}`} aria-label={m ? `Manual: ${m.title}` : "Manual do sistema"} title={m ? `Como usar: ${m.title}` : "Manual do sistema"}
+              className="grid size-10 place-items-center rounded-lg text-primary outline-none transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring">
+              <CircleHelp className="size-5" />
+            </Link>) })()}
           <Link
             href={pending === 0 && newLeads > 0 ? "/super/leads" : "/quadra/reservas"}
             aria-label={pending + newLeads > 0 ? `Notificações: ${[pending && `${pending} reserva(s) pendente(s)`, newLeads && `${newLeads} contato(s) novo(s) do site`].filter(Boolean).join(" e ")}` : "Notificações: nenhuma pendência"}

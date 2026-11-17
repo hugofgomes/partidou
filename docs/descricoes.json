@@ -32,7 +32,8 @@
     "/site": "Site comercial do Partidou (servido na raiz de partidou.com.br): apresentação, planos, FAQ e formulário de contato",
     "/cookies": "Política de cookies",
     "/super/leads": "Contatos captados pelo site comercial: acompanhamento, anotações e situação (dono da plataforma)",
-    "/auth/continuar": "Tela do link de e-mail (convite, recuperação, confirmação): botão \"Continuar\" que só então usa o token"
+    "/auth/continuar": "Tela do link de e-mail (convite, recuperação, confirmação): botão \"Continuar\" que só então usa o token",
+    "/quadra/manual": "Manual do usuário do módulo: um capítulo por seção, primeiros passos, perfis, dicas e perguntas frequentes; o ícone ? de cada tela abre o capítulo dela"
   },
   "apis": {
     "/api/assinatura": "Cria a assinatura no Asaas e devolve o link de pagamento",
