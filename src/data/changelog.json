@@ -2,6 +2,17 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "1.8.1",
+      "date": "2026-11-17",
+      "title": "Manual mais curto e bonito",
+      "novidades": [],
+      "melhorias": [
+        "Manual redesenhado: início com cartões das seções (mesmos ícones do menu) e os 4 primeiros passos; cada seção abre num capítulo curto, com 3 ou 4 passos numerados, uma dica, perguntas rápidas e botões para a seção anterior e a próxima.",
+        "Textos reduzidos ao essencial e etiquetas de quem acessa cada seção; o PDF reúne todos os capítulos."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "1.8.0",
       "date": "2026-11-17",
       "title": "Manual do usuário dentro do sistema",

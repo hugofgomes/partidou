@@ -1,81 +1,126 @@
 "use client"
 
-import { MANUAL, MANUAL_INTRO } from "@/data/manual-quadra"
+import { FIRST_STEPS, MANUAL, ROLE_LABEL, type ManualSection } from "@/data/manual-quadra"
 import { cn } from "@/lib/utils"
-import { ArrowRight, BookOpen, CircleHelp, Lightbulb, Printer, Users } from "lucide-react"
+import { ArrowLeft, ArrowRight, CalendarRange, ChartColumn, ChevronRight, ClipboardList, Contact, Hourglass, LayoutDashboard, Lightbulb, MapPin, Printer, Settings2, Users, Wallet } from "lucide-react"
 import Link from "next/link"
 import * as React from "react"
 
-/** Texto com **negrito** simples (o conteúdo do manual é fixo, escrito pela equipe do Partidou). */
+/** Mesmos ícones do menu Quadra Esportiva. */
+const ICON: Record<string, React.ElementType> = { dashboard: LayoutDashboard, agenda: CalendarRange, centro: MapPin, reservas: ClipboardList, espera: Hourglass, clientes: Contact, funcionarios: Users, financeiro: Wallet, relatorios: ChartColumn, configuracoes: Settings2 }
+
 function Rich({ text }: { text: string }) {
-  return <>{text.split(/(\*\*[^*]+\*\*)/g).map((p, i) => (p.startsWith("**") && p.endsWith("**") ? <strong key={i} className="font-semibold text-foreground">{p.slice(2, -2)}</strong> : <React.Fragment key={i}>{p}</React.Fragment>))}</>
+  return <>{text.split(/(\*\*[^*]+\*\*)/g).map((p, i) => (p.startsWith("**") && p.endsWith("**") ? <strong key={i} className="font-semibold text-[#142C25]">{p.slice(2, -2)}</strong> : <React.Fragment key={i}>{p}</React.Fragment>))}</>
 }
 
-/** Manual do usuário: um capítulo por seção do menu Quadra Esportiva. O botão de ajuda (?) do topo de cada tela abre o capítulo dela. */
+/** Manual do usuário: início com cartões das seções; cada capítulo abre sozinho (#id), curto e direto. O "?" de cada tela abre o capítulo dela. */
 export default function ManualPage() {
-  const [active, setActive] = React.useState("")
+  const [id, setId] = React.useState("")
   React.useEffect(() => {
-    const els = MANUAL.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[]
-    const io = new IntersectionObserver((es) => { const v = es.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0]; if (v) setActive(v.target.id) }, { rootMargin: "-80px 0px -60% 0px" })
-    els.forEach((e) => io.observe(e))
-    if (window.location.hash) document.getElementById(window.location.hash.slice(1))?.scrollIntoView()
-    return () => io.disconnect()
+    const on = () => { setId(window.location.hash.slice(1)); window.scrollTo({ top: 0 }) }
+    on(); window.addEventListener("hashchange", on)
+    return () => window.removeEventListener("hashchange", on)
   }, [])
+  const idx = MANUAL.findIndex((s) => s.id === id)
+  const sec = idx >= 0 ? MANUAL[idx] : null
   return (
-    <div className="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <nav aria-label="Capítulos do manual" className="print:hidden lg:sticky lg:top-20 lg:self-start">
-        <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><BookOpen className="size-4" /> Capítulos</p>
-        <ul className="flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible">
-          <li><a href="#inicio" className={cn("block whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-secondary", active === "" && "font-semibold text-primary")}>Primeiros passos</a></li>
-          {MANUAL.map((s) => <li key={s.id}><a href={`#${s.id}`} className={cn("block whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-secondary", active === s.id && "bg-secondary font-semibold text-primary")}>{s.title}</a></li>)}
-        </ul>
-      </nav>
-
-      <div className="min-w-0 space-y-6">
-        <header id="inicio" className="scroll-mt-20 rounded-2xl bg-[#142C25] p-6 text-white sm:p-8">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div><p className="text-sm font-semibold text-[#B9F344]">Ajuda</p><h1 className="mt-1 text-2xl font-bold text-white sm:text-3xl">{MANUAL_INTRO.title}</h1></div>
-            <button type="button" onClick={() => window.print()} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/25 px-4 text-sm font-semibold text-white hover:bg-white/10 print:hidden"><Printer className="size-4" /> Imprimir ou salvar PDF</button>
-          </div>
-          <p className="mt-3 max-w-2xl text-white/85">{MANUAL_INTRO.text}</p>
-          <ol className="mt-5 grid gap-2 sm:grid-cols-2">
-            {MANUAL_INTRO.firstSteps.map((t, i) => <li key={i} className="flex gap-3 rounded-xl bg-white/[0.07] p-3 text-sm text-white/90"><span className="grid size-6 shrink-0 place-items-center rounded-full bg-[#B9F344] text-xs font-bold text-[#142C25]">{i + 1}</span><span className="[&_strong]:text-white"><Rich text={t} /></span></li>)}
-          </ol>
-        </header>
-
-        <section aria-labelledby="perfis" className="rounded-2xl border bg-card p-5 sm:p-6">
-          <h2 id="perfis" className="flex items-center gap-2 text-lg font-semibold"><Users className="size-5" /> Quem pode fazer o quê</h2>
-          <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-            {MANUAL_INTRO.roles.map((r) => <div key={r.role} className="rounded-xl bg-secondary/60 p-3"><dt className="font-semibold">{r.role}</dt><dd className="mt-0.5 text-sm text-muted-foreground">{r.text}</dd></div>)}
-          </dl>
-        </section>
-
-        {MANUAL.map((s, n) => (
-          <section key={s.id} id={s.id} aria-labelledby={`h-${s.id}`} className="scroll-mt-20 break-inside-avoid-page rounded-2xl border bg-card p-5 sm:p-6">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Capítulo {n + 1}</p>
-                <h2 id={`h-${s.id}`} className="text-xl font-bold">{s.title}</h2>
-              </div>
-              <Link href={s.href} className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-[#142C25] px-4 text-sm font-semibold text-white hover:bg-[#1d3d33] print:hidden">Abrir {s.title} <ArrowRight className="size-4" /></Link>
-            </div>
-            <p className="mt-2 text-[15px]">{s.summary}</p>
-            <p className="mt-2 rounded-lg bg-secondary/60 px-3 py-2 text-sm text-muted-foreground"><strong className="text-foreground">Quem acessa:</strong> {s.access}</p>
-            <div className="mt-4 space-y-4">
-              {s.steps.map((st) => (
-                <div key={st.title}>
-                  <h3 className="text-base font-semibold">{st.title}</h3>
-                  <ul className="mt-1.5 list-disc space-y-1.5 pl-5 text-[15px] leading-relaxed text-muted-foreground marker:text-[#142C25]">{st.items.map((it, i) => <li key={i}><Rich text={it} /></li>)}</ul>
-                </div>
-              ))}
-            </div>
-            {s.tips && <div className="mt-4 rounded-xl border border-[#B9F344] bg-[#B9F344]/15 p-3 text-sm"><p className="flex items-center gap-1.5 font-semibold"><Lightbulb className="size-4" /> Dicas</p><ul className="mt-1 list-disc space-y-1 pl-5">{s.tips.map((t, i) => <li key={i}><Rich text={t} /></li>)}</ul></div>}
-            {s.faq && <div className="mt-4"><p className="flex items-center gap-1.5 text-sm font-semibold"><CircleHelp className="size-4" /> Perguntas frequentes</p>
-              <div className="mt-2 space-y-2">{s.faq.map((f) => <details key={f.q} className="rounded-xl border px-3 open:bg-secondary/40"><summary className="cursor-pointer py-2.5 text-sm font-medium">{f.q}</summary><p className="pb-3 text-sm text-muted-foreground">{f.a}</p></details>)}</div></div>}
-          </section>
-        ))}
-        <p className="text-center text-sm text-muted-foreground print:hidden">Não encontrou o que procurava? Fale com o suporte do Partidou pelo e-mail contato@partidou.com.br.</p>
+    <div className="mx-auto max-w-5xl">
+      <div className="print:hidden">{sec ? <Chapter s={sec} prev={MANUAL[idx - 1]} next={MANUAL[idx + 1]} n={idx + 1} /> : <Home />}</div>
+      {/* Impressão / PDF: todos os capítulos, em sequência. */}
+      <div className="hidden space-y-4 print:block">
+        <h1 className="text-2xl font-bold">Manual do Partidou</h1>
+        {MANUAL.map((s, i) => <Chapter key={s.id} s={s} n={i + 1} printing />)}
       </div>
     </div>
+  )
+}
+
+function Home() {
+  return (
+    <div className="space-y-6">
+      <header className="relative overflow-hidden rounded-3xl bg-[#142C25] px-6 py-8 text-white sm:px-10 sm:py-10">
+        <svg aria-hidden viewBox="0 0 200 120" className="absolute -right-6 -top-4 h-48 text-[#B9F344]/10" fill="none" stroke="currentColor" strokeWidth="2"><rect x="10" y="10" width="180" height="100" rx="4" /><line x1="100" y1="10" x2="100" y2="110" /><circle cx="100" cy="60" r="20" /></svg>
+        <div className="relative flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-[#B9F344]">Manual</p>
+            <h1 className="mt-1 text-3xl font-bold text-white">Como usar o Partidou</h1>
+            <p className="mt-2 max-w-md text-white/80">Escolha uma seção. Cada uma explica o essencial em poucos passos.</p>
+          </div>
+          <button type="button" onClick={() => window.print()} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/25 px-4 text-sm font-semibold text-white hover:bg-white/10"><Printer className="size-4" /> Salvar PDF</button>
+        </div>
+        <ol className="relative mt-7 grid gap-2 sm:grid-cols-4">
+          {FIRST_STEPS.map((f, i) => (
+            <li key={i}><a href={`#${f.id}`} className="flex h-full items-center gap-3 rounded-2xl bg-white/[0.07] p-3 text-sm font-medium text-white ring-1 ring-white/10 transition-colors hover:bg-white/[0.12]">
+              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#B9F344] text-xs font-bold text-[#142C25]">{i + 1}</span>{f.text}</a></li>
+          ))}
+        </ol>
+      </header>
+
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {MANUAL.map((s) => { const I = ICON[s.id]
+          return (
+            <li key={s.id}>
+              <a href={`#${s.id}`} className="group flex h-full items-start gap-4 rounded-2xl border bg-card p-5 transition hover:-translate-y-0.5 hover:border-[#142C25]/30 hover:shadow-md">
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#142C25] text-[#B9F344]"><I className="size-5" /></span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-2 font-semibold text-[#142C25]">{s.title}<ChevronRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" /></span>
+                  <span className="mt-1 block text-sm leading-snug text-muted-foreground">{s.summary}</span>
+                </span>
+              </a>
+            </li>
+          ) })}
+      </ul>
+      <p className="text-center text-sm text-muted-foreground">Dúvidas? <a href="mailto:contato@partidou.com.br" className="font-medium text-[#142C25] underline underline-offset-4">contato@partidou.com.br</a></p>
+    </div>
+  )
+}
+
+function Chapter({ s, n, prev, next, printing }: { s: ManualSection; n: number; prev?: ManualSection; next?: ManualSection; printing?: boolean }) {
+  const I = ICON[s.id]
+  return (
+    <article className={cn("space-y-5", printing && "break-inside-avoid rounded-2xl border p-5")}>
+      {!printing && <a href="#" onClick={(e) => { e.preventDefault(); history.pushState(null, "", window.location.pathname); window.dispatchEvent(new HashChangeEvent("hashchange")) }} className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-[#142C25]"><ArrowLeft className="size-4" /> Todas as seções</a>}
+
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="flex min-w-0 flex-1 items-center gap-4">
+          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#142C25] text-[#B9F344] sm:size-14"><I className="size-6 sm:size-7" /></span>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Seção {n} de {MANUAL.length}</p>
+            <h1 className="text-2xl font-bold leading-tight text-[#142C25] sm:text-3xl">{s.title}</h1>
+          </div>
+        </div>
+        {!printing && <Link href={s.href} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#B9F344] px-5 text-sm font-bold text-[#142C25] hover:bg-[#c8f76a] sm:w-auto">Abrir {s.title} <ArrowRight className="size-4" /></Link>}
+      </header>
+      <p className="-mt-2 text-[15px] text-muted-foreground">{s.summary}</p>
+
+      <div className="flex flex-wrap items-center gap-1.5 text-xs">
+        <span className="mr-1 text-muted-foreground">Quem acessa:</span>
+        {s.roles.map((r) => <span key={r} className="rounded-full bg-[#142C25]/[0.07] px-2.5 py-1 font-medium text-[#142C25]">{ROLE_LABEL[r]}</span>)}
+      </div>
+
+      <ol className="grid gap-3 sm:grid-cols-2">
+        {s.steps.map((t, i) => (
+          <li key={i} className="flex gap-3 rounded-2xl border bg-card p-4">
+            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#142C25] text-sm font-bold text-[#B9F344]">{i + 1}</span>
+            <span className="pt-1 text-[15px] leading-snug text-foreground/85"><Rich text={t} /></span>
+          </li>
+        ))}
+      </ol>
+
+      {s.tip && <p className="flex gap-3 rounded-2xl bg-[#B9F344]/20 p-4 text-[15px] leading-snug text-[#142C25]"><Lightbulb className="mt-0.5 size-5 shrink-0" /><span>{s.tip}</span></p>}
+
+      {s.faq && <div className="space-y-2">{s.faq.map((f) => (
+        <details key={f.q} open={printing} className="group rounded-2xl border bg-card px-4 open:pb-3">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-[#142C25] [&::-webkit-details-marker]:hidden">{f.q}<ChevronRight className="size-4 transition-transform group-open:rotate-90" /></summary>
+          <p className="text-sm text-muted-foreground">{f.a}</p>
+        </details>))}</div>}
+
+      {!printing && (
+        <nav aria-label="Outras seções" className="grid grid-cols-2 gap-3 border-t pt-5">
+          {prev ? <a href={`#${prev.id}`} className="rounded-2xl border p-3 text-sm hover:bg-secondary"><span className="flex items-center gap-1 text-xs text-muted-foreground"><ArrowLeft className="size-3.5" /> Anterior</span><span className="font-semibold text-[#142C25]">{prev.title}</span></a> : <span />}
+          {next ? <a href={`#${next.id}`} className="rounded-2xl border p-3 text-right text-sm hover:bg-secondary"><span className="flex items-center justify-end gap-1 text-xs text-muted-foreground">Próxima <ArrowRight className="size-3.5" /></span><span className="font-semibold text-[#142C25]">{next.title}</span></a> : <span />}
+        </nav>
+      )}
+    </article>
   )
 }
