@@ -1,4 +1,4 @@
-import { fromAddress, mailerConfigured, transporter } from "@/lib/broadcast-mail"
+import { fromAddress, mailerConfigured, replyAddress, transporter } from "@/lib/broadcast-mail"
 import { renderGameMail, type GamePayload } from "@/lib/game-mail"
 import { serviceClient } from "@/lib/supabase/service"
 import { createServerClient } from "@supabase/ssr"
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     if (!j.email) err = "Destinatário sem e-mail"
     else if (!m) err = `Modelo desconhecido: ${j.template}`
     else {
-      try { const info = await t.sendMail({ from, to: j.email, subject: m.subject, text: m.text, html: m.html }); ok = true; providerId = info.messageId ?? null }
+      try { const info = await t.sendMail({ from, to: j.email, replyTo: replyAddress(), subject: m.subject, text: m.text, html: m.html }); ok = true; providerId = info.messageId ?? null }
       catch (e) { err = e instanceof Error ? e.message : String(e) }
     }
     await svc.rpc("email_mark", { p_id: j.id, p_ok: ok, p_error: ok ? null : err, p_provider_id: providerId })

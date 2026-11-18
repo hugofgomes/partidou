@@ -2,6 +2,17 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "2.2.1",
+      "date": "2026-11-18",
+      "title": "E-mails saem pelo domínio Partigol",
+      "novidades": [],
+      "melhorias": [
+        "Os e-mails automáticos (partidas, contatos do site e comunicados) passam a sair de contato@partigol.com.br.",
+        "Respostas a esses e-mails vão para uma caixa de entrada que existe (contato@partidou.com.br), até a caixa do domínio novo ser criada."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "2.2.0",
       "date": "2026-11-18",
       "title": "Novo endereço: partigol.com.br",

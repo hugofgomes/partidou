@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer"
 import { BRAND_PRIMARY } from "@/lib/brand"
+import { CONTACT_EMAIL } from "@/lib/site-config"
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!)
 /** Nome do remetente. A marca mudou de Partidou para Partigol: um nome antigo que ainda esteja na configuração do servidor sai já com o nome novo. */
@@ -11,6 +12,9 @@ export function fromAddress() {
   const raw = (process.env.SMTP_FROM || process.env.SMTP_USER || "").trim()
   return /<[^<>\s]+@[^<>\s]+>\s*$/.test(raw) ? raw.replace(/^[^<]*/, (name) => rebrand(name)) : `${brand()} <${raw}>`
 }
+
+/** Para onde vão as respostas dos e-mails automáticos. O remetente pode ser um endereço só de envio (contato@partigol.com.br enquanto não tem caixa de entrada), então a resposta vai para uma caixa que existe: SMTP_REPLY_TO, ou o e-mail de contato do site. */
+export const replyAddress = () => (process.env.SMTP_REPLY_TO || CONTACT_EMAIL).trim()
 
 export const mailerConfigured =() => !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)
 

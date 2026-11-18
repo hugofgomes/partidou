@@ -67,13 +67,14 @@
     "NEXT_PUBLIC_SUPABASE_URL": "Endereço do projeto Supabase",
     "PLATFORM_ALERT_EMAIL": "E-mail que recebe o resumo diário dos avisos enviados",
     "PLATFORM_ORG_SLUG": "Identificador da organização dona da plataforma (a do administrador principal); padrão partidou",
-    "SMTP_FROM": "Remetente dos e-mails do aplicativo",
-    "SMTP_FROM_NAME": "Nome exibido como remetente dos avisos (padrão Gestão de Futebol)",
+    "SMTP_FROM": "Remetente dos e-mails do aplicativo (hoje contato@partigol.com.br)",
+    "SMTP_REPLY_TO": "Opcional: para onde vão as respostas dos e-mails automáticos (padrão: o e-mail de contato do site, contato@partidou.com.br)",
+    "SMTP_FROM_NAME": "Nome exibido como remetente dos avisos (padrão Partigol)",
     "SMTP_HOST": "Servidor SMTP (Resend)",
     "SMTP_PASS": "Senha do SMTP (chave da Resend)",
     "SMTP_PORT": "Porta do SMTP (465)",
     "SMTP_USER": "Usuário do SMTP",
     "SUPABASE_SERVICE_ROLE_KEY": "Chave de serviço do Supabase (só servidor; webhooks, rotina diária e criação de acessos)",
-    "LEAD_NOTIFY_EMAIL": "E-mail da equipe que recebe o aviso de cada contato novo do site (padrão: PLATFORM_ALERT_EMAIL ou o remetente SMTP_FROM)"
+    "LEAD_NOTIFY_EMAIL": "E-mail da equipe que recebe o aviso de cada contato novo do site (padrão: PLATFORM_ALERT_EMAIL ou o e-mail de resposta)"
   }
 }

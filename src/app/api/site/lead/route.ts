@@ -1,4 +1,4 @@
-import { fromAddress, mailerConfigured, transporter } from "@/lib/broadcast-mail"
+import { fromAddress, mailerConfigured, replyAddress, transporter } from "@/lib/broadcast-mail"
 import { leadConfirmation, teamNotification, type LeadInfo } from "@/lib/lead-mail"
 import { createClient } from "@supabase/supabase-js"
 import { NextResponse, type NextRequest } from "next/server"
@@ -48,9 +48,9 @@ export async function POST(req: NextRequest) {
   const lead: LeadInfo = { audience: audience as LeadInfo["audience"], name: s("name", 120), venue: s("venue", 120) || null, city: s("city", 80) || null, state: s("state", 2) || null,
     whatsapp: s("whatsapp", 30) || null, email: s("email", 160) || null, courts, message: s("message", 1000) || null, plan: PLANS.includes(s("plan")) ? s("plan") : null }
   if (mailerConfigured()) {
-    const from = fromAddress(), address = from.match(/<([^<>\s]+@[^<>\s]+)>\s*$/)?.[1] ?? from
-    const notify = process.env.LEAD_NOTIFY_EMAIL || process.env.PLATFORM_ALERT_EMAIL || address
-    const mails = [teamNotification(lead, notify, `${APP_URL}/super/leads`), leadConfirmation(lead, address)].filter((m) => m !== null)
+    const from = fromAddress(), reply = replyAddress()
+    const notify = process.env.LEAD_NOTIFY_EMAIL || process.env.PLATFORM_ALERT_EMAIL || reply
+    const mails = [teamNotification(lead, notify, `${APP_URL}/super/leads`), leadConfirmation(lead, reply)].filter((m) => m !== null)
     // Falha de e-mail não derruba o envio, mas fica registrada no log do servidor (Coolify → Logs) para diagnóstico.
     try {
       const t = transporter()
