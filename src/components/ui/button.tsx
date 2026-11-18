@@ -8,7 +8,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         /* Primário: verde-lima com texto verde-escuro. Use um por área. */
-        default: "bg-[#B9F344] font-semibold text-[#142C25] hover:bg-[#c8f76a] focus-visible:ring-[#142C25]/30",
+        default: "bg-[#C5FA41] font-semibold text-[#002923] hover:bg-[#d3fb6e] focus-visible:ring-[#002923]/30",
         /* Secundário: neutro, borda discreta. */
         outline:
           "border-border bg-card text-foreground hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
@@ -20,7 +20,7 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         /* Mantido por compatibilidade: igual ao primário (antes era vermelho). */
-        brand: "bg-[#B9F344] font-semibold text-[#142C25] hover:bg-[#c8f76a] focus-visible:ring-[#142C25]/30",
+        brand: "bg-[#C5FA41] font-semibold text-[#002923] hover:bg-[#d3fb6e] focus-visible:ring-[#002923]/30",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

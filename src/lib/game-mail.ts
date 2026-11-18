@@ -1,5 +1,5 @@
 /** E-mails transacionais do Encontre um Jogo (seção 8 do prompt). Funções puras: recebem o payload gravado na fila (email_outbox) e devolvem assunto, texto e HTML.
- *  Os textos e assuntos seguem o combinado com o dono do Partidou. Nenhum e-mail confirma nada sozinho: as ações acontecem no sistema, com login. */
+ *  Os textos e assuntos seguem o combinado com o dono do Partigol. Nenhum e-mail confirma nada sozinho: as ações acontecem no sistema, com login. */
 import { POSITION_LABEL, SPORT_LABEL, WEEKDAY_LONG } from "./jogo"
 import { button, esc, layout, P, SMALL } from "./mail-layout"
 
@@ -23,18 +23,18 @@ function details(p: GamePayload, extra: [string, string][] = []) {
 const pos = (p: GamePayload) => (p.position ? POSITION_LABEL[p.position] ?? p.position : "")
 const mk = (subject: string, title: string, preheader: string, intro: string[], d: { html: string; text: string } | null, cta: { href: string; label: string }, outro: string, reason: string): Rendered => ({
   subject,
-  text: `${title}\n\n${intro.join("\n\n")}\n\n${d ? d.text + "\n\n" : ""}${cta.label}: ${cta.href}\n\n${outro ? outro + "\n\n" : ""}Partidou — O jogo começa aqui.`,
+  text: `${title}\n\n${intro.join("\n\n")}\n\n${d ? d.text + "\n\n" : ""}${cta.label}: ${cta.href}\n\n${outro ? outro + "\n\n" : ""}Partigol — O jogo começa aqui.`,
   html: layout({ title, preheader, reason, inner: `${intro.map((t) => `<p style="${P}">${esc(t)}</p>`).join("")}${d?.html ?? ""}${button(cta.href, cta.label)}${outro ? `<p style="${SMALL}">${esc(outro)}</p>` : ""}` }),
 })
 
 /** Monta o e-mail de cada evento. Devolve null para um modelo desconhecido (a fila marca como falha, sem enviar nada estranho). */
 export function renderGameMail(template: string, p: GamePayload): Rendered | null {
-  const why = "Você recebeu este e-mail por usar o Encontre um Jogo do Partidou. Desative os e-mails no seu perfil, se preferir."
+  const why = "Você recebeu este e-mail por usar o Encontre um Jogo do Partigol. Desative os e-mails no seu perfil, se preferir."
   switch (template) {
     case "convite": // Evento 1
-      return mk("⚽ Você recebeu um convite para jogar no Partidou!", `Olá, ${p.player ?? "jogador"}!`, `Convite para ${p.title}, ${when(p)} às ${p.time}.`,
-        ["Você recebeu um convite para participar de uma partida pelo Partidou.", `${p.organizer ? `${p.organizer} encontrou seu perfil` : "Um organizador encontrou seu perfil"} e gostaria de contar com você!`],
-        details(p, [["Posição", pos(p)]]), { href: `${APP}/convite/${p.invite_id}`, label: "VER CONVITE" }, "Acesse o Partidou para aceitar ou recusar. O convite só vale depois da sua resposta.", why)
+      return mk("⚽ Você recebeu um convite para jogar no Partigol!", `Olá, ${p.player ?? "jogador"}!`, `Convite para ${p.title}, ${when(p)} às ${p.time}.`,
+        ["Você recebeu um convite para participar de uma partida pelo Partigol.", `${p.organizer ? `${p.organizer} encontrou seu perfil` : "Um organizador encontrou seu perfil"} e gostaria de contar com você!`],
+        details(p, [["Posição", pos(p)]]), { href: `${APP}/convite/${p.invite_id}`, label: "VER CONVITE" }, "Acesse o Partigol para aceitar ou recusar. O convite só vale depois da sua resposta.", why)
     case "solicitacao_recebida": // Evento 2
       return mk("⚽ Um jogador quer participar da sua partida!", `Olá, ${p.organizer ?? "organizador"}!`, `${p.player} quer jogar em ${p.title}.`,
         [`O jogador ${p.player} demonstrou interesse na sua partida.`],
@@ -43,9 +43,9 @@ export function renderGameMail(template: string, p: GamePayload): Rendered | nul
     case "participacao_aprovada": // Evento 3
       return mk("✅ Sua participação foi confirmada!", `Olá, ${p.player ?? "jogador"}!`, `Você está confirmado em ${p.title}.`,
         ["Sua participação na partida foi aprovada. Confira os detalhes:"], details(p, [["Posição", pos(p)]]),
-        { href: `${APP}/jogador`, label: "VER MINHA PARTIDA" }, "Se não puder ir, avise pelo Partidou para liberar a vaga.", why)
+        { href: `${APP}/jogador`, label: "VER MINHA PARTIDA" }, "Se não puder ir, avise pelo Partigol para liberar a vaga.", why)
     case "convite_recusado": // Evento 4
-      return mk("Atualização do convite — Partidou", `Olá, ${p.organizer ?? "organizador"}!`, `${p.player} recusou o convite para ${p.title}.`,
+      return mk("Atualização do convite — Partigol", `Olá, ${p.organizer ?? "organizador"}!`, `${p.player} recusou o convite para ${p.title}.`,
         [`O jogador ${p.player} recusou o convite para a partida ${p.title}.`, "A vaga continua disponível para outros jogadores."], null,
         { href: `${APP}/organizar/${p.game_id}`, label: "BUSCAR OUTRO JOGADOR" }, "", why)
     case "convite_aceito":
@@ -53,14 +53,14 @@ export function renderGameMail(template: string, p: GamePayload): Rendered | nul
         [`O jogador ${p.player} aceitou o convite e já está entre os confirmados de ${p.title}.`], details(p),
         { href: `${APP}/organizar/${p.game_id}`, label: "VER PARTICIPANTES" }, "", why)
     case "solicitacao_recusada": // Evento 5
-      return mk("Atualização da sua solicitação — Partidou", `Olá, ${p.player ?? "jogador"}!`, `Sua solicitação para ${p.title} não foi aprovada.`,
+      return mk("Atualização da sua solicitação — Partigol", `Olá, ${p.player ?? "jogador"}!`, `Sua solicitação para ${p.title} não foi aprovada.`,
         [`Sua solicitação para participar da partida ${p.title} não foi aprovada nesta ocasião.`, "Você pode continuar procurando outras partidas disponíveis."], null,
         { href: `${APP}/jogos`, label: "ENCONTRAR OUTRO JOGO" }, "", why)
     case "partida_cancelada": // Evento 6 — sem afirmar reembolso
       return mk("Atenção: sua partida foi cancelada", `Olá, ${p.player ?? "jogador"}!`, `${p.title} foi cancelada.`,
         [`A partida ${p.title} foi cancelada pelo organizador.${p.reason ? ` Motivo informado: ${p.reason}.` : ""}`], details(p),
         { href: `${APP}/jogos`, label: "ENCONTRAR OUTRO JOGO" },
-        "Se você pagou algum valor para esta partida, combine a devolução diretamente com o organizador. O Partidou não processa pagamentos de partidas.", why)
+        "Se você pagou algum valor para esta partida, combine a devolução diretamente com o organizador. O Partigol não processa pagamentos de partidas.", why)
     default:
       return null
   }

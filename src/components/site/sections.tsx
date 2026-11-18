@@ -8,7 +8,7 @@ import { Photo } from "./photo"
 
 /* ───────── Peças reutilizáveis: botões, títulos de seção e selo "Em breve" ───────── */
 const btn = "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-semibold transition-colors"
-export const btnLime = cn(btn, "bg-lime text-forest hover:bg-[#c8f76a]")
+export const btnLime = cn(btn, "bg-lime text-forest hover:bg-[#d3fb6e]")
 export const btnGhostDark = cn(btn, "border border-white/25 text-white hover:bg-white/10")
 const btnForest = cn(btn, "bg-forest text-white hover:bg-[#1d3d33]")
 const linkArrow = "inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
@@ -60,7 +60,7 @@ export function Hero() {
       <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-10">
         <div>
           <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime/30 bg-forest/60 px-3 py-1 text-xs font-semibold text-lime backdrop-blur sm:text-[13px]"><Sparkles aria-hidden className="size-3.5 shrink-0" /> Maior plataforma de gestão de quadras esportivas do Brasil</p>
-          <h1 id="hero-titulo" className="font-display text-[2.9rem] font-bold leading-[1.02] tracking-tight text-balance sm:text-7xl lg:text-[4.5rem] xl:text-[5rem]">Seu próximo jogo <span className="text-lime">começa aqui.</span></h1>
+          <h1 id="hero-titulo" className="font-display text-[2.9rem] font-bold leading-[1.02] tracking-tight text-balance sm:text-7xl lg:text-[4.5rem] xl:text-[5rem]">O jogo <span className="text-lime">começa aqui.</span></h1>
           <p className="mt-7 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl">Encontre quadras, organize partidas e conecte jogadores em uma única plataforma.</p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a href={LINKS.encontrarJogo} data-track="hero_encontrar_jogo" className={cn(btnLime, "min-h-14 px-8 text-base")}>Encontrar um Jogo <ArrowRight aria-hidden className="size-5" /></a>
@@ -85,10 +85,10 @@ export function QuickAccess() {
   ]
   return (
     <section aria-label="Acesso rápido" className="on-light relative z-10 -mt-10 px-4 sm:px-6">
-      <ul className="mx-auto grid max-w-6xl grid-cols-2 gap-2 rounded-3xl bg-white p-2 shadow-[0_20px_50px_-20px_rgba(20,44,37,0.35)] ring-1 ring-black/5 sm:gap-3 sm:p-3 lg:grid-cols-5">
+      <ul className="mx-auto grid max-w-6xl grid-cols-2 gap-2 rounded-3xl bg-white p-2 shadow-[0_20px_50px_-20px_rgba(0,41,35,0.35)] ring-1 ring-black/5 sm:gap-3 sm:p-3 lg:grid-cols-5">
         {items.map((x) => (
           <li key={x.t} className={x.main ? "col-span-2 lg:col-span-1" : undefined}>
-            <a href={x.href} data-track={x.track} className={cn("flex h-full items-center gap-3 rounded-2xl p-3 transition-colors sm:p-4", x.main ? "bg-lime text-forest hover:bg-[#c8f76a]" : "hover:bg-ice")}>
+            <a href={x.href} data-track={x.track} className={cn("flex h-full items-center gap-3 rounded-2xl p-3 transition-colors sm:p-4", x.main ? "bg-lime text-forest hover:bg-[#d3fb6e]" : "hover:bg-ice")}>
               <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl", x.main ? "bg-forest text-lime" : "bg-forest text-lime")}><x.i aria-hidden className="size-5" /></span>
               <span className="min-w-0"><span className="block text-sm font-bold text-forest">{x.t}</span><span className="block text-xs leading-snug text-graphite/70">{x.d}</span></span>
             </a>
@@ -108,7 +108,7 @@ export function HowItWorks() {
   ]
   return (
     <Section id="como-funciona" labelledBy="como-titulo">
-      <Heading id="como-titulo" center eyebrow="Como funciona" title="Uma plataforma. Três jeitos de jogar." sub="O Partidou conecta quem administra quadras, quem organiza partidas e quem quer entrar em campo." />
+      <Heading id="como-titulo" center eyebrow="Como funciona" title="Uma plataforma. Três jeitos de jogar." sub="O Partigol conecta quem administra quadras, quem organiza partidas e quem quer entrar em campo." />
       <ul className="mt-14 grid gap-5 md:grid-cols-3">
         {cards.map((c) => (
           <li key={c.who} className="group flex flex-col overflow-hidden rounded-2xl border border-forest/10 bg-white">
@@ -180,7 +180,7 @@ export function SmartAgenda() {
 /* ───────── 5. Para organizadores ───────── */
 export function ForOrganizers() {
   const items = [
-    { i: Trophy, t: "Criação de partidas", d: "Em qualquer local ou numa reserva de quadra do Partidou." },
+    { i: Trophy, t: "Criação de partidas", d: "Em qualquer local ou numa reserva de quadra do Partigol." },
     { i: UserCheck, t: "Controle de jogadores", d: "Aprove ou recuse quem pede vaga; as vagas se atualizam sozinhas." },
     { i: ShieldCheck, t: "Preciso de goleiro", d: "Encontre goleiros disponíveis no dia e convide por e-mail." },
     { i: Link2, t: "Convites e WhatsApp", d: "Convide jogadores compatíveis ou divulgue o link no grupo." },
@@ -191,7 +191,7 @@ export function ForOrganizers() {
     <Section id="para-organizadores" tone="white" labelledBy="org-titulo">
       <div className="grid items-center gap-12 lg:grid-cols-[1fr_1fr] lg:gap-16">
         <div className="lg:order-2">
-          <Heading id="org-titulo" eyebrow="Para organizadores" title="Organize menos. Jogue mais." sub="Chega de lista no grupo e cobrança no privado: o Partidou ajuda a organizar partidas esportivas do início ao fim." />
+          <Heading id="org-titulo" eyebrow="Para organizadores" title="Organize menos. Jogue mais." sub="Chega de lista no grupo e cobrança no privado: o Partigol ajuda a organizar partidas esportivas do início ao fim." />
           <div className="mt-10"><FeatureList items={items} /></div>
           <div className="mt-10 flex flex-col items-start gap-2">
             <a href={LINKS.criarPartida} data-track="org_criar_partida" className={btnForest}>Criar Minha Partida</a>
@@ -326,7 +326,7 @@ export function Plans() {
               <p className="mt-1 text-sm text-white/70">{p.items.slice(0, 3).join(" · ")}</p>
             </div>
             {p.id === "jogador"
-              ? <a href={LINKS.cadastro} data-track="plano_jogador" className={cn(btn, "min-h-11 shrink-0 bg-lime px-5 text-sm text-forest hover:bg-[#c8f76a]")}>{p.cta}</a>
+              ? <a href={LINKS.cadastro} data-track="plano_jogador" className={cn(btn, "min-h-11 shrink-0 bg-lime px-5 text-sm text-forest hover:bg-[#d3fb6e]")}>{p.cta}</a>
               : <LeadLink audience={p.audience} plan={p.id} track={`plano_${p.id}`} className={cn(btn, "min-h-11 shrink-0 bg-white/10 px-5 text-sm text-white hover:bg-white/15")}>{p.cta}</LeadLink>}
           </li>
         ))}

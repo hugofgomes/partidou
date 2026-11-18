@@ -2,14 +2,14 @@ import { cn } from "@/lib/utils"
 /* eslint-disable @next/next/no-img-element -- logo pequena e já otimizada dentro da ilustração */
 import { CalendarDays, ChartColumn, ClipboardList, Contact, Hourglass, LayoutDashboard, Search, Users, Wallet } from "lucide-react"
 
-/** Mockups ilustrativos desenhados em HTML/CSS. Mostram a interface do Partidou; NÃO exibem números ou clientes reais. */
+/** Mockups ilustrativos desenhados em HTML/CSS. Mostram a interface do Partigol; NÃO exibem números ou clientes reais. */
 const Tag = ({ className }: { className?: string }) => <span className={cn("rounded-full bg-black/75 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur", className)}>Exemplo ilustrativo</span>
 const Bar = ({ w, className }: { w: string; className?: string }) => <span className={cn("block h-2 rounded-full bg-graphite/15", className)} style={{ width: w }} />
 
 export function DashboardMockup({ className }: { className?: string }) {
   return (
     <figure className={cn("relative overflow-hidden rounded-2xl border border-white/10 bg-ice shadow-2xl shadow-black/40", className)}>
-      <figcaption className="sr-only">Ilustração do painel de gestão do Partidou, com indicadores, gráfico de ocupação semanal e próximas reservas.</figcaption>
+      <figcaption className="sr-only">Ilustração do painel de gestão do Partigol, com indicadores, gráfico de ocupação semanal e próximas reservas.</figcaption>
       <div aria-hidden className="flex items-center gap-1.5 border-b bg-white px-3 py-2"><span className="size-2 rounded-full bg-red-400" /><span className="size-2 rounded-full bg-amber-400" /><span className="size-2 rounded-full bg-green-400" /><Tag className="ml-auto" /></div>
       <div aria-hidden className="flex">
         <div className="flex w-10 flex-col items-center gap-3 bg-forest py-3 text-white/70 sm:w-12">
@@ -41,7 +41,7 @@ export function DashboardMockup({ className }: { className?: string }) {
 export function PhoneMockup({ className }: { className?: string }) {
   return (
     <figure className={cn("relative aspect-[9/18.5] rounded-[2rem] border-[7px] border-graphite bg-ice shadow-2xl shadow-black/50", className)}>
-      <figcaption className="sr-only">Ilustração do aplicativo Partidou no celular: busca de quadras com horários livres e uma partida com vagas.</figcaption>
+      <figcaption className="sr-only">Ilustração do aplicativo Partigol no celular: busca de quadras com horários livres e uma partida com vagas.</figcaption>
       <div aria-hidden className="flex h-full flex-col overflow-hidden rounded-[1.4rem]">
         <div className="relative bg-forest px-3 pb-3 pt-5 text-white">
           <span className="absolute left-1/2 top-1.5 h-1.5 w-12 -translate-x-1/2 rounded-full bg-black/50" />
@@ -88,7 +88,7 @@ const BLOCKS: { col: number; row: number; span: number; kind: K; text: string }[
 export function AgendaMockup({ className }: { className?: string }) {
   return (
     <figure className={cn("relative rounded-2xl border bg-white p-3 shadow-xl sm:p-4", className)}>
-      <figcaption className="sr-only">Ilustração da agenda semanal do Partidou, com reservas coloridas por tipo: avulsa em laranja, mensalista em verde, mensalista com professor em roxo e bloqueios em cinza.</figcaption>
+      <figcaption className="sr-only">Ilustração da agenda semanal do Partigol, com reservas coloridas por tipo: avulsa em laranja, mensalista em verde, mensalista com professor em roxo e bloqueios em cinza.</figcaption>
       <div aria-hidden>
         <div className="mb-2 flex items-center justify-between"><span className="font-display text-sm font-bold text-forest">Agenda · Semana</span><Tag className="bg-forest/80" /></div>
         <div className="grid grid-cols-[2rem_repeat(7,minmax(0,1fr))] gap-1 text-center text-[10px] text-graphite/75">
@@ -124,8 +124,8 @@ const NEXT = [
 ]
 export function HeroAppMockup({ className }: { className?: string }) {
   return (
-    <figure className={cn("overflow-hidden rounded-xl border border-white/15 bg-[#f6f8f4] text-graphite shadow-[0_40px_90px_-20px_rgba(0,0,0,0.7)] lg:rounded-2xl", className)}>
-      <figcaption className="sr-only">Ilustração do painel do Partidou com dados de exemplo: reservas do dia, ocupação da semana, valores a receber e próximas reservas por quadra.</figcaption>
+    <figure className={cn("overflow-hidden rounded-xl border border-white/15 bg-[#F6F8F5] text-graphite shadow-[0_40px_90px_-20px_rgba(0,0,0,0.7)] lg:rounded-2xl", className)}>
+      <figcaption className="sr-only">Ilustração do painel do Partigol com dados de exemplo: reservas do dia, ocupação da semana, valores a receber e próximas reservas por quadra.</figcaption>
       <div aria-hidden>
         <div className="flex items-center gap-1.5 border-b border-black/5 bg-white px-3 py-2">
           <span className="size-2.5 rounded-full bg-[#ff5f57]" /><span className="size-2.5 rounded-full bg-[#febc2e]" /><span className="size-2.5 rounded-full bg-[#28c840]" />
@@ -134,7 +134,7 @@ export function HeroAppMockup({ className }: { className?: string }) {
         </div>
         <div className="flex">
           <div className="hidden w-44 shrink-0 bg-forest px-2.5 py-3 sm:block">
-            <img src="/brand/partidou-logo-520.png" alt="" width={520} height={120} className="mb-4 ml-1 h-6 w-auto" />
+            <img src="/brand/partigol-logo-520.png" alt="" width={520} height={117} className="mb-4 ml-1 h-6 w-auto" />
             <ul className="space-y-0.5">
               {MENU.map((m) => <li key={m.t} className={cn("flex items-center gap-2 rounded-lg px-2 py-1.5 text-[11px]", m.on ? "bg-lime font-semibold text-forest" : "text-white/80")}><m.i className="size-3.5 shrink-0" />{m.t}</li>)}
             </ul>

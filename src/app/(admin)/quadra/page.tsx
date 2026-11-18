@@ -26,8 +26,8 @@ type Dash = {
   revenue_month: number | null; to_receive: number | null; overdue: number | null; no_hours: boolean
 } | null
 
-// Cores do Partidou para gráficos; categorias seguem a agenda (laranja, verde, roxo, cinza).
-const C = { lime: "#B9F344", forest: "#142C25", graphite: "#19221D", kind: { avulsa: "#fb923c", mensalista: "#22c55e", mensalista_professor: "#a855f7", bloqueio: "#94a3b8" } as Record<string, string> }
+// Cores do Partigol para gráficos; categorias seguem a agenda (laranja, verde, roxo, cinza).
+const C = { lime: "#C5FA41", forest: "#002923", graphite: "#19221D", kind: { avulsa: "#fb923c", mensalista: "#22c55e", mensalista_professor: "#a855f7", bloqueio: "#94a3b8" } as Record<string, string> }
 
 async function load(from: string, to: string) {
   const sb = supabase()

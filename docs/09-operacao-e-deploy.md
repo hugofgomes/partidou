@@ -2,7 +2,7 @@
 # Operação, deploy e manutenção
 
 ## Hospedagem
-VPS com **Coolify** (Docker). A aplicação do Partidou tem projeto, domínio (`app.partidou.com.br`) e banco Supabase próprios. O build usa o `Dockerfile` (Node 22) e roda `npm run build`, que valida o histórico de versões e regenera esta documentação. O Dockerfile limita a memória do build (`--max-old-space-size=1536`) e o Next usa um processo por vez, porque a VPS é pequena.
+VPS com **Coolify** (Docker). A aplicação do Partigol tem projeto, domínio (`app.partidou.com.br`) e banco Supabase próprios. O build usa o `Dockerfile` (Node 22) e roda `npm run build`, que valida o histórico de versões e regenera esta documentação. O Dockerfile limita a memória do build (`--max-old-space-size=1536`) e o Next usa um processo por vez, porque a VPS é pequena.
 
 ## Variáveis de ambiente (Coolify)
 `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` (variáveis de **build**), `SUPABASE_SERVICE_ROLE_KEY`, `PLATFORM_ORG_SLUG` (organização do dono), `APP_URL`, `CRON_SECRET`; opcionais: `SMTP_*`, `ASAAS_*`, `PLATFORM_ALERT_EMAIL`. Só os nomes aparecem na documentação.
@@ -34,4 +34,4 @@ Credenciais só em `.env.deploy` local (chmod 600, fora do Git) ou no Coolify. P
 ## Problemas conhecidos
 - **VPS sem memória:** o build pesa; mantenha swap ativo (6 GB hoje) e evite deploys simultâneos. Idealmente, build fora da VPS ou mais RAM.
 - **Roteamento de domínio:** ao tirar um domínio de uma aplicação do Coolify, o contêiner antigo só esquece o domínio quando é recriado; enquanto isso ele pode capturar o endereço.
-- **Banco com tabelas herdadas:** o histórico de migrations inclui estruturas de outra origem (futebol de grupo) que o Partidou não usa; permanecem porque o banco em produção foi criado a partir delas.
+- **Banco com tabelas herdadas:** o histórico de migrations inclui estruturas de outra origem (futebol de grupo) que o Partigol não usa; permanecem porque o banco em produção foi criado a partir delas.

@@ -1,7 +1,7 @@
 // Service worker do app instalável (PWA).
 // REGRA DE SEGURANÇA: nunca guarda páginas, respostas de API ou dados do Supabase (são de pessoas logadas e podem ser de outro usuário
 // no mesmo aparelho). Só guarda arquivos estáticos públicos (ícones e código versionado) e a página offline.
-const CACHE = "partidou-pwa-v2"
+const CACHE = "partidou-pwa-v3"
 const OFFLINE = "/offline"
 const PRECACHE = [OFFLINE, "/brand/icon-192.png", "/brand/icon-512.png"]
 

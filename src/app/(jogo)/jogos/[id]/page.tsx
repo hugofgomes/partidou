@@ -19,16 +19,16 @@ const when = (g: Game) => new Intl.DateTimeFormat("pt-BR", { timeZone: g.timezon
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const g = await load(id)
-  if (!g) return { title: { absolute: "Partida | Partidou" }, robots: { index: false } }
+  if (!g) return { title: { absolute: "Partida | Partigol" }, robots: { index: false } }
   const left = Math.max(0, g.slots_total - g.approved)
   const needs = g.needs.filter((n) => n.quantity > n.filled).map((n) => `${n.quantity - n.filled} ${(POSITION_LABEL[n.position] ?? n.position).toLowerCase()}`).join(", ")
-  const title = `${g.title} · ${SPORT_LABEL[g.sport] ?? g.sport} em ${g.city}/${g.state} | Partidou`
-  const description = `${when(g)} em ${g.location_name}. ${left > 0 ? `${left} vaga(s) aberta(s)` : "Partida completa"}${needs ? `: precisamos de ${needs}` : ""}.${g.level ? ` Nível ${LEVEL_LABEL[g.level]}.` : ""} Peça sua vaga no Partidou.`
+  const title = `${g.title} · ${SPORT_LABEL[g.sport] ?? g.sport} em ${g.city}/${g.state} | Partigol`
+  const description = `${when(g)} em ${g.location_name}. ${left > 0 ? `${left} vaga(s) aberta(s)` : "Partida completa"}${needs ? `: precisamos de ${needs}` : ""}.${g.level ? ` Nível ${LEVEL_LABEL[g.level]}.` : ""} Peça sua vaga no Partigol.`
   const url = `${APP_URL}/jogos/${g.id}`
   const closed = g.closed || g.status !== "aberta"
   return { metadataBase: new URL(APP_URL), title: { absolute: title }, description, alternates: { canonical: url }, robots: closed ? { index: false, follow: true } : undefined,
-    openGraph: { type: "website", url, siteName: "Partidou", locale: "pt_BR", title: `${g.title}: ${left > 0 ? `faltam ${left}!` : "completa"}`, description, images: ["/brand/og-partidou.png"] },
-    twitter: { card: "summary_large_image", title: g.title, description, images: ["/brand/og-partidou.png"] } }
+    openGraph: { type: "website", url, siteName: "Partigol", locale: "pt_BR", title: `${g.title}: ${left > 0 ? `faltam ${left}!` : "completa"}`, description, images: ["/brand/og-partigol.png"] },
+    twitter: { card: "summary_large_image", title: g.title, description, images: ["/brand/og-partigol.png"] } }
 }
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -37,7 +37,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const jsonLd = g ? {
     "@context": "https://schema.org", "@type": "SportsEvent", name: g.title, sport: SPORT_LABEL[g.sport] ?? g.sport, startDate: g.starts_at, endDate: g.ends_at,
     eventStatus: g.status === "cancelada" ? "https://schema.org/EventCancelled" : "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    url: `${APP_URL}/jogos/${g.id}`, description: g.description ?? `Partida de ${SPORT_LABEL[g.sport] ?? g.sport} com vagas abertas no Partidou.`,
+    url: `${APP_URL}/jogos/${g.id}`, description: g.description ?? `Partida de ${SPORT_LABEL[g.sport] ?? g.sport} com vagas abertas no Partigol.`,
     location: { "@type": "Place", name: g.location_name, address: { "@type": "PostalAddress", streetAddress: g.address ?? undefined, addressLocality: g.city, addressRegion: g.state, addressCountry: "BR" } },
     organizer: { "@type": "Person", name: g.organizer },
     maximumAttendeeCapacity: g.slots_total, remainingAttendeeCapacity: Math.max(0, g.slots_total - g.approved),

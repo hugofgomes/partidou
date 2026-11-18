@@ -2,12 +2,14 @@ import nodemailer from "nodemailer"
 import { BRAND_PRIMARY } from "@/lib/brand"
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!)
-const brand = () => process.env.SMTP_FROM_NAME || "Partidou"
+/** Nome do remetente. A marca mudou de Partidou para Partigol: um nome antigo que ainda esteja na configuração do servidor sai já com o nome novo. */
+const rebrand = (s: string) => s.replace(/Partidou/gi, "Partigol")
+const brand = () => rebrand(process.env.SMTP_FROM_NAME || "Partigol")
 
 /** SMTP_FROM pode ser só o endereço ("contato@partidou.com.br") ou já "Nome <contato@partidou.com.br>": nos dois casos sai um remetente válido (antes o 2º virava "Nome <Nome <x>>" e o provedor recusava). */
 export function fromAddress() {
   const raw = (process.env.SMTP_FROM || process.env.SMTP_USER || "").trim()
-  return /<[^<>\s]+@[^<>\s]+>\s*$/.test(raw) ? raw : `${brand()} <${raw}>`
+  return /<[^<>\s]+@[^<>\s]+>\s*$/.test(raw) ? raw.replace(/^[^<]*/, (name) => rebrand(name)) : `${brand()} <${raw}>`
 }
 
 export const mailerConfigured =() => !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)
@@ -20,7 +22,7 @@ export function transporter() {
 /** Texto digitado vira parágrafos (linha em branco separa) e links https viram clicáveis. Nada de HTML cru. */
 function paragraphs(body: string) {
   return body.trim().split(/\n{2,}/).map((p) =>
-    `<p style="margin:0 0 14px;line-height:1.55">${esc(p).replace(/(https:\/\/[^\s<]+)/g, '<a href="$1" style="color:#142C25;text-decoration:underline">$1</a>').replace(/\n/g, "<br>")}</p>`).join("")
+    `<p style="margin:0 0 14px;line-height:1.55">${esc(p).replace(/(https:\/\/[^\s<]+)/g, '<a href="$1" style="color:#002923;text-decoration:underline">$1</a>').replace(/\n/g, "<br>")}</p>`).join("")
 }
 
 /** Só imagens do bucket público "comunicados" (mesma regra do banco): o que não bater não entra no e-mail. */
@@ -32,9 +34,9 @@ export function buildBroadcastEmail(subject: string, body: string, imageUrl?: st
   return {
     text: `${body.trim()}${img ? `\n\nImagem: ${img}` : ""}\n\n—\n${footer}`,
     html: `<div style="font-family:Arial,Helvetica,sans-serif;color:#1f2937;max-width:560px;margin:0 auto">
-<div style="background:${BRAND_PRIMARY};color:#fff;padding:16px 20px;border-radius:12px 12px 0 0;font-size:18px;font-weight:bold"><span style="color:#B9F344">${esc(brand())}</span></div>
+<div style="background:${BRAND_PRIMARY};color:#fff;padding:16px 20px;border-radius:12px 12px 0 0;font-size:18px;font-weight:bold"><span style="color:#C5FA41">${esc(brand())}</span></div>
 <div style="border:1px solid #e5e7eb;border-top:0;padding:20px;border-radius:0 0 12px 12px">
-<h1 style="font-size:20px;margin:0 0 16px;color:#142C25">${esc(subject)}</h1>${img ? `<img src="${esc(img)}" alt="${esc(subject)}" width="520" style="display:block;max-width:100%;height:auto;border-radius:8px;margin:0 0 16px">` : ""}${paragraphs(body)}
+<h1 style="font-size:20px;margin:0 0 16px;color:#002923">${esc(subject)}</h1>${img ? `<img src="${esc(img)}" alt="${esc(subject)}" width="520" style="display:block;max-width:100%;height:auto;border-radius:8px;margin:0 0 16px">` : ""}${paragraphs(body)}
 <p style="margin:24px 0 0;font-size:12px;color:#6b7280">${esc(footer)}</p></div></div>`,
   }
 }

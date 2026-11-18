@@ -5,10 +5,10 @@ import { Descobrir } from "./descobrir"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://app.partidou.com.br"),
-  title: { absolute: "Encontre um jogo perto de você | Partidou" },
+  title: { absolute: "Encontre um jogo perto de você | Partigol" },
   description: "Descubra partidas de futebol society, futsal e outras modalidades com vagas abertas. Encontre sua posição e entre em campo.",
   alternates: { canonical: "https://app.partidou.com.br/jogos" },
-  openGraph: { title: "Encontre seu próximo jogo! | Partidou", description: "Partidas com vagas abertas perto de você.", url: "https://app.partidou.com.br/jogos", siteName: "Partidou", locale: "pt_BR", images: ["/brand/og-partidou.png"] },
+  openGraph: { title: "Encontre seu próximo jogo! | Partigol", description: "Partidas com vagas abertas perto de você.", url: "https://app.partidou.com.br/jogos", siteName: "Partigol", locale: "pt_BR", images: ["/brand/og-partigol.png"] },
 }
 
 /** O servidor lê os filtros do endereço e já entrega a lista de partidas (página pronta para o celular e para o Google). */

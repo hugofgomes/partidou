@@ -20,7 +20,7 @@ type Booking = { id: string; code: string; starts_at: string; ends_at: string; s
 const TZ = "America/Sao_Paulo"
 const fmtB = (b: Booking) => `${new Intl.DateTimeFormat("pt-BR", { timeZone: b.timezone, weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(b.starts_at))} · ${b.court} · ${b.venue}`
 
-/** Criar partida: local livre ou reserva do organizador numa quadra do Partidou; vagas, nível, valor e posições necessárias ("Preciso de goleiro"). */
+/** Criar partida: local livre ou reserva do organizador numa quadra do Partigol; vagas, nível, valor e posições necessárias ("Preciso de goleiro"). */
 export default function NovaPartida() {
   const user = useSession(), router = useRouter()
   const [ready, setReady] = React.useState(false)
@@ -61,7 +61,7 @@ export default function NovaPartida() {
   }
   return (
     <form onSubmit={submit} className="mx-auto max-w-3xl space-y-4">
-      <header><Link href="/organizar" className="text-sm font-medium text-[#19221D]/70 hover:text-[#142C25]">← Organizar</Link><h1 className="mt-1 text-2xl font-semibold text-[#142C25]">Criar partida</h1></header>
+      <header><Link href="/organizar" className="text-sm font-medium text-[#19221D]/70 hover:text-[#002923]">← Organizar</Link><h1 className="mt-1 text-2xl font-semibold text-[#002923]">Criar partida</h1></header>
 
       <section className="space-y-4 rounded-xl bg-white p-5 ring-1 ring-black/5 sm:p-6">
         <div className="space-y-1.5"><Label htmlFor="g-t">Nome da partida</Label><Input id="g-t" required minLength={3} maxLength={80} value={v.title} onChange={(e) => set("title", e.target.value)} placeholder="Ex.: Society de quarta" /></div>
@@ -72,10 +72,10 @@ export default function NovaPartida() {
       </section>
 
       <section className="space-y-4 rounded-xl bg-white p-5 ring-1 ring-black/5 sm:p-6">
-        <h2 className="text-lg font-bold text-[#142C25]">Quando e onde</h2>
+        <h2 className="text-lg font-bold text-[#002923]">Quando e onde</h2>
         {bookings.length > 0 && (
-          <div className="space-y-2 rounded-xl bg-[#F6F8F4] p-3">
-            <p className="flex items-center gap-2 text-sm font-semibold text-[#142C25]"><Building2 className="size-4" /> Você tem reservas em quadras do Partidou</p>
+          <div className="space-y-2 rounded-xl bg-[#F6F8F5] p-3">
+            <p className="flex items-center gap-2 text-sm font-semibold text-[#002923]"><Building2 className="size-4" /> Você tem reservas em quadras do Partigol</p>
             <NativeSelect aria-label="Usar uma reserva" value={useBooking} onChange={(e) => setUseBooking(e.target.value)} className="w-full"><option value="">Não, informar data e local</option>{bookings.map((b) => <option key={b.id} value={b.id}>{fmtB(b)}{b.status === "pendente" ? " (aguardando confirmação)" : ""}</option>)}</NativeSelect>
             <p className="text-xs text-[#19221D]/65">Com reserva, data, horário e local vêm da quadra, e a partida acompanha remarcações e cancelamentos feitos pelo centro.</p>
           </div>
@@ -99,14 +99,14 @@ export default function NovaPartida() {
       </section>
 
       <section className="space-y-4 rounded-xl bg-white p-5 ring-1 ring-black/5 sm:p-6">
-        <h2 className="text-lg font-bold text-[#142C25]">Vagas</h2>
+        <h2 className="text-lg font-bold text-[#002923]">Vagas</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5"><Label htmlFor="g-v">Total de vagas</Label><Input id="g-v" type="number" required min={1} max={40} value={v.slots_total} onChange={(e) => set("slots_total", Number(e.target.value))} /></div>
           <div className="space-y-1.5"><Label htmlFor="g-p">Valor por jogador (R$) <span className="font-normal text-muted-foreground">(opcional)</span></Label><Input id="g-p" inputMode="decimal" value={v.price} onChange={(e) => set("price", e.target.value.replace(/[^\d,.]/g, ""))} placeholder="Ex.: 20,00" /></div>
         </div>
         <button type="button" onClick={() => bump("goleiro", gk ? -(needs.goleiro ?? 0) : 1)} aria-pressed={gk}
-          className={cn("flex w-full items-center gap-3 rounded-xl border-2 p-4 text-left transition-colors", gk ? "border-[#142C25] bg-[#B9F344]/25" : "border-dashed border-black/15 hover:bg-[#F6F8F4]")}>
-          <ShieldCheck className="size-7 shrink-0 text-[#142C25]" /><span><strong className="block text-[#142C25]">PRECISO DE GOLEIRO</strong><span className="text-sm text-[#19221D]/70">{gk ? "Marcado: depois de criar, você vê os goleiros disponíveis e envia o convite." : "Toque para reservar uma vaga de goleiro e buscar goleiros compatíveis."}</span></span>
+          className={cn("flex w-full items-center gap-3 rounded-xl border-2 p-4 text-left transition-colors", gk ? "border-[#002923] bg-[#C5FA41]/25" : "border-dashed border-black/15 hover:bg-[#F6F8F5]")}>
+          <ShieldCheck className="size-7 shrink-0 text-[#002923]" /><span><strong className="block text-[#002923]">PRECISO DE GOLEIRO</strong><span className="text-sm text-[#19221D]/70">{gk ? "Marcado: depois de criar, você vê os goleiros disponíveis e envia o convite." : "Toque para reservar uma vaga de goleiro e buscar goleiros compatíveis."}</span></span>
         </button>
         <div className="space-y-2">
           <p className="text-sm font-medium">Outras posições necessárias <span className="font-normal text-muted-foreground">(opcional; {totalNeeds} de {v.slots_total} vagas)</span></p>
@@ -120,7 +120,7 @@ export default function NovaPartida() {
         <div className="space-y-1.5"><Label htmlFor="g-desc">Informações importantes <span className="font-normal text-muted-foreground">(opcional)</span></Label><textarea id="g-desc" maxLength={1000} rows={3} value={v.description} onChange={(e) => set("description", e.target.value)} placeholder="Ex.: levar colete escuro e claro; chegar 10 min antes." className="w-full rounded-lg border bg-transparent px-3 py-2 text-sm" /></div>
       </section>
 
-      <div className="sticky bottom-16 z-10 md:bottom-4"><Button type="submit" disabled={busy} className="min-h-11 w-full rounded-lg bg-[#B9F344] text-base font-semibold text-[#142C25] shadow-md hover:bg-[#c8f76a]">{busy && <Loader2 className="size-4 animate-spin" />} CRIAR PARTIDA</Button></div>
+      <div className="sticky bottom-16 z-10 md:bottom-4"><Button type="submit" disabled={busy} className="min-h-11 w-full rounded-lg bg-[#C5FA41] text-base font-semibold text-[#002923] shadow-md hover:bg-[#d3fb6e]">{busy && <Loader2 className="size-4 animate-spin" />} CRIAR PARTIDA</Button></div>
       <p className="text-center text-xs text-[#19221D]/60">{SPORT_LABEL[v.sport]} · a partida aparece na busca pública enquanto tiver vagas e inscrições abertas.</p>
     </form>
   )

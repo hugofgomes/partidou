@@ -29,7 +29,7 @@
     "/quadra/espera": "Quadra Esportiva: lista de espera e horários livres compatíveis",
     "/": "Página inicial: leva ao Dashboard do centro (logado) ou à busca de quadras (visitante)",
     "/sem-acesso": "Aviso para conta sem acesso liberado (bloqueada, revogada ou sem centro) com botão de sair",
-    "/site": "Site comercial do Partidou (servido na raiz de partidou.com.br): apresentação, planos, FAQ e formulário de contato",
+    "/site": "Site comercial do Partigol (servido na raiz de partidou.com.br): apresentação, planos, FAQ e formulário de contato",
     "/cookies": "Política de cookies",
     "/super/leads": "Contatos captados pelo site comercial: acompanhamento, anotações e situação (dono da plataforma)",
     "/auth/continuar": "Tela do link de e-mail (convite, recuperação, confirmação): botão \"Continuar\" que só então usa o token",
@@ -40,7 +40,7 @@
     "/jogador": "Minhas Partidas (próximas, solicitações, convites, histórico, disponibilidade)",
     "/jogador/perfil": "Perfil esportivo do jogador/goleiro",
     "/organizar": "Painel do organizador com indicadores",
-    "/organizar/nova": "Criar partida (local livre ou reserva do Partidou; Preciso de goleiro)",
+    "/organizar/nova": "Criar partida (local livre ou reserva do Partigol; Preciso de goleiro)",
     "/organizar/[id]": "Gestão da partida: solicitações, confirmados, convites, Preciso de Goleiro e Encontrar Jogadores",
     "/convite/[id]": "Aceitar ou recusar convite"
   },

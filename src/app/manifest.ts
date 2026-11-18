@@ -3,16 +3,16 @@ import type { MetadataRoute } from "next"
 /** App instalável (PWA): aparece como "Instalar app" no Android/Chrome e "Adicionar à Tela de Início" no iPhone. */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Partidou · Gestão de quadras",
-    short_name: "Partidou",
+    name: "Partigol · Gestão de quadras",
+    short_name: "Partigol",
     description: "Agenda, reservas e financeiro do seu centro esportivo.",
     lang: "pt-BR",
     start_url: "/",
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#142C25",
-    theme_color: "#142C25",
+    background_color: "#002923",
+    theme_color: "#002923",
     categories: ["sports", "business", "productivity"],
     icons: [
       { src: "/brand/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },

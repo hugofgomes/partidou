@@ -25,16 +25,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const d = await load(slug)
   const v = d?.venue
-  if (!v) return { title: "Centro esportivo · Partidou", robots: { index: false } }
+  if (!v) return { title: "Centro esportivo · Partigol", robots: { index: false } }
   const sports = [...new Set(v.courts.map((c) => sportName(c.sport)))].join(", ")
   const city = [v.venue.city, v.venue.state].filter(Boolean).join("/")
-  const title = `${v.venue.name}${city ? ` em ${city}` : ""} · Reserve sua quadra | Partidou`
+  const title = `${v.venue.name}${city ? ` em ${city}` : ""} · Reserve sua quadra | Partigol`
   const description = (v.venue.description?.trim().slice(0, 150) || `Reserve online ${v.courts.length > 1 ? `uma das ${v.courts.length} quadras` : "a quadra"} da ${v.venue.name}${sports ? ` (${sports.toLowerCase()})` : ""}${city ? ` em ${city}` : ""}. Veja horários livres e preços.`)
-  const image = v.courts.find((c) => c.photos[0])?.photos[0] ?? v.venue.logo_url ?? `${APP_URL}/brand/og-partidou.png`
+  const image = v.courts.find((c) => c.photos[0])?.photos[0] ?? v.venue.logo_url ?? `${APP_URL}/brand/og-partigol.png`
   const url = `${APP_URL}/quadras/${v.slug}`
   return {
     metadataBase: new URL(APP_URL), title: { absolute: title }, description, alternates: { canonical: url },
-    openGraph: { type: "website", url, siteName: "Partidou", locale: "pt_BR", title: `${v.venue.name} · Reserve sua quadra`, description, images: [{ url: image, alt: v.venue.name }] },
+    openGraph: { type: "website", url, siteName: "Partigol", locale: "pt_BR", title: `${v.venue.name} · Reserve sua quadra`, description, images: [{ url: image, alt: v.venue.name }] },
     twitter: { card: "summary_large_image", title: `${v.venue.name} · Reserve sua quadra`, description, images: [image] },
   }
 }

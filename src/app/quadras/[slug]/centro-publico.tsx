@@ -59,7 +59,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
     if (pv) { setMinutes((x) => x || pv.venue.min_duration_minutes); setCourtId((c) => (c && pv.courts.some((x) => x.id === c) ? c : pv.courts[0]?.id ?? "")) }
   }, [slug])
   React.useEffect(() => { if (initial === undefined) void loadVenue() }, [initial, loadVenue])
-  React.useEffect(() => { if (data) document.title = `${data.venue.name} · Reserve sua quadra | Partidou` }, [data])
+  React.useEffect(() => { if (data) document.title = `${data.venue.name} · Reserve sua quadra | Partigol` }, [data])
 
   const tz = data?.venue.timezone ?? "America/Sao_Paulo"
   const today = todayIn(tz)
@@ -88,7 +88,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
 
   if (data === undefined) return <PageSkeleton />
   if (data === null) return (
-    <div className="grid min-h-dvh place-items-center bg-[#F6F8F4] p-6 text-center">
+    <div className="grid min-h-dvh place-items-center bg-[#F6F8F5] p-6 text-center">
       <div><h1 className="text-2xl font-bold text-forest">Centro esportivo não encontrado</h1><p className="mt-2 text-graphite/70">O endereço pode estar errado ou o centro ainda não publicou a página.</p>
         <Link href="/quadras" className="mt-5 inline-flex min-h-11 items-center rounded-lg bg-forest px-6 font-semibold text-white">Buscar outras quadras</Link></div>
     </div>
@@ -120,7 +120,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
 
   const chooseCourt = (id: string) => { setCourtId(id); setPick(null); agendaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }) }
   const share = async () => {
-    const text = `Bora jogar? Reserve na ${venue.name} pelo Partidou: ${pageUrl}`
+    const text = `Bora jogar? Reserve na ${venue.name} pelo Partigol: ${pageUrl}`
     if (navigator.share) { try { await navigator.share({ title: venue.name, text, url: pageUrl }); return } catch { return } }
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener")
   }
@@ -141,7 +141,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
   const minPrice = Math.min(...courts.map((c) => prices(c.id).lo))
 
   return (
-    <div className={cn("min-h-dvh bg-[#F6F8F4] text-graphite", pick && "pb-28 lg:pb-0")}>
+    <div className={cn("min-h-dvh bg-[#F6F8F5] text-graphite", pick && "pb-28 lg:pb-0")}>
       {/* ───────── 1. Cabeçalho do estabelecimento: foto real da quadra ao fundo (quando houver), status, indicadores e ações ───────── */}
       <header className="relative isolate overflow-hidden bg-forest text-white">
         {cover
@@ -150,7 +150,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-forest via-forest/90 to-forest/55" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-forest/80 to-transparent" />
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 pt-4 sm:px-6">
-          <Link href="/quadras" aria-label="Partidou: buscar outras quadras"><img src="/brand/partidou-logo-520.png" alt="Partidou" width={520} height={120} className="h-7 w-auto" /></Link>
+          <Link href="/quadras" aria-label="Partigol: buscar outras quadras"><img src="/brand/partigol-logo-520.png" alt="Partigol" width={520} height={117} className="h-7 w-auto" /></Link>
           <Link href="/quadras" className="hidden min-h-10 items-center rounded-lg px-3 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex">Buscar outras quadras</Link>
         </div>
         <div className="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-12">
@@ -177,9 +177,9 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
           </dl>
 
           <div className="mt-7 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-            <button type="button" onClick={() => agendaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} className="col-span-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-lime px-6 text-[15px] font-semibold text-forest transition-colors hover:bg-[#c8f76a]"><CalendarDays className="size-5" /> Reservar horário</button>
+            <button type="button" onClick={() => agendaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} className="col-span-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-lime px-6 text-[15px] font-semibold text-forest transition-colors hover:bg-[#d3fb6e]"><CalendarDays className="size-5" /> Reservar horário</button>
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className={btnLight}><Navigation className="size-4" /> Como chegar</a>
-            {wa && <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Olá! Vi a ${venue.name} no Partidou.`)}`} target="_blank" rel="noopener noreferrer" className={btnLight}><MessageCircle className="size-4" /> WhatsApp</a>}
+            {wa && <a href={`https://wa.me/${wa}?text=${encodeURIComponent(`Olá! Vi a ${venue.name} no Partigol.`)}`} target="_blank" rel="noopener noreferrer" className={btnLight}><MessageCircle className="size-4" /> WhatsApp</a>}
             {venue.phone && <a href={`tel:${venue.phone}`} className={btnLight}><Phone className="size-4" /> Ligar</a>}
             {venue.instagram && <a href={`https://instagram.com/${venue.instagram.replace(/^@/, "")}`} target="_blank" rel="noopener noreferrer" className={btnLight}><Camera className="size-4" /> Instagram</a>}
             <button type="button" onClick={share} className={btnLight}><Share2 className="size-4" /> Compartilhar</button>
@@ -199,7 +199,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
                 const p = prices(c.id), on = c.id === court?.id
                 return (
                   <li key={c.id}>
-                    <article className={cn("flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_1px_2px_rgba(20,44,37,0.06),0_8px_24px_-12px_rgba(20,44,37,0.18)] ring-1 transition", on ? "ring-2 ring-lime" : "ring-black/5 hover:ring-forest/20")}>
+                    <article className={cn("flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_1px_2px_rgba(0,41,35,0.06),0_8px_24px_-12px_rgba(0,41,35,0.18)] ring-1 transition", on ? "ring-2 ring-lime" : "ring-black/5 hover:ring-forest/20")}>
                       <div className="relative aspect-video overflow-hidden bg-forest">
                         {c.photos[0]
                           ? <Image src={c.photos[0]} alt={`Foto da ${c.name}`} fill sizes="(min-width: 640px) 45vw, 100vw" quality={70} className="object-cover" />
@@ -240,7 +240,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
               </div>
             )}
 
-            <div className="mt-5 rounded-xl bg-white p-4 shadow-[0_1px_2px_rgba(20,44,37,0.06)] ring-1 ring-black/5 sm:p-5">
+            <div className="mt-5 rounded-xl bg-white p-4 shadow-[0_1px_2px_rgba(0,41,35,0.06)] ring-1 ring-black/5 sm:p-5">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-sm font-semibold text-forest">{date ? fmtDateLong(date) : "Carregando…"}</p>
                 <div className="flex items-center gap-1">
@@ -268,7 +268,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
 
               <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-black/5 pt-4">
                 <span id="lbl-dur" className="text-sm font-semibold text-forest">Duração</span>
-                <div role="radiogroup" aria-labelledby="lbl-dur" className="inline-flex rounded-full bg-[#F6F8F4] p-1 ring-1 ring-black/5">
+                <div role="radiogroup" aria-labelledby="lbl-dur" className="inline-flex rounded-full bg-[#F6F8F5] p-1 ring-1 ring-black/5">
                   {durations.map((m) => <button key={m} type="button" role="radio" aria-checked={m === minutes} aria-label={durLong(m)} onClick={() => setMinutes(m)}
                     className={cn("min-h-9 min-w-14 rounded-full px-3 text-sm font-semibold transition-colors", m === minutes ? "bg-forest text-white shadow-sm" : "text-graphite/75 hover:text-forest")}>{durLabel(m)}</button>)}
                 </div>
@@ -297,7 +297,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
                                   aria-label={`${fmtMinutes(c.start)} às ${fmtMinutes(c.end)}${c.free ? `, ${money(c.free.price_cents)}` : ", indisponível"}`}
                                   className={cn("flex min-h-14 flex-col items-center justify-center rounded-xl border text-center transition-[background-color,border-color,transform] motion-safe:active:scale-[0.97]",
                                     !c.free ? "cursor-not-allowed border-transparent bg-black/[0.035] text-graphite/40 line-through"
-                                      : on ? "border-lime bg-lime text-forest shadow-[0_6px_16px_-6px_rgba(185,243,68,0.9)]" : "border-black/10 bg-white text-forest hover:border-forest/50")}>
+                                      : on ? "border-lime bg-lime text-forest shadow-[0_6px_16px_-6px_rgba(197,250,65,0.9)]" : "border-black/10 bg-white text-forest hover:border-forest/50")}>
                                   <span className="text-base font-bold leading-tight">{fmtMinutes(c.start)}</span>
                                   <span className={cn("text-[11px] leading-tight", !c.free ? "no-underline" : on ? "text-forest/80" : "text-graphite/70")}>{c.free ? money(c.free.price_cents) : "Ocupado"}</span>
                                 </button>
@@ -335,10 +335,10 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
 
         {/* ───────── 4. Sua reserva (resumo) ───────── */}
         <aside aria-labelledby="h-resumo" className="hidden lg:block">
-          <div className="sticky top-6 rounded-xl bg-white p-6 shadow-[0_1px_2px_rgba(20,44,37,0.06),0_12px_32px_-16px_rgba(20,44,37,0.25)] ring-1 ring-black/5">
+          <div className="sticky top-6 rounded-xl bg-white p-6 shadow-[0_1px_2px_rgba(0,41,35,0.06),0_12px_32px_-16px_rgba(0,41,35,0.25)] ring-1 ring-black/5">
             <h2 id="h-resumo" className="text-lg font-bold text-forest">Sua reserva</h2>
             <Summary venue={venue} court={court} date={date} pick={pick} />
-            <Button onClick={confirm} disabled={!pick || checking} className="mt-6 min-h-11 w-full rounded-lg bg-lime text-base font-semibold text-forest hover:bg-[#c8f76a] disabled:bg-black/10 disabled:text-graphite/50">
+            <Button onClick={confirm} disabled={!pick || checking} className="mt-6 min-h-11 w-full rounded-lg bg-lime text-base font-semibold text-forest hover:bg-[#d3fb6e] disabled:bg-black/10 disabled:text-graphite/50">
               {checking && <Loader2 className="size-4 animate-spin" />} {pick ? "Confirmar reserva" : "Escolha um horário"}
             </Button>
             <Policy venue={venue} />
@@ -354,7 +354,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
               <p className="truncate text-sm font-semibold text-forest">{court.name}</p>
               <p className="truncate text-xs text-graphite/70">{WEEKDAYS_SHORT[dowOf(date)]} {fmtDateBR(date).slice(0, 5)} · {fmtMinutes(pick.start_min)}–{fmtMinutes(pick.end_min)} · <strong className="text-forest">{money(pick.price_cents)}</strong></p>
             </div>
-            <Button onClick={confirm} disabled={checking} className="min-h-11 shrink-0 rounded-lg bg-lime px-6 text-base font-semibold text-forest hover:bg-[#c8f76a]">{checking && <Loader2 className="size-4 animate-spin" />} Confirmar</Button>
+            <Button onClick={confirm} disabled={checking} className="min-h-11 shrink-0 rounded-lg bg-lime px-6 text-base font-semibold text-forest hover:bg-[#d3fb6e]">{checking && <Loader2 className="size-4 animate-spin" />} Confirmar</Button>
           </div>
         </div>
       )}
@@ -363,10 +363,10 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
       <footer className="mt-8 bg-forest px-4 py-10 text-white sm:px-6">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 sm:flex-row">
           <div className="text-center sm:text-left">
-            <img src="/brand/partidou-logo-520.png" alt="Partidou" width={520} height={120} loading="lazy" className="mx-auto h-7 w-auto sm:mx-0" />
+            <img src="/brand/partigol-logo-520.png" alt="Partigol" width={520} height={117} loading="lazy" className="mx-auto h-7 w-auto sm:mx-0" />
             <p className="mt-2 text-sm text-white/70">Reservas de quadras esportivas. O jogo começa aqui.</p>
           </div>
-          <nav aria-label="Links do Partidou" className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-white/75">
+          <nav aria-label="Links do Partigol" className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-white/75">
             <Link href="/jogos" className="hover:text-white">Encontrar um jogo</Link>
             <Link href="/quadras" className="hover:text-white">Buscar outras quadras</Link>
             <a href="https://partidou.com.br" className="hover:text-white">Tenho um centro esportivo</a>
@@ -405,7 +405,7 @@ function StepTitle({ n, id, children }: { n: number; id: string; children: React
 }
 
 function Chip({ icon: I, children }: { icon?: React.ElementType; children: React.ReactNode }) {
-  return <li className="inline-flex items-center gap-1 rounded-full bg-[#F6F8F4] px-2.5 py-1 ring-1 ring-black/5">{I && <I aria-hidden className="size-3.5" />}{children}</li>
+  return <li className="inline-flex items-center gap-1 rounded-full bg-[#F6F8F5] px-2.5 py-1 ring-1 ring-black/5">{I && <I aria-hidden className="size-3.5" />}{children}</li>
 }
 
 /** Imagem substituta quando a quadra não tem foto: linhas de quadra no verde da marca (sem foto fictícia). */
@@ -443,7 +443,7 @@ function Policy({ venue }: { venue: PubVenue["venue"] }) {
 
 function PageSkeleton() {
   return (
-    <div className="min-h-dvh bg-[#F6F8F4]">
+    <div className="min-h-dvh bg-[#F6F8F5]">
       <div className="bg-forest px-4 py-10"><div className="mx-auto flex max-w-6xl items-center gap-4"><Skeleton className="size-20 rounded-xl bg-white/10" /><div className="space-y-2"><Skeleton className="h-7 w-56 bg-white/10" /><Skeleton className="h-4 w-72 bg-white/10" /></div></div></div>
       <div className="mx-auto grid max-w-6xl gap-4 px-4 py-8 sm:grid-cols-2">{[0, 1].map((i) => <Skeleton key={i} className="aspect-video rounded-xl" />)}</div>
     </div>
@@ -481,7 +481,7 @@ function RequestDialog({ slug, pick, date, tz, venue, onClose, onDone, onConflic
           <div className="space-y-1.5"><Label htmlFor="rp">WhatsApp / telefone</Label><Input id="rp" required inputMode="tel" autoComplete="tel" value={v.phone} onChange={(e) => setV({ ...v, phone: maskPhone(e.target.value) })} placeholder="(48) 99999-0000" className="h-11" /></div>
           <div className="space-y-1.5"><Label htmlFor="ro">Observações <span className="font-normal text-muted-foreground">(opcional)</span></Label><Input id="ro" maxLength={200} value={v.notes} onChange={(e) => setV({ ...v, notes: e.target.value })} className="h-11" /></div>
           <div aria-hidden className="absolute -left-[9999px]"><label>Site<input tabIndex={-1} autoComplete="off" value={v.website} onChange={(e) => setV({ ...v, website: e.target.value })} /></label></div>
-          <label className="flex items-start gap-2 rounded-lg bg-[#F6F8F4] p-3 text-sm"><input type="checkbox" className="mt-1 size-4 accent-[#142C25]" checked={v.match} onChange={(e) => setV({ ...v, match: e.target.checked })} /><span><strong>Faltam jogadores?</strong> Publicar vagas para completar o time.</span></label>
+          <label className="flex items-start gap-2 rounded-lg bg-[#F6F8F5] p-3 text-sm"><input type="checkbox" className="mt-1 size-4 accent-[#002923]" checked={v.match} onChange={(e) => setV({ ...v, match: e.target.checked })} /><span><strong>Faltam jogadores?</strong> Publicar vagas para completar o time.</span></label>
           {v.match && <div className="grid grid-cols-3 gap-2"><div className="col-span-2 space-y-1.5"><Label htmlFor="rt">Nome da partida</Label><Input id="rt" maxLength={80} value={v.title} onChange={(e) => setV({ ...v, title: e.target.value })} placeholder="Racha de quinta" /></div><div className="space-y-1.5"><Label htmlFor="rs">Vagas</Label><Input id="rs" type="number" min={1} max={40} required value={v.slots} onChange={(e) => setV({ ...v, slots: e.target.value })} /></div></div>}
           <p className="text-xs text-muted-foreground">Usamos seu telefone só para o centro falar com você sobre esta reserva. Cancelamento gratuito até {venue.cancel_free_hours} h antes{venue.cancel_fee_pct > 0 ? `; depois, cobrança de ${venue.cancel_fee_pct}%` : ""}.</p>
           {err && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">{err}</p>}

@@ -77,7 +77,7 @@ function useTip(label: string, enabled: boolean) {
   const show = (e: React.SyntheticEvent<HTMLElement>) => { if (enabled) { const r = e.currentTarget.getBoundingClientRect(); setY(r.top + r.height / 2) } }
   const hide = () => setY(null)
   const tip = y != null && typeof document !== "undefined" && createPortal(
-    <span role="tooltip" style={{ top: y }} className="pointer-events-none fixed left-[76px] z-[60] -translate-y-1/2 rounded-md bg-[#142C25] px-2.5 py-1.5 text-xs font-medium whitespace-nowrap text-white shadow-lg max-lg:hidden">{label}</span>, document.body)
+    <span role="tooltip" style={{ top: y }} className="pointer-events-none fixed left-[76px] z-[60] -translate-y-1/2 rounded-md bg-[#002923] px-2.5 py-1.5 text-xs font-medium whitespace-nowrap text-white shadow-lg max-lg:hidden">{label}</span>, document.body)
   return { handlers: { onMouseEnter: show, onFocus: show, onMouseLeave: hide, onBlur: hide }, tip }
 }
 
@@ -94,12 +94,12 @@ function SideLink({ href, label, icon: Icon, path, badge }: { href: string; labe
         className={cn(
           "group relative flex h-9 items-center gap-2.5 rounded-md px-2.5 text-[13.5px] text-white/70 outline-none transition-colors duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:ring-2 focus-visible:ring-white/60",
           collapsed && "lg:justify-center lg:px-0",
-          active && "bg-white/[0.09] font-medium text-white before:absolute before:inset-y-2 before:left-0 before:w-[3px] before:rounded-full before:bg-[#B9F344]",
+          active && "bg-white/[0.09] font-medium text-white before:absolute before:inset-y-2 before:left-0 before:w-[3px] before:rounded-full before:bg-[#C5FA41]",
         )}
       >
-        <Icon className={cn("size-4 shrink-0", active ? "text-[#B9F344]" : "text-white/60 group-hover:text-white/80")} aria-hidden />
+        <Icon className={cn("size-4 shrink-0", active ? "text-[#C5FA41]" : "text-white/60 group-hover:text-white/80")} aria-hidden />
         <span className={cn("flex-1 truncate", collapsed && "lg:sr-only")}>{label}</span>
-        {!!badge && <span className={cn("rounded-full bg-[#B9F344] px-1.5 text-[11px] font-semibold leading-[18px] text-[#142C25]", collapsed && "lg:absolute lg:top-1 lg:right-2 lg:px-1 lg:text-[10px]")} aria-label={`${badge} pendentes`}>{badge}</span>}
+        {!!badge && <span className={cn("rounded-full bg-[#C5FA41] px-1.5 text-[11px] font-semibold leading-[18px] text-[#002923]", collapsed && "lg:absolute lg:top-1 lg:right-2 lg:px-1 lg:text-[10px]")} aria-label={`${badge} pendentes`}>{badge}</span>}
       </Link>
       {tip}
     </>
@@ -233,7 +233,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <div className={cn("flex h-14 items-center justify-between border-b border-white/[0.08] px-4", collapsed && "lg:justify-center lg:px-0")}>
           <span className="flex min-w-0 items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={collapsed ? "/brand/partidou-marca-96.png" : "/brand/partidou-logo-520.png"} alt="Partidou" width={collapsed ? 114 : 520} height={collapsed ? 96 : 120} className={cn("w-auto object-contain", collapsed ? "h-7" : "h-7 max-w-40")} />
+            <img src={collapsed ? "/brand/partigol-marca-96.png" : "/brand/partigol-logo-520.png"} alt="Partigol" width={collapsed ? 96 : 520} height={collapsed ? 96 : 117} className={cn("w-auto object-contain", collapsed ? "h-7" : "h-7 max-w-40")} />
           </span>
           <button type="button" onClick={() => setOpen(false)} aria-label="Fechar menu" className="grid size-10 place-items-center rounded-md text-white/80 hover:bg-white/10 hover:text-white lg:hidden">
             <X className="size-5" />
@@ -281,7 +281,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             className="relative grid size-10 place-items-center rounded-lg text-primary outline-none transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Bell className="size-5" />
-            {pending + newLeads > 0 && <span className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-[#B9F344] px-1 text-[10px] leading-4 font-semibold text-[#142C25]">{pending + newLeads}</span>}
+            {pending + newLeads > 0 && <span className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-[#C5FA41] px-1 text-[10px] leading-4 font-semibold text-[#002923]">{pending + newLeads}</span>}
           </Link>
           <UserMenu name={me} roleLabel={courtRole ? COURT_ROLE_LABEL[courtRole] : "Conta"} onSignOut={signOut} />
         </header>

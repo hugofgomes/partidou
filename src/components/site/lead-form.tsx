@@ -89,9 +89,9 @@ export function LeadForm() {
                 <label className="block text-sm sm:col-span-2"><span className="mb-1.5 block font-medium">Mensagem <span className="font-normal text-white/65">(opcional)</span></span><textarea name="message" rows={3} maxLength={1000} className={cn(input, "h-auto py-3")} /></label>
                 <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden"><label>Site<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
               </div>
-              <label className="flex items-start gap-3 text-sm text-white/80"><input name="consent" type="checkbox" required className="mt-1 size-4 accent-[#B9F344]" /><span>Autorizo o Partidou a entrar em contato comigo pelos dados informados. Posso pedir a exclusão a qualquer momento (<a href="/privacidade" className="underline">Política de Privacidade</a>).</span></label>
+              <label className="flex items-start gap-3 text-sm text-white/80"><input name="consent" type="checkbox" required className="mt-1 size-4 accent-[#C5FA41]" /><span>Autorizo o Partigol a entrar em contato comigo pelos dados informados. Posso pedir a exclusão a qualquer momento (<a href="/privacidade" className="underline">Política de Privacidade</a>).</span></label>
               {error && <p id="lead-erro" role="alert" className="rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-200">{error}</p>}
-              <button type="submit" disabled={busy} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-lime px-6 text-[15px] font-semibold text-forest transition-colors hover:bg-[#c8f76a] disabled:opacity-60">{busy && <Loader2 className="size-4 animate-spin" />} {quadra ? "Quero conhecer o Partidou" : "Quero ser avisado"}</button>
+              <button type="submit" disabled={busy} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-lime px-6 text-[15px] font-semibold text-forest transition-colors hover:bg-[#d3fb6e] disabled:opacity-60">{busy && <Loader2 className="size-4 animate-spin" />} {quadra ? "Quero conhecer o Partigol" : "Quero ser avisado"}</button>
             </form>
           )}
         </div>

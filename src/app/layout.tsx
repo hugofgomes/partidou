@@ -11,10 +11,10 @@ const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "sw
 const sora = Sora({ variable: "--font-sora", subsets: ["latin"], weight: ["600", "700"], display: "swap" })
 
 export const metadata: Metadata = {
-  title: "Partidou · Gestão de quadras",
+  title: "Partigol · Gestão de quadras",
   description: "Gestão profissional de quadras esportivas e conexão de jogadores. O jogo começa aqui.",
   applicationName: BRAND_NAME,
-  appleWebApp: { capable: true, title: "Partidou", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "Partigol", statusBarStyle: "default" },
   formatDetection: { telephone: false },
 }
 

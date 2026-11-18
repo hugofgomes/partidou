@@ -38,7 +38,7 @@ export function Descobrir({ initial, initialGames }: { initial: F; initialGames:
     <div className="space-y-6">
       <header className="space-y-4">
         <div>
-          <h1 className="text-2xl font-semibold text-[#142C25]">Encontre seu próximo jogo</h1>
+          <h1 className="text-2xl font-semibold text-[#002923]">Encontre seu próximo jogo</h1>
           <p className="mt-1 text-[#19221D]/70">Partidas abertas perto de você. Escolha sua posição e peça a vaga.</p>
         </div>
         <form onSubmit={(e) => { e.preventDefault(); apply(f) }} className="grid gap-2 sm:grid-cols-[1fr_110px_auto]">
@@ -46,7 +46,7 @@ export function Descobrir({ initial, initialGames }: { initial: F; initialGames:
           <Input id="f-city" value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} placeholder="Sua cidade (ex.: Florianópolis)" className="h-11 bg-white md:h-11" />
           <label className="sr-only" htmlFor="f-uf">Estado</label>
           <NativeSelect id="f-uf" value={f.state} onChange={(e) => set("state", e.target.value)} className="h-11 bg-white md:h-11"><option value="">UF</option>{UFS.map((u) => <option key={u}>{u}</option>)}</NativeSelect>
-          <button type="submit" className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#B9F344] px-5 font-semibold text-[#142C25] transition-colors hover:bg-[#c8f76a]"><Search className="size-4" /> Buscar</button>
+          <button type="submit" className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#C5FA41] px-5 font-semibold text-[#002923] transition-colors hover:bg-[#d3fb6e]"><Search className="size-4" /> Buscar</button>
         </form>
       </header>
 
@@ -55,8 +55,8 @@ export function Descobrir({ initial, initialGames }: { initial: F; initialGames:
           <NativeSelect aria-label="Modalidade" value={f.sport} onChange={(e) => set("sport", e.target.value)} className="h-10 w-auto rounded-lg"><option value="">Todas as modalidades</option>{SPORTS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect>
           <NativeSelect aria-label="Posição necessária" value={f.position} onChange={(e) => set("position", e.target.value)} className="h-10 w-auto rounded-lg"><option value="">Qualquer posição</option>{POSITIONS.filter(([k]) => k !== "qualquer").map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect>
           <NativeSelect aria-label="Período" value={f.period} onChange={(e) => set("period", e.target.value)} className="h-10 w-auto rounded-lg"><option value="">Qualquer horário</option>{PERIODS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect>
-          <button type="button" onClick={() => setMore((m) => !m)} aria-expanded={more} className="inline-flex h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium hover:bg-[#F6F8F4]"><SlidersHorizontal className="size-4" /> Mais filtros</button>
-          {active > 0 && <button type="button" onClick={() => apply({ ...(Object.fromEntries(KEYS.map((k) => [k, ""])) as unknown as F), with_slots: true })} className="inline-flex h-10 items-center gap-1 rounded-lg px-3 text-sm font-medium text-[#142C25] hover:underline"><X className="size-4" /> Limpar ({active})</button>}
+          <button type="button" onClick={() => setMore((m) => !m)} aria-expanded={more} className="inline-flex h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium hover:bg-[#F6F8F5]"><SlidersHorizontal className="size-4" /> Mais filtros</button>
+          {active > 0 && <button type="button" onClick={() => apply({ ...(Object.fromEntries(KEYS.map((k) => [k, ""])) as unknown as F), with_slots: true })} className="inline-flex h-10 items-center gap-1 rounded-lg px-3 text-sm font-medium text-[#002923] hover:underline"><X className="size-4" /> Limpar ({active})</button>}
         </div>
         {more && (
           <div className="mt-3 grid gap-2 border-t pt-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -64,7 +64,7 @@ export function Descobrir({ initial, initialGames }: { initial: F; initialGames:
             <label className="text-xs font-medium text-[#19221D]/70">Data<Input type="date" value={f.date} onChange={(e) => set("date", e.target.value)} className="mt-1 h-10" /></label>
             <label className="text-xs font-medium text-[#19221D]/70">Dia da semana<NativeSelect value={f.weekday} onChange={(e) => set("weekday", e.target.value)} className="mt-1 h-10 w-full"><option value="">Qualquer dia</option>{DAYS.map(([d, , l]) => <option key={d} value={d}>{l}</option>)}</NativeSelect></label>
             <label className="text-xs font-medium text-[#19221D]/70">Nível da partida<NativeSelect value={f.level} onChange={(e) => set("level", e.target.value)} className="mt-1 h-10 w-full"><option value="">Qualquer nível</option>{LEVELS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect></label>
-            <label className="flex items-center gap-2 self-end pb-2 text-sm font-medium"><input type="checkbox" checked={f.with_slots} onChange={(e) => set("with_slots", e.target.checked)} className="size-4 accent-[#142C25]" /> Só partidas com vagas</label>
+            <label className="flex items-center gap-2 self-end pb-2 text-sm font-medium"><input type="checkbox" checked={f.with_slots} onChange={(e) => set("with_slots", e.target.checked)} className="size-4 accent-[#002923]" /> Só partidas com vagas</label>
           </div>
         )}
       </section>
@@ -74,15 +74,15 @@ export function Descobrir({ initial, initialGames }: { initial: F; initialGames:
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-72 rounded-xl" />)}</div>
         ) : games.length === 0 ? (
           <div className="rounded-xl border border-dashed border-black/15 bg-white px-6 py-12 text-center">
-            <p className="text-lg font-semibold text-[#142C25]">Nenhuma partida encontrada com esses filtros.</p>
+            <p className="text-lg font-semibold text-[#002923]">Nenhuma partida encontrada com esses filtros.</p>
             <p className="mt-1 text-[#19221D]/70">Tente outra cidade ou outro horário, ou crie a sua partida e encontre jogadores.</p>
-            <Link href="/organizar/nova" className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#142C25] px-6 font-semibold text-white"><Megaphone className="size-5" /> Criar partida</Link>
+            <Link href="/organizar/nova" className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#002923] px-6 font-semibold text-white"><Megaphone className="size-5" /> Criar partida</Link>
           </div>
         ) : (
           <>
             <p className="mb-3 text-sm text-[#19221D]/70">{games.length} partida(s) encontrada(s)</p>
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {games.map((g) => <li key={g.id}><GameCard g={g} href={`/jogos/${g.id}`} action={<Link href={`/jogos/${g.id}`} className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[#B9F344] font-semibold text-[#142C25] hover:bg-[#c8f76a]">Quero Jogar</Link>} /></li>)}
+              {games.map((g) => <li key={g.id}><GameCard g={g} href={`/jogos/${g.id}`} action={<Link href={`/jogos/${g.id}`} className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[#C5FA41] font-semibold text-[#002923] hover:bg-[#d3fb6e]">Quero Jogar</Link>} /></li>)}
             </ul>
           </>
         )}

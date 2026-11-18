@@ -1,4 +1,4 @@
-# Partidou
+# Partigol
 
 Gestão profissional de **quadras e centros esportivos** e conexão de jogadores a horários livres. *O jogo começa aqui.*
 
@@ -8,7 +8,7 @@ Next.js (App Router) + Supabase (PostgreSQL, Auth, RLS, Storage). SaaS multi-ten
 Agenda (dia, semana, mês), reservas avulsas e recorrentes com validação de conflito no banco, bloqueios, centro e quadras, horários e preços, clientes, equipe com perfis, lista de espera, financeiro (contas a receber, pagamentos, mensalidades), dashboard e relatórios (Excel e PDF), página pública de cada centro com busca e reserva sem login, partidas com vagas, Painel do SaaS e assinatura via Asaas.
 
 ## Como rodar
-1. Crie um projeto Supabase só para o Partidou.
+1. Crie um projeto Supabase só para o Partigol.
 2. `cp scripts/deploy.env.example .env.deploy`, preencha `DATABASE_URL` e rode `node --env-file=.env.deploy scripts/migrate.mjs --fresh` (banco novo e vazio).
 3. Crie o primeiro centro e administrador: `supabase/primeiro-acesso.sql` (troque os valores e rode no SQL Editor).
 4. Copie `.env.example` para `.env.local` (URL e chave anon do Supabase) e rode `npm install && npm run dev`.

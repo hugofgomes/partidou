@@ -2,6 +2,20 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "2.1.0",
+      "date": "2026-11-18",
+      "title": "Partidou agora é Partigol",
+      "novidades": [
+        "Nova marca Partigol em todo o sistema, site e e-mails: logo oficial, ícone do aplicativo, favicon e imagem de compartilhamento.",
+        "Frase-assinatura \"O jogo começa aqui.\" no topo do site, no rodapé e nos e-mails."
+      ],
+      "melhorias": [
+        "Cores ajustadas à paleta oficial do manual da marca (verde profundo #002923, verde-lima #C5FA41, branco gelo #F6F8F5).",
+        "Remetente dos e-mails passa a aparecer como Partigol."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "2.0.0",
       "date": "2026-11-17",
       "title": "Novo visual do sistema",

@@ -56,7 +56,7 @@ export default function LeadsPage() {
                   <p className="text-xs text-muted-foreground">{new Date(l.created_at).toLocaleString("pt-BR")}{l.plan_interest && ` · interesse: ${PLAN[l.plan_interest] ?? l.plan_interest}`}</p>
                 </div>
                 <div className="flex gap-1.5">
-                  {l.whatsapp && <a className="inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-sm hover:bg-secondary" target="_blank" rel="noopener noreferrer" href={`https://wa.me/${l.whatsapp}?text=${encodeURIComponent(`Olá, ${l.name.split(" ")[0]}! Aqui é do Partidou. Vi o seu interesse no nosso site e queria conversar.`)}`}><MessageCircle className="size-4" /> {maskPhone(l.whatsapp.replace(/^55/, ""))}</a>}
+                  {l.whatsapp && <a className="inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-sm hover:bg-secondary" target="_blank" rel="noopener noreferrer" href={`https://wa.me/${l.whatsapp}?text=${encodeURIComponent(`Olá, ${l.name.split(" ")[0]}! Aqui é do Partigol. Vi o seu interesse no nosso site e queria conversar.`)}`}><MessageCircle className="size-4" /> {maskPhone(l.whatsapp.replace(/^55/, ""))}</a>}
                   {l.email && <a className="inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-sm hover:bg-secondary" href={`mailto:${l.email}`}><Mail className="size-4" /> {l.email}</a>}
                 </div>
               </div>

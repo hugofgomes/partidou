@@ -8,11 +8,11 @@ Conecta jogadores de linha e goleiros que procuram partidas com organizadores qu
 |---|---|---|
 | `/jogos` | público | **Encontre seu próximo jogo!** Busca de partidas reais com filtros (cidade, UF, bairro/região, modalidade, data, dia da semana, período, posição necessária, nível, só com vagas). Filtros ficam no endereço. |
 | `/jogos/<id>` | público | Detalhe da partida e **Quero Jogar** (escolhe a posição e manda recado). Visitante entra/cadastra e volta para a mesma partida (`?quero=1` + partida guardada no navegador). |
-| `/cadastro` | público | Conta de jogador (nome, e-mail, senha, aceite de Termos/Privacidade). Confirmação por e-mail (modelo Partidou). |
+| `/cadastro` | público | Conta de jogador (nome, e-mail, senha, aceite de Termos/Privacidade). Confirmação por e-mail (modelo Partigol). |
 | `/jogador` | logado | **Minhas Partidas**: Próximas, Solicitações, Convites (aceitar/recusar), Histórico e Disponibilidade. Primeiro acesso leva ao perfil. |
 | `/jogador/perfil` | logado | Perfil esportivo: dados pessoais (contato nunca público), posição principal e secundárias, nível, modalidades, faixa etária, dias, períodos, horários personalizados, distância máxima, aceitar convites, receber e-mails. Goleiro = posição principal ou secundária "goleiro". |
 | `/organizar` | logado | Painel do organizador: partidas criadas, confirmados, solicitações pendentes, convites enviados, vagas disponíveis, goleiros necessários. |
-| `/organizar/nova` | logado | **Criar partida**: local livre ou reserva própria numa quadra do Partidou; vagas, valor por jogador, nível, informações e posições necessárias (**Preciso de goleiro**). |
+| `/organizar/nova` | logado | **Criar partida**: local livre ou reserva própria numa quadra do Partigol; vagas, valor por jogador, nível, informações e posições necessárias (**Preciso de goleiro**). |
 | `/organizar/<id>` | organizador | Aprovar/recusar solicitações, confirmados (WhatsApp, remover), convites (cancelar), **Preciso de Goleiro** e **Encontrar Jogadores** (compatíveis + **Enviar convite**), encerrar/reabrir inscrições, cancelar partida, divulgar link. |
 | `/convite/<id>` | convidado | Aceitar ou recusar o convite (só o próprio convidado vê; exige login). |
 

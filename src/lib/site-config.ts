@@ -5,12 +5,12 @@ export const MARKETING_HOSTS = ["partidou.com.br", "www.partidou.com.br"]
 export const isMarketingHost = (host: string) => MARKETING_HOSTS.includes(host.toLowerCase().split(":")[0])
 
 export const SEO = {
-  title: "Partidou | Gestão de Quadras e Organização de Partidas",
-  description: "Gerencie quadras esportivas, organize partidas, encontre jogadores e controle reservas com o Partidou. Tudo em uma única plataforma.",
+  title: "Partigol | Gestão de Quadras e Organização de Partidas",
+  description: "Gerencie quadras esportivas, organize partidas, encontre jogadores e controle reservas com o Partigol. Tudo em uma única plataforma.",
 }
 
-/** Logo oficial (versão para fundo escuro, PNG transparente otimizado: 520×120, ~19 KB). O original em alta fica em /brand/partidou-logo.png. */
-export const LOGO = { src: "/brand/partidou-logo-520.png", width: 520, height: 120 }
+/** Logo oficial (versão para fundo escuro, PNG transparente otimizado: 520×120, ~19 KB). O original em alta fica em /brand/partigol-logo.png. */
+export const LOGO = { src: "/brand/partigol-logo-520.png", width: 520, height: 120 }
 
 export const CONTACT_EMAIL = "contato@partidou.com.br"
 
@@ -77,16 +77,16 @@ export const PLANS: Plan[] = [
 ]
 
 export const FAQ: { q: string; a: string }[] = [
-  { q: "O que é o Partidou?", a: "É uma plataforma que conecta donos de quadras e centros esportivos, organizadores de partidas e jogadores. Centros usam o sistema de gestão; jogadores e goleiros encontram partidas com vagas; organizadores criam jogos, aprovam quem pede vaga e convidam jogadores." },
+  { q: "O que é o Partigol?", a: "É uma plataforma que conecta donos de quadras e centros esportivos, organizadores de partidas e jogadores. Centros usam o sistema de gestão; jogadores e goleiros encontram partidas com vagas; organizadores criam jogos, aprovam quem pede vaga e convidam jogadores." },
   { q: "Como encontro uma partida?", a: "Acesse Encontre um Jogo (app.partidou.com.br/jogos), filtre por cidade, modalidade, dia, horário e posição e toque em Quero Jogar. Com a conta grátis de jogador, o organizador recebe seu pedido e você é avisado por e-mail quando for aprovado." },
   { q: "Posso cadastrar minha quadra?", a: "Sim. Fale com a nossa equipe pelo formulário desta página: criamos o ambiente do seu centro esportivo, vinculamos o administrador e ajudamos na configuração inicial." },
   { q: "Como funciona a agenda de reservas?", a: "A agenda mostra os horários por dia, semana ou mês, com cores por tipo de reserva (avulsa, mensalista, mensalista com professor e bloqueios). O sistema impede reservas conflitantes na mesma quadra e permite reservas recorrentes e bloqueios para manutenção." },
   { q: "Posso gerenciar várias quadras?", a: "Sim. Cada centro pode cadastrar várias quadras, com horários, preços e regras próprios. O limite de quadras depende do plano contratado." },
-  { q: "O Partidou funciona no celular?", a: "Sim. O sistema é responsivo e pode ser instalado no celular como aplicativo (PWA), com uma visão da agenda pensada para telas pequenas." },
+  { q: "O Partigol funciona no celular?", a: "Sim. O sistema é responsivo e pode ser instalado no celular como aplicativo (PWA), com uma visão da agenda pensada para telas pequenas." },
   { q: "Posso criar jogos recorrentes?", a: "Donos de quadra já criam reservas recorrentes (semanal, quinzenal ou mensal). Organizadores criam partidas avulsas de graça; partidas recorrentes e mensalidades fazem parte do plano Organizador Pro, ainda em desenvolvimento." },
   { q: "Como funciona o controle financeiro?", a: "O sistema gera cobranças a partir das reservas, registra pagamentos parciais ou totais, controla mensalidades e mostra valores a receber, recebidos e em atraso, com relatórios. Pix e outros meios de pagamento online ainda não estão integrados." },
   { q: "Existem planos gratuitos?", a: "Sim: a conta de jogador é gratuita e já permite encontrar partidas, pedir vaga, receber convites e organizar jogos. Para donos de quadra, fale com a equipe para conhecer as condições de teste e de contratação." },
-  { q: "Sou goleiro. Como recebo convites?", a: "Crie sua conta grátis, escolha Goleiro como posição e marque os dias e horários em que pode jogar. Organizadores da sua cidade que precisam de goleiro encontram você e mandam o convite por e-mail; você aceita ou recusa pelo Partidou." },
+  { q: "Sou goleiro. Como recebo convites?", a: "Crie sua conta grátis, escolha Goleiro como posição e marque os dias e horários em que pode jogar. Organizadores da sua cidade que precisam de goleiro encontram você e mandam o convite por e-mail; você aceita ou recusa pelo Partigol." },
   { q: "Como contratar o sistema?", a: "Preencha o formulário de contato com os dados do seu estabelecimento. Nossa equipe retorna por WhatsApp ou e-mail para apresentar o sistema e combinar a implantação. A contratação online ainda não está disponível." },
 ]
 

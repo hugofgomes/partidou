@@ -6,9 +6,9 @@ Padrão visual do app (app.partidou.com.br) desde a versão 2.0.0. Referência: 
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--primary` / `forest` | #142C25 | Títulos, menu lateral, botões escuros |
-| `lime` | #B9F344 | **Só** ações principais (botão primário), item ativo do menu, contadores |
-| `--background` / `ice` | #F6F8F4 | Fundo das telas |
+| `--primary` / `forest` | #002923 | Títulos, menu lateral, botões escuros |
+| `lime` | #C5FA41 | **Só** ações principais (botão primário), item ativo do menu, contadores |
+| `--background` / `ice` | #F6F8F5 | Fundo das telas |
 | `--foreground` / `graphite` | #19221D | Texto |
 | `--border` | #E2E7DD | Bordas de cartões, tabelas e divisórias |
 | `--input` | #D3DACC | Borda de campos |
@@ -66,3 +66,18 @@ O item ativo fica com o fundo levemente claro, uma barra lima à esquerda e o í
 4. Use estados vazios com texto curto e uma ação, e `Skeleton` no carregamento.
 5. Use animações curtas (150ms) e só de cor e opacidade. O sistema respeita `prefers-reduced-motion`.
 6. Alvos de toque têm no mínimo 40px no celular. O foco fica sempre visível.
+
+## Marca Partigol (desde a 2.1.0)
+
+Fonte: *Manual de Identidade Visual Partigol v1.0* (novembro de 2026).
+
+- **Nome:** Partigol. **Frase-assinatura:** "O jogo começa aqui."
+- **Arquivos** (`public/brand`), gerados a partir do PNG oficial com o fundo escuro removido:
+  - `partigol-logo.png` (1200px) e `partigol-logo-520.png`: logo completa (branco + lima). **Use só sobre fundo escuro** (#002923), como o manual pede.
+  - `partigol-marca.png` / `partigol-marca-96.png`: só o símbolo (bola e moldura), para espaços pequenos.
+  - `icon-192/512`, `icon-maskable-512`, `apple-icon`, `favicon-32/96`, `src/app/favicon.ico`, `src/app/icon.png`: símbolo sobre fundo #002923.
+  - `og-partigol.png`: imagem de compartilhamento (1200×630).
+  - Os arquivos antigos `partidou-logo*.png`, `og-partidou.png` e `partidou-marca*.png` continuam existindo **com o conteúdo novo**, para que e-mails já enviados mostrem a marca nova.
+- **Não fazer:** esticar, recolorir, aplicar sombra/brilho ou remontar a logo com texto.
+- **Pendências do manual:** SVG oficial, versões monocromática e para fundo claro (ainda não existem; quando chegarem, substituir os PNGs).
+- **Domínio:** continua partidou.com.br / app.partidou.com.br até o novo domínio ser confirmado; os endereços técnicos (domínio, contato@partidou.com.br, chaves internas `partidou.*` no navegador, `PLATFORM_ORG_SLUG`) não mudaram.

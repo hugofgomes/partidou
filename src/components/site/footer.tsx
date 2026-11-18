@@ -15,7 +15,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element -- PNG transparente já otimizado */}
-          <img src={LOGO.src} alt="Partidou" width={LOGO.width} height={LOGO.height} loading="lazy" className="h-9 w-auto" />
+          <img src={LOGO.src} alt="Partigol" width={LOGO.width} height={LOGO.height} loading="lazy" className="h-9 w-auto" />
           <p className="mt-5 font-display text-lg font-bold">O jogo começa aqui.</p>
           <p className="mt-1 text-sm text-white/70">Gestão de quadras e organização de partidas.</p>
           <a href={`mailto:${CONTACT_EMAIL}`} className="mt-4 inline-block text-sm font-medium text-lime hover:underline">{CONTACT_EMAIL}</a>
@@ -29,7 +29,7 @@ export function SiteFooter() {
         ))}
       </div>
       <div className="mx-auto mt-14 flex max-w-6xl flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:justify-between">
-        <p>© {new Date().getFullYear()} Partidou. Todos os direitos reservados.</p><p>partidou.com.br</p>
+        <p>© {new Date().getFullYear()} Partigol. Todos os direitos reservados.</p><p className="font-semibold text-lime">O jogo começa aqui.</p>
       </div>
     </footer>
   )

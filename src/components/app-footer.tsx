@@ -22,7 +22,7 @@ export function AppFooter() {
   return (
     <footer className="mt-auto border-t bg-white px-4 py-4 text-xs text-muted-foreground">
       <p className="mx-auto flex max-w-[90rem] flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
-        <span>Partidou{year ? ` © ${year}` : ""}</span>
+        <span>Partigol{year ? ` © ${year}` : ""}</span>
         <span aria-hidden className="hidden sm:inline">|</span>
         <span>Sistema de Gestão Esportiva</span>
         <span aria-hidden className="hidden sm:inline">|</span>
@@ -35,7 +35,7 @@ export function AppFooter() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[85dvh] max-w-lg overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Novidades e atualizações — Partidou</DialogTitle>
+            <DialogTitle>Novidades e atualizações — Partigol</DialogTitle>
             <DialogDescription>Histórico de versões, da mais recente para a mais antiga.</DialogDescription>
           </DialogHeader>
           <ol className="space-y-6">

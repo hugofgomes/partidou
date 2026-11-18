@@ -7,9 +7,9 @@ import { useSearchParams } from "next/navigation"
 import * as React from "react"
 
 const TEXT: Record<string, { title: string; text: string; button: string }> = {
-  recovery: { title: "Redefinir a sua senha", text: "Clique no botão para criar uma nova senha de acesso ao Partidou.", button: "Continuar e criar nova senha" },
-  invite: { title: "Você foi convidado(a)", text: "Clique no botão para aceitar o convite e criar a sua senha de acesso ao Partidou.", button: "Aceitar convite e criar senha" },
-  email: { title: "Confirmar o seu e-mail", text: "Clique no botão para confirmar o seu e-mail e entrar no Partidou.", button: "Confirmar e entrar" },
+  recovery: { title: "Redefinir a sua senha", text: "Clique no botão para criar uma nova senha de acesso ao Partigol.", button: "Continuar e criar nova senha" },
+  invite: { title: "Você foi convidado(a)", text: "Clique no botão para aceitar o convite e criar a sua senha de acesso ao Partigol.", button: "Aceitar convite e criar senha" },
+  email: { title: "Confirmar o seu e-mail", text: "Clique no botão para confirmar o seu e-mail e entrar no Partigol.", button: "Confirmar e entrar" },
 }
 
 function Card() {
@@ -28,7 +28,7 @@ function Card() {
   return (
     <div className="w-full max-w-sm space-y-5 rounded-xl bg-card p-6 text-center shadow-sm">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <div className="mx-auto rounded-xl bg-primary px-5 py-4"><img src="/brand/partidou-logo.png" alt="Partidou" className="mx-auto h-12 w-auto" /></div>
+      <div className="mx-auto rounded-xl bg-primary px-5 py-4"><img src="/brand/partigol-logo.png" alt="Partigol" className="mx-auto h-12 w-auto" /></div>
       <h1 className="text-lg font-semibold">{t.title}</h1>
       <p className="text-sm text-muted-foreground">{t.text}</p>
       {error && <p role="alert" className="text-sm text-destructive">{error} <Link href="/recuperar" className="underline">Pedir um novo link</Link></p>}

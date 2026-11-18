@@ -42,13 +42,13 @@ export function JogoShell({ children }: { children: React.ReactNode }) {
   const [staff, setStaff] = React.useState(false)
   React.useEffect(() => { if (user) supabase().from("profiles").select("id").eq("id", user.id).maybeSingle().then(({ data }) => setStaff(!!data), () => {}) }, [user])
   return (
-    <div className="min-h-dvh bg-[#F6F8F4] text-[#19221D]">
-      <header className="sticky top-0 z-40 bg-[#142C25] text-white shadow-[0_1px_0_rgba(255,255,255,0.06)]">
+    <div className="min-h-dvh bg-[#F6F8F5] text-[#19221D]">
+      <header className="sticky top-0 z-40 bg-[#002923] text-white shadow-[0_1px_0_rgba(255,255,255,0.06)]">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
-          <Link href="/jogos" aria-label="Partidou: Encontre um Jogo" className="shrink-0"><img src="/brand/partidou-logo-520.png" alt="Partidou" width={520} height={120} className="h-7 w-auto" /></Link>
+          <Link href="/jogos" aria-label="Partigol: Encontre um Jogo" className="shrink-0"><img src="/brand/partigol-logo-520.png" alt="Partigol" width={520} height={117} className="h-7 w-auto" /></Link>
           <nav aria-label="Jogos" className="ml-4 hidden flex-1 items-center gap-1 md:flex">
             {NAV.filter((n) => !n.auth || user).map((n) => (
-              <Link key={n.href} href={n.href} className={cn("rounded-full px-3 py-2 text-sm font-medium transition-colors", active(n.href) ? "bg-white/10 text-[#B9F344]" : "text-white/80 hover:text-white")}>{n.label}</Link>
+              <Link key={n.href} href={n.href} className={cn("rounded-full px-3 py-2 text-sm font-medium transition-colors", active(n.href) ? "bg-white/10 text-[#C5FA41]" : "text-white/80 hover:text-white")}>{n.label}</Link>
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-1">
@@ -56,7 +56,7 @@ export function JogoShell({ children }: { children: React.ReactNode }) {
             {user ? <><NotificationBell /><button type="button" onClick={signOut} className="hidden min-h-10 items-center gap-2 rounded-lg px-3 text-sm text-white/80 hover:bg-white/10 hover:text-white sm:inline-flex"><LogOut className="size-4" /> Sair</button></>
               : user === null && <>
                 <Link href={`/login?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center gap-2 whitespace-nowrap rounded-lg px-3 text-sm font-semibold text-white hover:bg-white/10"><LogIn className="size-4" /> Entrar</Link>
-                <Link href={`/cadastro?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center whitespace-nowrap rounded-lg bg-[#B9F344] px-4 text-sm font-semibold text-[#142C25]"><span className="sm:hidden">Criar conta</span><span className="hidden sm:inline">Criar conta grátis</span></Link>
+                <Link href={`/cadastro?next=${encodeURIComponent(path)}`} className="inline-flex min-h-10 items-center whitespace-nowrap rounded-lg bg-[#C5FA41] px-4 text-sm font-semibold text-[#002923]"><span className="sm:hidden">Criar conta</span><span className="hidden sm:inline">Criar conta grátis</span></Link>
               </>}
           </div>
         </div>
@@ -66,8 +66,8 @@ export function JogoShell({ children }: { children: React.ReactNode }) {
       {user && (
         <nav aria-label="Jogos (celular)" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-black/10 bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium", active(n.href) ? "text-[#142C25]" : "text-[#19221D]/60")}>
-              <n.icon className={cn("size-5", active(n.href) && "text-[#142C25]")} />{n.label.replace("Encontre um Jogo", "Jogos")}
+            <Link key={n.href} href={n.href} className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium", active(n.href) ? "text-[#002923]" : "text-[#19221D]/60")}>
+              <n.icon className={cn("size-5", active(n.href) && "text-[#002923]")} />{n.label.replace("Encontre um Jogo", "Jogos")}
             </Link>
           ))}
         </nav>
@@ -101,16 +101,16 @@ function NotificationBell() {
     <div ref={box} className="relative">
       <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={data.unread ? `Notificações: ${data.unread} não lida(s)` : "Notificações"} className="relative grid size-10 place-items-center rounded-full text-white hover:bg-white/10">
         <Bell className="size-5" />
-        {data.unread > 0 && <span className="absolute right-1 top-1 grid min-w-[18px] place-items-center rounded-full bg-[#B9F344] px-1 text-[10px] font-bold leading-[18px] text-[#142C25]">{data.unread > 99 ? "99+" : data.unread}</span>}
+        {data.unread > 0 && <span className="absolute right-1 top-1 grid min-w-[18px] place-items-center rounded-full bg-[#C5FA41] px-1 text-[10px] font-bold leading-[18px] text-[#002923]">{data.unread > 99 ? "99+" : data.unread}</span>}
       </button>
       {open && (
         <div role="dialog" aria-label="Notificações" className="absolute right-0 top-12 w-[min(92vw,380px)] overflow-hidden rounded-xl bg-white text-[#19221D] shadow-lg ring-1 ring-black/10">
-          <div className="flex items-center justify-between border-b px-4 py-3"><p className="font-semibold">Notificações</p>{data.unread > 0 && <button type="button" onClick={readAll} className="text-xs font-semibold text-[#142C25] underline underline-offset-2">Marcar todas como lidas</button>}</div>
+          <div className="flex items-center justify-between border-b px-4 py-3"><p className="font-semibold">Notificações</p>{data.unread > 0 && <button type="button" onClick={readAll} className="text-xs font-semibold text-[#002923] underline underline-offset-2">Marcar todas como lidas</button>}</div>
           <ul className="max-h-[60vh] overflow-y-auto">
             {data.items.length === 0 && <li className="px-4 py-8 text-center text-sm text-[#19221D]/60">Nenhuma notificação por enquanto.</li>}
             {data.items.map((n) => (
-              <li key={n.id}><button type="button" onClick={() => openItem(n)} className={cn("flex w-full gap-3 border-b px-4 py-3 text-left hover:bg-[#F6F8F4]", !n.read && "bg-[#B9F344]/10")}>
-                <span aria-hidden className={cn("mt-1.5 size-2 shrink-0 rounded-full", n.read ? "bg-transparent" : "bg-[#142C25]")} />
+              <li key={n.id}><button type="button" onClick={() => openItem(n)} className={cn("flex w-full gap-3 border-b px-4 py-3 text-left hover:bg-[#F6F8F5]", !n.read && "bg-[#C5FA41]/10")}>
+                <span aria-hidden className={cn("mt-1.5 size-2 shrink-0 rounded-full", n.read ? "bg-transparent" : "bg-[#002923]")} />
                 <span className="min-w-0"><span className="block text-sm font-semibold">{n.title}</span>{n.body && <span className="mt-0.5 block text-sm text-[#19221D]/70">{n.body}</span>}
                   <span className="mt-1 block text-xs text-[#19221D]/50">{new Date(n.at).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</span></span>
               </button></li>

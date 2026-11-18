@@ -1,4 +1,4 @@
-/** Níveis técnicos do Partidou (critérios definidos pelo dono da plataforma). Usados na lista de espera, no pedido de vaga das partidas e na gestão da partida.
+/** Níveis técnicos do Partigol (critérios definidos pelo dono da plataforma). Usados na lista de espera, no pedido de vaga das partidas e na gestão da partida.
  *  Os códigos (medio, bom, craque) são os aceitos pelo banco (court_waitlist.skill_level e court_match_players.skill_level). */
 export const LEVELS = [
   { k: "medio", label: "Médio", cls: "bg-sky-100 text-sky-900",

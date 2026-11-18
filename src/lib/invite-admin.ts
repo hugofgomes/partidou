@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js"
 
 /** Convida (ou reaproveita) a conta do e-mail e a vincula como administradora do centro.
- *  - Conta nova: o Supabase envia o e-mail "Você foi convidado" (modelo Partidou) e a pessoa cria a própria senha.
+ *  - Conta nova: o Supabase envia o e-mail "Você foi convidado" (modelo Partigol) e a pessoa cria a própria senha.
  *  - Conta existente: só serve se ainda não pertencer a nenhum centro (confere ANTES de vincular).
  *  - Se o vínculo falhar, o convite recém-criado é desfeito (não deixa conta sobrando).
  *  `owner` = cliente com a sessão do dono da plataforma (as funções sa_* exigem esse acesso); `svc` = chave de serviço (só no servidor). */
@@ -14,7 +14,7 @@ export async function inviteAdmin(owner: SupabaseClient, svc: SupabaseClient, or
     const existing = list?.users.find((u) => u.email?.toLowerCase() === email)
     if (existing) {
       const { data: prof } = await svc.from("profiles").select("id").eq("id", existing.id).maybeSingle()
-      if (prof) return { ok: false, error: `O e-mail ${email} já tem acesso a outro centro no Partidou. Use outro e-mail.`, status: 409 }
+      if (prof) return { ok: false, error: `O e-mail ${email} já tem acesso a outro centro no Partigol. Use outro e-mail.`, status: 409 }
     }
   } else newUserId = inv.data.user?.id ?? null
   const adm = await owner.rpc("sa_assign_admin", { p_org: org, p_email: email })

@@ -27,9 +27,9 @@ export function SiteHeader() {
   return (
     <header className={cn("fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-300", scrolled || open ? "bg-forest/95 shadow-[0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md" : "bg-transparent")}>
       <div className="mx-auto grid h-16 max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 sm:h-[72px] sm:px-6">
-        <a href="#inicio" aria-label="Partidou, ir para o início" className="shrink-0">
+        <a href="#inicio" aria-label="Partigol, ir para o início" className="shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element -- PNG transparente já otimizado no tamanho de exibição */}
-          <img src={LOGO.src} alt="Partidou" width={LOGO.width} height={LOGO.height} fetchPriority="high" className="h-8 w-auto sm:h-9" />
+          <img src={LOGO.src} alt="Partigol" width={LOGO.width} height={LOGO.height} fetchPriority="high" className="h-8 w-auto sm:h-9" />
         </a>
         <nav aria-label="Principal" className="hidden justify-center xl:flex">
           <ul className="flex items-center gap-1">
@@ -38,7 +38,7 @@ export function SiteHeader() {
         </nav>
         <div className="col-start-3 flex items-center gap-2">
           <a href={LINKS.entrar} data-track="header_entrar" className={cn(btn, "hidden text-white hover:bg-white/10 sm:inline-flex")}>Entrar</a>
-          <a href={LINKS.contato} data-track="header_comecar" className={cn(btn, "hidden bg-lime text-forest hover:bg-[#c8f76a] sm:inline-flex")}>Começar Agora</a>
+          <a href={LINKS.contato} data-track="header_comecar" className={cn(btn, "hidden bg-lime text-forest hover:bg-[#d3fb6e] sm:inline-flex")}>Começar Agora</a>
           <button ref={toggle} type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="menu-mobile" aria-label={open ? "Fechar menu" : "Abrir menu"} className="grid size-11 place-items-center rounded-full text-white hover:bg-white/10 xl:hidden">
             {open ? <X className="size-6" /> : <Menu className="size-6" />}
           </button>

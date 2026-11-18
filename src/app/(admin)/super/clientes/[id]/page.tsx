@@ -243,7 +243,7 @@ export default function ClientePage() {
               <div className="space-y-1.5"><Label htmlFor="f-w">Site</Label><Input id="f-w" maxLength={120} value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} /></div>
               <div className="space-y-1.5"><Label htmlFor="f-t">Lema</Label><Input id="f-t" maxLength={80} value={f.tagline} onChange={(e) => setF({ ...f, tagline: e.target.value })} /></div>
               <div className="space-y-1.5"><Label htmlFor="f-c">Cor principal</Label>
-                <div className="flex gap-2"><Input id="f-c" placeholder="#142C25" maxLength={7} value={f.color} onChange={(e) => setF({ ...f, color: e.target.value })} />
+                <div className="flex gap-2"><Input id="f-c" placeholder="#002923" maxLength={7} value={f.color} onChange={(e) => setF({ ...f, color: e.target.value })} />
                   <span aria-hidden className="size-9 shrink-0 rounded-md border" style={{ background: /^#[0-9a-f]{6}$/i.test(f.color) ? f.color : "transparent" }} /></div></div>
               <div className="space-y-1.5"><Label htmlFor="f-l">Endereço do logo (https://…)</Label><Input id="f-l" maxLength={300} value={f.logo} onChange={(e) => setF({ ...f, logo: e.target.value })} /></div>
               <div className="space-y-1.5"><Label htmlFor="f-f">Rodapé do card da escalação</Label><Input id="f-f" maxLength={100} value={f.footer} onChange={(e) => setF({ ...f, footer: e.target.value })} /></div>

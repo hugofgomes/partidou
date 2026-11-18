@@ -45,7 +45,7 @@ export function EditOrgDialog({ org, onClose, onSaved }: { org: { id: string; na
             <div className="space-y-1.5"><Label htmlFor="e-w">Site</Label><Input id="e-w" maxLength={120} value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} /></div>
             <div className="space-y-1.5"><Label htmlFor="e-t">Lema</Label><Input id="e-t" maxLength={80} value={f.tagline} onChange={(e) => setF({ ...f, tagline: e.target.value })} /></div>
             <div className="space-y-1.5"><Label htmlFor="e-c">Cor principal</Label>
-              <div className="flex gap-2"><Input id="e-c" placeholder="#142C25" maxLength={7} value={f.color} onChange={(e) => setF({ ...f, color: e.target.value })} />
+              <div className="flex gap-2"><Input id="e-c" placeholder="#002923" maxLength={7} value={f.color} onChange={(e) => setF({ ...f, color: e.target.value })} />
                 <span aria-hidden className="size-9 shrink-0 rounded-md border" style={{ background: /^#[0-9a-f]{6}$/i.test(f.color) ? f.color : "transparent" }} /></div></div>
             <div className="space-y-1.5"><Label htmlFor="e-l">Endereço do logo (https://…)</Label><Input id="e-l" maxLength={300} value={f.logo} onChange={(e) => setF({ ...f, logo: e.target.value })} /></div>
             <DialogFooter className="sm:col-span-2"><Button type="button" variant="outline" onClick={onClose}>Cancelar</Button><Button type="submit" disabled={busy}>{busy && <Loader2 className="size-4 animate-spin" />} Salvar</Button></DialogFooter>

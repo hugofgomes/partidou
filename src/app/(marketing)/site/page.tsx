@@ -12,16 +12,16 @@ export const metadata: Metadata = {
   title: { absolute: SEO.title },
   description: SEO.description,
   alternates: { canonical: SITE_URL + "/" },
-  openGraph: { type: "website", url: SITE_URL + "/", siteName: "Partidou", locale: "pt_BR", title: SEO.title, description: SEO.description, images: [{ url: "/brand/og-partidou.png", width: 1200, height: 630, alt: "Partidou: gestão de quadras e organização de partidas" }] },
-  twitter: { card: "summary_large_image", title: SEO.title, description: SEO.description, images: ["/brand/og-partidou.png"] },
+  openGraph: { type: "website", url: SITE_URL + "/", siteName: "Partigol", locale: "pt_BR", title: SEO.title, description: SEO.description, images: [{ url: "/brand/og-partigol.png", width: 1200, height: 630, alt: "Partigol: gestão de quadras e organização de partidas" }] },
+  twitter: { card: "summary_large_image", title: SEO.title, description: SEO.description, images: ["/brand/og-partigol.png"] },
   robots: { index: true, follow: true },
 }
 
 /** Dados estruturados (Schema.org): organização, site, aplicativo e perguntas frequentes (conteúdo igual ao da página). */
 const jsonLd = [
-  { "@context": "https://schema.org", "@type": "Organization", name: "Partidou", url: SITE_URL, logo: `${SITE_URL}/brand/icon-512.png`, slogan: "O jogo começa aqui.", email: CONTACT_EMAIL, ...(SOCIAL.length ? { sameAs: SOCIAL.map((s) => s.href) } : {}) },
-  { "@context": "https://schema.org", "@type": "WebSite", name: "Partidou", url: SITE_URL, inLanguage: "pt-BR" },
-  { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Partidou", applicationCategory: "BusinessApplication", operatingSystem: "Web", url: APP_URL, description: SEO.description, inLanguage: "pt-BR" },
+  { "@context": "https://schema.org", "@type": "Organization", name: "Partigol", url: SITE_URL, logo: `${SITE_URL}/brand/icon-512.png`, slogan: "O jogo começa aqui.", email: CONTACT_EMAIL, ...(SOCIAL.length ? { sameAs: SOCIAL.map((s) => s.href) } : {}) },
+  { "@context": "https://schema.org", "@type": "WebSite", name: "Partigol", url: SITE_URL, inLanguage: "pt-BR" },
+  { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Partigol", applicationCategory: "BusinessApplication", operatingSystem: "Web", url: APP_URL, description: SEO.description, inLanguage: "pt-BR" },
   { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
 ]
 
