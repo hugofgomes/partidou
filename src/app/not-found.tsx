@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { APP_URL, SITE_URL } from "@/lib/site-config"
 
 export const metadata: Metadata = { title: "Página não encontrada | Partigol", robots: { index: false, follow: true } }
 
@@ -13,8 +14,8 @@ export default function NotFound() {
         <h1 className="mt-2 text-3xl font-bold text-white">Essa página saiu de campo.</h1>
         <p className="mt-3 text-white/75">O endereço não existe ou foi movido.</p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <a href="https://partidou.com.br" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#C5FA41] px-6 font-semibold text-[#002923]">Ir para o início</a>
-          <a href="https://app.partidou.com.br/quadras" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 px-6 font-semibold text-white hover:bg-white/10">Encontrar um Jogo</a>
+          <a href={SITE_URL} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#C5FA41] px-6 font-semibold text-[#002923]">Ir para o início</a>
+          <a href={`${APP_URL}/quadras`} className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 px-6 font-semibold text-white hover:bg-white/10">Encontrar um Jogo</a>
         </div>
       </div>
     </main>

@@ -19,6 +19,7 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import * as React from "react"
 import { toast } from "sonner"
+import { SITE_URL } from "@/lib/site-config"
 
 type Court = PubVenue["courts"][number]
 type Done = { code: string; status: string; price_cents: number; manage_token: string | null; waText: string }
@@ -369,7 +370,7 @@ export function CentroPublico({ slug, initial, initialMatches }: { slug: string;
           <nav aria-label="Links do Partigol" className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-white/75">
             <Link href="/jogos" className="hover:text-white">Encontrar um jogo</Link>
             <Link href="/quadras" className="hover:text-white">Buscar outras quadras</Link>
-            <a href="https://partidou.com.br" className="hover:text-white">Tenho um centro esportivo</a>
+            <a href={SITE_URL} className="hover:text-white">Tenho um centro esportivo</a>
             <a href="/privacidade" className="hover:text-white">Privacidade</a>
             <a href="/termos" className="hover:text-white">Termos</a>
           </nav>

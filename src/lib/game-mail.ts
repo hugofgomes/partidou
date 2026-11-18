@@ -2,8 +2,9 @@
  *  Os textos e assuntos seguem o combinado com o dono do Partigol. Nenhum e-mail confirma nada sozinho: as ações acontecem no sistema, com login. */
 import { POSITION_LABEL, SPORT_LABEL, WEEKDAY_LONG } from "./jogo"
 import { button, esc, layout, P, SMALL } from "./mail-layout"
+import { APP_URL } from "@/lib/site-config"
 
-export const APP = "https://app.partidou.com.br"
+export const APP = APP_URL
 export type GamePayload = { game_id: string; title: string; sport: string; location: string; address?: string; date: string; weekday: number; time: string; price_cents: number | null
   player?: string; organizer?: string; position?: string | null; level?: string | null; invite_id?: string; reason?: string | null }
 export type Rendered = { subject: string; text: string; html: string }

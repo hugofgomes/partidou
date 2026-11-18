@@ -1,8 +1,24 @@
-/** Conteúdo e configuração do site comercial (partidou.com.br). Tudo que muda sem mexer em componente fica aqui. */
-export const SITE_URL = "https://partidou.com.br"
-export const APP_URL = "https://app.partidou.com.br"
-export const MARKETING_HOSTS = ["partidou.com.br", "www.partidou.com.br"]
-export const isMarketingHost = (host: string) => MARKETING_HOSTS.includes(host.toLowerCase().split(":")[0])
+/** Conteúdo e configuração do site comercial. Tudo que muda sem mexer em componente fica aqui. */
+
+/** Domínio principal da marca. Para mudar de domínio, troque só esta linha: os outros domínios de BRAND_DOMAINS
+ *  continuam atendidos e redirecionam (301) para este, mantendo o caminho (links antigos, e-mails e Google não quebram). */
+export const DOMAIN = "partidou.com.br"
+/** Todos os domínios da marca apontados para este app (Partigol é a marca nova; partidou.com.br é o endereço antigo). */
+export const BRAND_DOMAINS = ["partigol.com.br", "partidou.com.br"]
+export const SITE_HOST = DOMAIN
+export const APP_HOST = `app.${DOMAIN}`
+export const SITE_URL = `https://${SITE_HOST}`
+export const APP_URL = `https://${APP_HOST}`
+export const MARKETING_HOSTS = BRAND_DOMAINS.flatMap((d) => [d, `www.${d}`])
+const bare = (host: string) => host.toLowerCase().split(":")[0]
+export const isMarketingHost = (host: string) => MARKETING_HOSTS.includes(bare(host))
+/** Endereço de um domínio que não é o principal → mesmo caminho no domínio principal (ou null se já é o principal). */
+export function legacyRedirect(host: string, pathAndQuery: string): string | null {
+  const h = bare(host)
+  const d = BRAND_DOMAINS.find((x) => h === x || h.endsWith("." + x))
+  if (!d || d === DOMAIN) return null
+  return `https://${h.startsWith("app.") ? APP_HOST : SITE_HOST}${pathAndQuery}`
+}
 
 export const SEO = {
   title: "Partigol | Gestão de Quadras e Organização de Partidas",
@@ -78,7 +94,7 @@ export const PLANS: Plan[] = [
 
 export const FAQ: { q: string; a: string }[] = [
   { q: "O que é o Partigol?", a: "É uma plataforma que conecta donos de quadras e centros esportivos, organizadores de partidas e jogadores. Centros usam o sistema de gestão; jogadores e goleiros encontram partidas com vagas; organizadores criam jogos, aprovam quem pede vaga e convidam jogadores." },
-  { q: "Como encontro uma partida?", a: "Acesse Encontre um Jogo (app.partidou.com.br/jogos), filtre por cidade, modalidade, dia, horário e posição e toque em Quero Jogar. Com a conta grátis de jogador, o organizador recebe seu pedido e você é avisado por e-mail quando for aprovado." },
+  { q: "Como encontro uma partida?", a: `Acesse Encontre um Jogo (${APP_HOST}/jogos), filtre por cidade, modalidade, dia, horário e posição e toque em Quero Jogar. Com a conta grátis de jogador, o organizador recebe seu pedido e você é avisado por e-mail quando for aprovado.` },
   { q: "Posso cadastrar minha quadra?", a: "Sim. Fale com a nossa equipe pelo formulário desta página: criamos o ambiente do seu centro esportivo, vinculamos o administrador e ajudamos na configuração inicial." },
   { q: "Como funciona a agenda de reservas?", a: "A agenda mostra os horários por dia, semana ou mês, com cores por tipo de reserva (avulsa, mensalista, mensalista com professor e bloqueios). O sistema impede reservas conflitantes na mesma quadra e permite reservas recorrentes e bloqueios para manutenção." },
   { q: "Posso gerenciar várias quadras?", a: "Sim. Cada centro pode cadastrar várias quadras, com horários, preços e regras próprios. O limite de quadras depende do plano contratado." },

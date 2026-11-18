@@ -3,6 +3,7 @@
  *  HTML em tabelas e estilos inline (compatível com Gmail, Outlook e Apple Mail). Todo texto vindo do visitante passa por esc(). */
 export type LeadInfo = { audience: "quadra" | "organizador" | "jogador"; name: string; venue?: string | null; city?: string | null; state?: string | null; whatsapp?: string | null; email?: string | null; courts?: number | null; message?: string | null; plan?: string | null }
 import { button, esc, layout, P, SMALL, SITE } from "./mail-layout"
+import { APP_URL, SITE_HOST } from "@/lib/site-config"
 
 export type Mail = { to: string; subject: string; text: string; html: string; replyTo?: string }
 
@@ -29,7 +30,7 @@ export function teamNotification(l: LeadInfo, to: string, panelUrl: string): Mai
     html: layout({
       title: "Novo contato no site",
       preheader: `${l.name} · ${AUD[l.audience]}${l.city ? ` · ${l.city}` : ""}`,
-      inner: `<p style="${P}">Alguém preencheu o formulário de <strong>partidou.com.br</strong>. Responda rápido: o primeiro retorno faz diferença.</p>${table}${button(panelUrl, "Abrir no painel")}${quick ? `<p style="${SMALL}">${quick}</p>` : ""}`,
+      inner: `<p style="${P}">Alguém preencheu o formulário de <strong>${SITE_HOST}</strong>. Responda rápido: o primeiro retorno faz diferença.</p>${table}${button(panelUrl, "Abrir no painel")}${quick ? `<p style="${SMALL}">${quick}</p>` : ""}`,
       reason: "Aviso automático do formulário de contato do site, enviado à equipe do Partigol.",
     }),
   }
@@ -46,16 +47,16 @@ export function leadConfirmation(l: LeadInfo, replyTo: string): Mail | null {
   const next = quadra
     ? "Enquanto isso, conheça os recursos e os planos no nosso site."
     : "Enquanto isso, você já pode procurar quadras e horários livres perto de você."
-  const cta = quadra ? { href: `${SITE}/#para-quadras`, label: "Conhecer o Partigol" } : { href: "https://app.partidou.com.br/quadras", label: "Encontrar um Jogo" }
+  const cta = quadra ? { href: `${SITE}/#para-quadras`, label: "Conhecer o Partigol" } : { href: `${APP_URL}/quadras`, label: "Encontrar um Jogo" }
   const subject = "Recebemos o seu contato | Partigol"
   return {
     to: l.email, subject, replyTo,
-    text: `Olá, ${first}!\n\n${body}\n\n${next}\n${cta.label}: ${cta.href}\n\nSe você não preencheu o formulário do Partigol, pode ignorar este e-mail.\n\nPartigol — O jogo começa aqui.\npartidou.com.br\n`,
+    text: `Olá, ${first}!\n\n${body}\n\n${next}\n${cta.label}: ${cta.href}\n\nSe você não preencheu o formulário do Partigol, pode ignorar este e-mail.\n\nPartigol — O jogo começa aqui.\n${SITE_HOST}\n`,
     html: layout({
       title: `Olá, ${first}!`,
       preheader: quadra ? "Nossa equipe vai retornar em breve para apresentar o Partigol." : "Recebemos o seu contato. Avisaremos quando estiver disponível.",
       inner: `<p style="${P}">${esc(body)}</p><p style="${P}">${esc(next)}</p>${button(cta.href, cta.label)}<p style="${SMALL}">Tem alguma dúvida? É só responder este e-mail. <strong>Se você não preencheu o formulário do Partigol, ignore esta mensagem.</strong></p>`,
-      reason: "Você recebeu este e-mail porque preencheu o formulário de contato em partidou.com.br.",
+      reason: `Você recebeu este e-mail porque preencheu o formulário de contato em ${SITE_HOST}.`,
     }),
   }
 }

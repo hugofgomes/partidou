@@ -1,9 +1,9 @@
-import { APP_URL, SITE_URL, isMarketingHost } from "@/lib/site-config"
+import { APP_URL, SITE_URL, isMarketingHost, legacyRedirect } from "@/lib/site-config"
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 import { isAdminOnlyPath, isStaff } from "@/lib/roles"
 
-/** partidou.com.br (site comercial): a raiz mostra o site; textos legais e o envio do formulário ficam aqui; todo o resto é do sistema e vai para app.partidou.com.br. */
+/** Domínio do site comercial: a raiz mostra o site; textos legais e o envio do formulário ficam aqui; todo o resto é do sistema e vai para o app. */
 function marketing(req: NextRequest) {
   const { pathname, search } = req.nextUrl
   const host = (req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "").toLowerCase().split(":")[0]
@@ -15,6 +15,9 @@ function marketing(req: NextRequest) {
 }
 
 export async function middleware(req: NextRequest) {
+  // Domínio antigo (ou ainda não principal) da marca: 301 para o mesmo caminho no domínio principal.
+  const moved = legacyRedirect(req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "", req.nextUrl.pathname + req.nextUrl.search)
+  if (moved) return NextResponse.redirect(moved, 301)
   if (isMarketingHost(req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "")) return marketing(req)
   if (req.nextUrl.pathname === "/site") return NextResponse.redirect(SITE_URL + "/", 308)
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL

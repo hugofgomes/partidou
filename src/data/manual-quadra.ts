@@ -1,3 +1,4 @@
+import { APP_HOST } from "@/lib/site-config"
 /** Manual do usuário do módulo Quadra Esportiva — um capítulo curto por item do menu.
  *  Escrito para quem usa o sistema no dia a dia, com os nomes de botões e abas da tela. Ao mudar uma tela, atualize o capítulo dela. */
 export type Role = "admin" | "gerente" | "recepcionista" | "financeiro"
@@ -60,7 +61,7 @@ export const MANUAL: ManualSection[] = [
   { id: "jogos", href: "/jogos", title: "Encontre um Jogo", summary: "Jogue e organize partidas com a mesma conta.",
     roles: ["admin", "gerente", "recepcionista", "financeiro"],
     steps: ["No menu **Jogos**, abra **Meu perfil de jogador** e preencha posição, cidade e horários.", "Em **Encontrar um Jogo**, filtre e toque em **Quero Jogar**.", "Em **Organizar Partidas**, crie a partida e use **Preciso de goleiro** para convidar.", "Acompanhe convites e confirmações em **Minhas Partidas** e no sino."],
-    tip: "Para divulgar aos seus clientes: app.partidou.com.br/jogos (encontrar jogos) e app.partidou.com.br/cadastro (conta grátis de jogador)." },
+    tip: `Para divulgar aos seus clientes: ${APP_HOST}/jogos (encontrar jogos) e ${APP_HOST}/cadastro (conta grátis de jogador).` },
   { id: "configuracoes", href: "/quadra/configuracoes", title: "Configurações", summary: "Horários, preços e regras de reserva.",
     roles: ["admin"],
     steps: ["Em **Funcionamento**, defina os horários de cada dia.", "Em **Preços**, crie regras por dia, horário e quadra.", "Em **Regras**, ajuste duração mínima, antecedência e cancelamento."],

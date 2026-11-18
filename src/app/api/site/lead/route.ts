@@ -2,6 +2,7 @@ import { fromAddress, mailerConfigured, transporter } from "@/lib/broadcast-mail
 import { leadConfirmation, teamNotification, type LeadInfo } from "@/lib/lead-mail"
 import { createClient } from "@supabase/supabase-js"
 import { NextResponse, type NextRequest } from "next/server"
+import { APP_URL } from "@/lib/site-config"
 
 const AUDIENCES = ["quadra", "organizador", "jogador"]
 const PLANS = ["organizador_pro", "quadra_pro", "arena_business", "demonstracao"]
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
   if (mailerConfigured()) {
     const from = fromAddress(), address = from.match(/<([^<>\s]+@[^<>\s]+)>\s*$/)?.[1] ?? from
     const notify = process.env.LEAD_NOTIFY_EMAIL || process.env.PLATFORM_ALERT_EMAIL || address
-    const mails = [teamNotification(lead, notify, "https://app.partidou.com.br/super/leads"), leadConfirmation(lead, address)].filter((m) => m !== null)
+    const mails = [teamNotification(lead, notify, `${APP_URL}/super/leads`), leadConfirmation(lead, address)].filter((m) => m !== null)
     // Falha de e-mail não derruba o envio, mas fica registrada no log do servidor (Coolify → Logs) para diagnóstico.
     try {
       const t = transporter()

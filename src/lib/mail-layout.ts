@@ -1,7 +1,8 @@
+import { SITE_HOST, SITE_URL } from "@/lib/site-config"
 /** Molde dos e-mails do Partigol (mesmo visual dos e-mails do Auth): cabeçalho verde com a logo, faixa lima, cartão branco, botão lima e rodapé.
  *  HTML em tabelas e estilos inline (Gmail, Outlook, Apple Mail). Todo texto vindo de usuários passa por esc(). */
 export const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!)
-export const SITE = "https://partidou.com.br"
+export const SITE = SITE_URL
 const LOGO = `${SITE}/brand/partigol-logo.png`
 const INSTAGRAM = "https://www.instagram.com/partidouoo/"
 export const FONT = "font-family:Arial,Helvetica,sans-serif;"
@@ -26,7 +27,7 @@ ${inner}
 </td></tr>
 <tr><td align="center" style="padding:24px 16px 0;${FONT}font-size:12px;line-height:1.6;color:#55655B;">
 <strong style="color:#002923;">Partigol</strong> · O jogo começa aqui.<br>
-<a href="${SITE}" style="color:#55655B;text-decoration:underline;">partidou.com.br</a> · <a href="${INSTAGRAM}" style="color:#55655B;text-decoration:underline;">Instagram @partidouoo</a><br>
+<a href="${SITE}" style="color:#55655B;text-decoration:underline;">${SITE_HOST}</a> · <a href="${INSTAGRAM}" style="color:#55655B;text-decoration:underline;">Instagram @partidouoo</a><br>
 <span style="color:#8FA08F;">${esc(reason)}</span>
 </td></tr>
 </table></td></tr></table></body></html>`

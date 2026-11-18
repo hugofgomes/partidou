@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
 /* eslint-disable @next/next/no-img-element -- logo pequena e já otimizada dentro da ilustração */
 import { CalendarDays, ChartColumn, ClipboardList, Contact, Hourglass, LayoutDashboard, Search, Users, Wallet } from "lucide-react"
+import { APP_HOST } from "@/lib/site-config"
 
 /** Mockups ilustrativos desenhados em HTML/CSS. Mostram a interface do Partigol; NÃO exibem números ou clientes reais. */
 const Tag = ({ className }: { className?: string }) => <span className={cn("rounded-full bg-black/75 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur", className)}>Exemplo ilustrativo</span>
@@ -129,7 +130,7 @@ export function HeroAppMockup({ className }: { className?: string }) {
       <div aria-hidden>
         <div className="flex items-center gap-1.5 border-b border-black/5 bg-white px-3 py-2">
           <span className="size-2.5 rounded-full bg-[#ff5f57]" /><span className="size-2.5 rounded-full bg-[#febc2e]" /><span className="size-2.5 rounded-full bg-[#28c840]" />
-          <span className="ml-3 hidden truncate rounded-md bg-black/[0.04] px-3 py-0.5 text-[11px] text-graphite/75 sm:block">app.partidou.com.br/quadra</span>
+          <span className="ml-3 hidden truncate rounded-md bg-black/[0.04] px-3 py-0.5 text-[11px] text-graphite/75 sm:block">{APP_HOST}/quadra</span>
           <Tag className="ml-auto" />
         </div>
         <div className="flex">

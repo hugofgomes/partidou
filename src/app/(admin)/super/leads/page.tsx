@@ -14,6 +14,7 @@ import { maskPhone } from "@/lib/whatsapp"
 import { Building2, Loader2, Mail, MessageCircle } from "lucide-react"
 import * as React from "react"
 import { toast } from "sonner"
+import { APP_HOST, SITE_HOST } from "@/lib/site-config"
 
 type Lead = { id: string; audience: "quadra" | "organizador" | "jogador"; name: string; venue_name: string | null; city: string | null; state: string | null; whatsapp: string | null; email: string | null
   courts_count: number | null; message: string | null; plan_interest: string | null; source: string | null; status: string; notes: string | null; created_at: string }
@@ -42,7 +43,7 @@ export default function LeadsPage() {
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <div><h1 className="text-xl font-semibold">Contatos do site</h1><p className="text-sm text-muted-foreground">Interessados que preencheram o formulário de partidou.com.br. Cada um autorizou o contato (LGPD).</p></div>
+        <div><h1 className="text-xl font-semibold">Contatos do site</h1><p className="text-sm text-muted-foreground">Interessados que preencheram o formulário do site ({SITE_HOST}). Cada um autorizou o contato (LGPD).</p></div>
         <NativeSelect aria-label="Situação" className="w-48" value={status} onChange={(e) => setStatus(e.target.value)}><option value="">Todas as situações</option>{Object.entries(STATUS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</NativeSelect>
       </div>
       {loading && !data ? <Skeleton className="h-60" /> : (
@@ -114,7 +115,7 @@ function ConvertDialog({ lead, onClose, onDone }: { lead: Lead | null; onClose: 
         <form onSubmit={submit} className="space-y-3">
           <div className="space-y-1.5"><Label htmlFor="cv-n">Nome do centro esportivo</Label><Input id="cv-n" required minLength={2} maxLength={80} value={v.name} onChange={(e) => setV((x) => ({ ...x, name: e.target.value, slug: slugify(e.target.value) }))} /></div>
           <div className="space-y-1.5"><Label htmlFor="cv-s">Endereço da página</Label><Input id="cv-s" required maxLength={40} value={v.slug} onChange={(e) => setV((x) => ({ ...x, slug: slugify(e.target.value) }))} />
-            <p className="text-xs text-muted-foreground">app.partidou.com.br/quadras/{v.slug || "…"}</p></div>
+            <p className="text-xs text-muted-foreground">{APP_HOST}/quadras/{v.slug || "…"}</p></div>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5"><Label htmlFor="cv-p">Plano</Label><NativeSelect id="cv-p" className="w-full" value={v.plan} onChange={(e) => setV((x) => ({ ...x, plan: e.target.value }))}>{(plans.length ? plans : [{ code: "teste", name: "Teste gratuito", active: true }]).map((p) => <option key={p.code} value={p.code}>{p.name}</option>)}</NativeSelect></div>
             <div className="space-y-1.5"><Label htmlFor="cv-e">E-mail do administrador</Label><Input id="cv-e" type="email" required value={v.email} onChange={(e) => setV((x) => ({ ...x, email: e.target.value }))} /></div>

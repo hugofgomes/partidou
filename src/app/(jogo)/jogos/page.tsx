@@ -2,13 +2,14 @@ import { FILTER_KEYS, type Filters, type Game } from "@/lib/jogo"
 import { createClient } from "@supabase/supabase-js"
 import type { Metadata } from "next"
 import { Descobrir } from "./descobrir"
+import { APP_URL } from "@/lib/site-config"
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://app.partidou.com.br"),
+  metadataBase: new URL(APP_URL),
   title: { absolute: "Encontre um jogo perto de você | Partigol" },
   description: "Descubra partidas de futebol society, futsal e outras modalidades com vagas abertas. Encontre sua posição e entre em campo.",
-  alternates: { canonical: "https://app.partidou.com.br/jogos" },
-  openGraph: { title: "Encontre seu próximo jogo! | Partigol", description: "Partidas com vagas abertas perto de você.", url: "https://app.partidou.com.br/jogos", siteName: "Partigol", locale: "pt_BR", images: ["/brand/og-partigol.png"] },
+  alternates: { canonical: `${APP_URL}/jogos` },
+  openGraph: { title: "Encontre seu próximo jogo! | Partigol", description: "Partidas com vagas abertas perto de você.", url: `${APP_URL}/jogos`, siteName: "Partigol", locale: "pt_BR", images: ["/brand/og-partigol.png"] },
 }
 
 /** O servidor lê os filtros do endereço e já entrega a lista de partidas (página pronta para o celular e para o Google). */
