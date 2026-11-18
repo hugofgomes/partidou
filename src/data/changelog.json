@@ -2,6 +2,19 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "2.2.0",
+      "date": "2026-11-18",
+      "title": "Novo endereço: partigol.com.br",
+      "novidades": [
+        "O site agora fica em partigol.com.br e o sistema em app.partigol.com.br."
+      ],
+      "melhorias": [
+        "Os endereços antigos (partidou.com.br e app.partidou.com.br) continuam funcionando e levam automaticamente para a mesma página no endereço novo, inclusive links de e-mails já enviados.",
+        "Links do site, dos e-mails, do mapa do site e das páginas públicas dos centros esportivos passam a usar o endereço novo."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "2.1.0",
       "date": "2026-11-18",
       "title": "Partidou agora é Partigol",

@@ -1,12 +1,12 @@
 <!-- revisado: 1.5.0 -->
-# Site comercial (partidou.com.br)
+# Site comercial (partigol.com.br)
 
 ## O que é
-Site institucional e comercial do Partigol, na raiz de **https://partidou.com.br**. Apresenta os três públicos (donos de quadra, organizadores e jogadores), os planos e um formulário de contato. O sistema continua em **app.partidou.com.br**.
+Site institucional e comercial do Partigol, na raiz de **https://partigol.com.br**. Apresenta os três públicos (donos de quadra, organizadores e jogadores), os planos e um formulário de contato. O sistema continua em **app.partigol.com.br**.
 
 ## Como é servido (um só projeto, dois endereços)
 - O código do site é a página `/site` (`src/app/(marketing)/site`) e os componentes de `src/components/site`.
-- O middleware (`src/middleware.ts`) olha o endereço: em `partidou.com.br` a raiz `/` mostra o site; `/privacidade`, `/termos`, `/cookies` e `/api/site/lead` ficam ali mesmo; **todo o resto** (login, busca de quadras, painel) redireciona para `app.partidou.com.br` com o mesmo caminho. `www.partidou.com.br` redireciona para `partidou.com.br`. Em `app.partidou.com.br`, `/site` redireciona para o site.
+- O middleware (`src/middleware.ts`) olha o endereço: em `partigol.com.br` a raiz `/` mostra o site; `/privacidade`, `/termos`, `/cookies` e `/api/site/lead` ficam ali mesmo; **todo o resto** (login, busca de quadras, painel) redireciona para `app.partigol.com.br` com o mesmo caminho. `www.partigol.com.br` redireciona para `partigol.com.br`. Em `app.partigol.com.br`, `/site` redireciona para o site.
 - `robots.txt` e `sitemap.xml` mudam conforme o endereço (o site é indexável; o sistema expõe só a busca pública e os textos legais).
 
 ## Conteúdo e configuração (`src/lib/site-config.ts`)

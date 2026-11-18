@@ -15,7 +15,7 @@ O **Partigol** é uma plataforma SaaS (software por assinatura) para **gestão d
 | **Jogador e organizador** | Público, sem conta | Busca quadras, vê horários livres, solicita reservas e pede vaga em partidas |
 
 ## Endereços
-- Site comercial: `partidou.com.br` (capítulo "Site comercial"). Sistema em produção: `app.partidou.com.br`. Busca pública: `/quadras`. Página de cada centro: `/quadras/<identificador-do-centro>`. Gestão de partida pelo organizador: `/partida/<código-secreto>`.
+- Site comercial: `partigol.com.br` (capítulo "Site comercial"). Sistema em produção: `app.partigol.com.br`. Busca pública: `/quadras`. Página de cada centro: `/quadras/<identificador-do-centro>`. Gestão de partida pelo organizador: `/partida/<código-secreto>`.
 
 ## Tecnologias
 Next.js (App Router) e React, Tailwind CSS, Supabase (PostgreSQL, Autenticação, Storage e regras de acesso por linha) e hospedagem em VPS com Coolify (Docker). Detalhes no capítulo de arquitetura.

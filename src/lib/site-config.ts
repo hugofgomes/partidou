@@ -2,7 +2,7 @@
 
 /** Domínio principal da marca. Para mudar de domínio, troque só esta linha: os outros domínios de BRAND_DOMAINS
  *  continuam atendidos e redirecionam (301) para este, mantendo o caminho (links antigos, e-mails e Google não quebram). */
-export const DOMAIN = "partidou.com.br"
+export const DOMAIN = "partigol.com.br"
 /** Todos os domínios da marca apontados para este app (Partigol é a marca nova; partidou.com.br é o endereço antigo). */
 export const BRAND_DOMAINS = ["partigol.com.br", "partidou.com.br"]
 export const SITE_HOST = DOMAIN

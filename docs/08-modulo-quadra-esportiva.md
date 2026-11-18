@@ -69,7 +69,7 @@ Tabelas: `court_bookings` (reservas e bloqueios), `court_series`, `court_hours`,
 - **Não existe:** avisos administrativos cadastráveis (o painel mostra avisos automáticos: horários não configurados e reservas pendentes) e agendamento de relatórios por e-mail.
 
 ## Página pública, reservas online e partidas (Fase 6)
-**Telas públicas (sem login):** `/quadras` (busca), `/quadras/<slug>` (página do centro) e `/partida/<código>` (gestão da partida). **Painel:** Centro Esportivo → aba **Página pública** (publicar, confirmação automática, link e WhatsApp). **Banco:** `0040_quadra_fase6.sql`. O endereço usa o identificador (slug) da organização, ex.: `app.partidou.com.br/quadras/nome-do-centro`.
+**Telas públicas (sem login):** `/quadras` (busca), `/quadras/<slug>` (página do centro) e `/partida/<código>` (gestão da partida). **Painel:** Centro Esportivo → aba **Página pública** (publicar, confirmação automática, link e WhatsApp). **Banco:** `0040_quadra_fase6.sql`. O endereço usa o identificador (slug) da organização, ex.: `app.partigol.com.br/quadras/nome-do-centro`.
 
 **Redesign da página do centro (1.6.0, `src/app/quadras/[slug]/`):**
 - `page.tsx` (servidor) busca `court_public_venue` e `court_public_matches` com a chave pública e gera **título, descrição e Open Graph por centro** (prévia no WhatsApp com a foto da primeira quadra ou o logo), **canonical**, **JSON-LD `SportsActivityLocation`** (endereço, coordenadas, telefone, horário de funcionamento) e **404 real** para centro inexistente/não publicado. Os dados vão prontos para a tela (sem esperar o carregamento no navegador).
