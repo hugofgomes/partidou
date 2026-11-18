@@ -7,7 +7,7 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const rebrand = (s: string) => s.replace(/Partidou/gi, "Partigol")
 const brand = () => rebrand(process.env.SMTP_FROM_NAME || "Partigol")
 
-/** SMTP_FROM pode ser só o endereço ("contato@partidou.com.br") ou já "Nome <contato@partidou.com.br>": nos dois casos sai um remetente válido (antes o 2º virava "Nome <Nome <x>>" e o provedor recusava). */
+/** SMTP_FROM pode ser só o endereço ("contato@partigol.com.br") ou já "Nome <contato@partigol.com.br>": nos dois casos sai um remetente válido (antes o 2º virava "Nome <Nome <x>>" e o provedor recusava). */
 export function fromAddress() {
   const raw = (process.env.SMTP_FROM || process.env.SMTP_USER || "").trim()
   return /<[^<>\s]+@[^<>\s]+>\s*$/.test(raw) ? raw.replace(/^[^<]*/, (name) => rebrand(name)) : `${brand()} <${raw}>`

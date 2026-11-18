@@ -28,7 +28,7 @@ export const SEO = {
 /** Logo oficial (versão para fundo escuro, PNG transparente otimizado: 520×120, ~19 KB). O original em alta fica em /brand/partigol-logo.png. */
 export const LOGO = { src: "/brand/partigol-logo-520.png", width: 520, height: 120 }
 
-export const CONTACT_EMAIL = "contato@partidou.com.br"
+export const CONTACT_EMAIL = "contato@partigol.com.br"
 
 /** Rotas reais do sistema. O site nunca usa botão sem destino. */
 export const LINKS = {

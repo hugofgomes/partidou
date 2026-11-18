@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { ArrowLeft, ArrowRight, CalendarRange, ChartColumn, ChevronRight, ClipboardList, Contact, Hourglass, LayoutDashboard, Lightbulb, MapPin, Printer, Search, Settings2, Users, Wallet } from "lucide-react"
 import Link from "next/link"
 import * as React from "react"
+import { CONTACT_EMAIL } from "@/lib/site-config"
 
 /** Mesmos ícones do menu Quadra Esportiva. */
 const ICON: Record<string, React.ElementType> = { dashboard: LayoutDashboard, agenda: CalendarRange, centro: MapPin, reservas: ClipboardList, espera: Hourglass, clientes: Contact, funcionarios: Users, financeiro: Wallet, relatorios: ChartColumn, configuracoes: Settings2, jogos: Search }
@@ -68,7 +69,7 @@ function Home() {
             </li>
           ) })}
       </ul>
-      <p className="text-center text-sm text-muted-foreground">Dúvidas? <a href="mailto:contato@partidou.com.br" className="font-medium text-[#002923] underline underline-offset-4">contato@partidou.com.br</a></p>
+      <p className="text-center text-sm text-muted-foreground">Dúvidas? <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-[#002923] underline underline-offset-4">{CONTACT_EMAIL}</a></p>
     </div>
   )
 }

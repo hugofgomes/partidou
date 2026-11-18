@@ -80,4 +80,4 @@ Fonte: *Manual de Identidade Visual Partigol v1.0* (novembro de 2026).
   - Os arquivos antigos `partidou-logo*.png`, `og-partidou.png` e `partidou-marca*.png` continuam existindo **com o conteúdo novo**, para que e-mails já enviados mostrem a marca nova.
 - **Não fazer:** esticar, recolorir, aplicar sombra/brilho ou remontar a logo com texto.
 - **Pendências do manual:** SVG oficial, versões monocromática e para fundo claro (ainda não existem; quando chegarem, substituir os PNGs).
-- **Domínio:** partigol.com.br / app.partigol.com.br desde a 2.2.0 (os endereços partidou redirecionam). Continuam com o nome antigo: contato@partidou.com.br (até o envio pelo domínio novo ser verificado), chaves internas `partidou.*` no navegador, `PLATFORM_ORG_SLUG`.
+- **Domínio:** partigol.com.br / app.partigol.com.br desde a 2.2.0 (os endereços partidou redirecionam). Continuam com o nome antigo: chaves internas `partidou.*` no navegador, `PLATFORM_ORG_SLUG`.
