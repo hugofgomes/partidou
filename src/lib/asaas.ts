@@ -6,7 +6,7 @@ export const asaasConfigured = () => !!process.env.ASAAS_API_KEY && !!process.en
 export async function asaas<T>(path: string, init?: { method?: string; body?: unknown }): Promise<T> {
   const res = await fetch(BASE() + path, {
     method: init?.method ?? (init?.body ? "POST" : "GET"),
-    headers: { "content-type": "application/json", access_token: process.env.ASAAS_API_KEY!, "user-agent": "partidou" },
+    headers: { "content-type": "application/json", access_token: process.env.ASAAS_API_KEY!, "user-agent": "partigol" },
     body: init?.body ? JSON.stringify(init.body) : undefined,
     signal: AbortSignal.timeout(20_000),
   })

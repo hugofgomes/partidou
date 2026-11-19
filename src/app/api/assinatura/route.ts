@@ -34,10 +34,11 @@ export async function POST(req: Request) {
       let customer = r.asaas_customer_id
       if (!customer) customer = (await asaas<{ id: string }>("/customers", { body: { name: r.org_name, email: user.email, cpfCnpj: doc, externalReference: r.org_id } })).id
       // Quem assina durante o teste só paga quando o teste acabar; depois dele, a primeira cobrança é hoje.
+      const planName = ((await sb.from("plans").select("name").eq("code", plan).maybeSingle()).data?.name as string | undefined) ?? plan
       const trialEnd = r.status === "teste" && r.trial_ends_at ? new Date(r.trial_ends_at) : null
       const due = (trialEnd && trialEnd.getTime() > Date.now() ? trialEnd : new Date()).toISOString().slice(0, 10)
       subscription = (await asaas<{ id: string }>("/subscriptions", {
-        body: { customer, billingType: "UNDEFINED", value: r.price_cents / 100, nextDueDate: due, cycle: "MONTHLY", description: `GEAB Futebol · plano ${plan}`, externalReference: r.org_id },
+        body: { customer, billingType: "UNDEFINED", value: r.price_cents / 100, nextDueDate: due, cycle: "MONTHLY", description: `Partigol · plano ${planName}`, externalReference: r.org_id },
       })).id
       const att = await sb.rpc("billing_attach", { p_org: r.org_id, p_customer: customer, p_subscription: subscription, p_plan: plan })
       if (att.error) return fail("Assinatura criada, mas não foi possível registrá-la. Fale com o suporte.", 500)

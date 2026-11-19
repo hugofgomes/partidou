@@ -2,7 +2,7 @@
 # Planos e assinatura
 
 ## Planos (tabela `plans`, editável no Painel do SaaS)
-Cada plano define preço, limite de administradores, duração do teste, módulos incluídos (o módulo `quadras` liga o produto) e limite de quadras ativas (`max_courts`). Preço e limites são decididos **no banco**: o navegador nunca informa o valor cobrado. O plano interno `ilimitado` é usado pelo próprio dono. **Os planos comerciais do Partigol ainda precisam ser definidos** (os planos herdados na instalação não têm preço de quadras definido).
+Cada plano define preço, limite de administradores, duração do teste, módulos incluídos (o módulo `quadras` liga o produto) e limite de quadras ativas (`max_courts`). Preço e limites são decididos **no banco**: o navegador nunca informa o valor cobrado. O plano interno `ilimitado` é usado pelo próprio dono. **Planos comerciais (desde a 2.3.0, migration `0050_planos_partigol.sql`):** os mesmos do site. `basico` = **Quadra Pro**, R$ 99,90/mês; `pro` = **Arena Business**, R$ 199,90/mês. Os códigos continuam os antigos (centros, testes e funções apontam para eles). Todos os planos incluem o módulo `quadras` (0049). `teste` (Teste gratuito) e `ilimitado` (interno) não aparecem para assinar (preço zero); `premium` está inativo. A tela **Assinatura** mostra o resumo de cada plano tirado do site (`PLANS` em `site-config.ts`, ligação em `SITE_PLAN` de `src/app/assinatura/page.tsx`). O campo `max_athletes` é da base antiga e não limita nada no módulo de quadras.
 
 ## Ciclo de vida do centro
 Criação pelo dono → `teste` → assinatura (Asaas) → `ativa`; atraso → `suspensa`; cancelamento → `cancelada`. Suspensão ou cancelamento manuais do dono nunca são desfeitos por um pagamento.
@@ -11,4 +11,11 @@ Criação pelo dono → `teste` → assinatura (Asaas) → `ativa`; atraso → `
 - `POST /api/assinatura`: o administrador escolhe o plano; o servidor cria cliente e assinatura e devolve o link de pagamento (Pix, boleto ou cartão).
 - `POST /api/webhooks/asaas`: recebe os eventos (token no cabeçalho `asaas-access-token`); a função `billing_event` é idempotente.
 - Ambiente: `ASAAS_ENV` e `ASAAS_API_KEY` (a chave começa com `$`: marcar como literal no Coolify).
-- **Ainda não configurado** na instalação do Partigol: sem as variáveis `ASAAS_*`, a assinatura online fica desligada.
+- A cobrança sai com a descrição "Partigol · plano <nome>".
+- **Ligar (passo a passo):**
+  1. Conta no Asaas aprovada (documentos enviados).
+  2. Asaas → **Integrações → Chave de API**: gerar a chave (`$aact_...`) e guardar em `.env.deploy` como `ASAAS_API_KEY`.
+  3. No Coolify: `ASAAS_API_KEY` (literal), `ASAAS_ENV=production` e `ASAAS_WEBHOOK_TOKEN` (token aleatório gerado na hora).
+  4. Asaas → **Integrações → Webhooks**: URL `https://app.partigol.com.br/api/webhooks/asaas`, o mesmo token em "Token de autenticação", eventos de **cobrança** (pagamento confirmado, recebido, vencido) e de **assinatura**.
+  5. Deploy e teste com um centro de teste.
+- Para testar sem cobrar de verdade: conta **sandbox** do Asaas (sandbox.asaas.com) e `ASAAS_ENV=sandbox`.

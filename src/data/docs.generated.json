@@ -1,5 +1,5 @@
 {
- "version": "2.2.6",
+ "version": "2.3.0",
  "versionDate": "2026-11-18",
  "stack": {
   "next": "15.5.29",
@@ -35,7 +35,7 @@
    "id": "planos-e-assinatura",
    "title": "Planos e assinatura",
    "revisado": "1.0.0",
-   "markdown": "# Planos e assinatura\n\n## Planos (tabela `plans`, editável no Painel do SaaS)\nCada plano define preço, limite de administradores, duração do teste, módulos incluídos (o módulo `quadras` liga o produto) e limite de quadras ativas (`max_courts`). Preço e limites são decididos **no banco**: o navegador nunca informa o valor cobrado. O plano interno `ilimitado` é usado pelo próprio dono. **Os planos comerciais do Partigol ainda precisam ser definidos** (os planos herdados na instalação não têm preço de quadras definido).\n\n## Ciclo de vida do centro\nCriação pelo dono → `teste` → assinatura (Asaas) → `ativa`; atraso → `suspensa`; cancelamento → `cancelada`. Suspensão ou cancelamento manuais do dono nunca são desfeitos por um pagamento.\n\n## Integração com o Asaas\n- `POST /api/assinatura`: o administrador escolhe o plano; o servidor cria cliente e assinatura e devolve o link de pagamento (Pix, boleto ou cartão).\n- `POST /api/webhooks/asaas`: recebe os eventos (token no cabeçalho `asaas-access-token`); a função `billing_event` é idempotente.\n- Ambiente: `ASAAS_ENV` e `ASAAS_API_KEY` (a chave começa com `$`: marcar como literal no Coolify).\n- **Ainda não configurado** na instalação do Partigol: sem as variáveis `ASAAS_*`, a assinatura online fica desligada."
+   "markdown": "# Planos e assinatura\n\n## Planos (tabela `plans`, editável no Painel do SaaS)\nCada plano define preço, limite de administradores, duração do teste, módulos incluídos (o módulo `quadras` liga o produto) e limite de quadras ativas (`max_courts`). Preço e limites são decididos **no banco**: o navegador nunca informa o valor cobrado. O plano interno `ilimitado` é usado pelo próprio dono. **Planos comerciais (desde a 2.3.0, migration `0050_planos_partigol.sql`):** os mesmos do site. `basico` = **Quadra Pro**, R$ 99,90/mês; `pro` = **Arena Business**, R$ 199,90/mês. Os códigos continuam os antigos (centros, testes e funções apontam para eles). Todos os planos incluem o módulo `quadras` (0049). `teste` (Teste gratuito) e `ilimitado` (interno) não aparecem para assinar (preço zero); `premium` está inativo. A tela **Assinatura** mostra o resumo de cada plano tirado do site (`PLANS` em `site-config.ts`, ligação em `SITE_PLAN` de `src/app/assinatura/page.tsx`). O campo `max_athletes` é da base antiga e não limita nada no módulo de quadras.\n\n## Ciclo de vida do centro\nCriação pelo dono → `teste` → assinatura (Asaas) → `ativa`; atraso → `suspensa`; cancelamento → `cancelada`. Suspensão ou cancelamento manuais do dono nunca são desfeitos por um pagamento.\n\n## Integração com o Asaas\n- `POST /api/assinatura`: o administrador escolhe o plano; o servidor cria cliente e assinatura e devolve o link de pagamento (Pix, boleto ou cartão).\n- `POST /api/webhooks/asaas`: recebe os eventos (token no cabeçalho `asaas-access-token`); a função `billing_event` é idempotente.\n- Ambiente: `ASAAS_ENV` e `ASAAS_API_KEY` (a chave começa com `$`: marcar como literal no Coolify).\n- A cobrança sai com a descrição \"Partigol · plano <nome>\".\n- **Ligar (passo a passo):**\n  1. Conta no Asaas aprovada (documentos enviados).\n  2. Asaas → **Integrações → Chave de API**: gerar a chave (`$aact_...`) e guardar em `.env.deploy` como `ASAAS_API_KEY`.\n  3. No Coolify: `ASAAS_API_KEY` (literal), `ASAAS_ENV=production` e `ASAAS_WEBHOOK_TOKEN` (token aleatório gerado na hora).\n  4. Asaas → **Integrações → Webhooks**: URL `https://app.partigol.com.br/api/webhooks/asaas`, o mesmo token em \"Token de autenticação\", eventos de **cobrança** (pagamento confirmado, recebido, vencido) e de **assinatura**.\n  5. Deploy e teste com um centro de teste.\n- Para testar sem cobrar de verdade: conta **sandbox** do Asaas (sandbox.asaas.com) e `ASAAS_ENV=sandbox`."
   },
   {
    "id": "painel-do-saas",
@@ -282,6 +282,10 @@
   {
    "file": "0049_planos_com_quadras.sql",
    "summary": "Correção: os planos herdados da base antiga (teste, basico, pro, premium) não tinham o módulo \"quadras\". Resultado: todo centro novo (começa no Teste gratuito) via \"Módulo indisponível\". Só o plano interno \"ilimitado\" tinha."
+  },
+  {
+   "file": "0050_planos_partigol.sql",
+   "summary": "Planos pagos com os nomes e preços do site (decisão do dono, 18/11/2026), para a cobrança pelo Asaas. Os códigos não mudam (centros, testes e funções continuam apontando para eles): basico = Quadra Pro, pro = Arena Business."
   }
  ],
  "tables": [
@@ -1962,6 +1966,19 @@
  ],
  "changelog": [
   {
+   "version": "2.3.0",
+   "date": "2026-11-18",
+   "title": "Assinatura pelo Asaas com os planos do site",
+   "novidades": [
+    "Planos pagos com os nomes e preços do site: Quadra Pro (R$ 99,90/mês) e Arena Business (R$ 199,90/mês). A cobrança mensal é feita pelo Asaas (Pix, boleto ou cartão)."
+   ],
+   "melhorias": [
+    "Tela Assinatura com o resumo de cada plano e textos de centro esportivo.",
+    "A cobrança no Asaas sai com o nome Partigol e o nome do plano."
+   ],
+   "correcoes": []
+  },
+  {
    "version": "2.2.6",
    "date": "2026-11-18",
    "title": "Quadra Esportiva liberada em todos os planos",
@@ -2144,22 +2161,10 @@
     "Textos reduzidos ao essencial e etiquetas de quem acessa cada seção; o PDF reúne todos os capítulos."
    ],
    "correcoes": []
-  },
-  {
-   "version": "1.8.0",
-   "date": "2026-11-17",
-   "title": "Manual do usuário dentro do sistema",
-   "novidades": [
-    "Novo item Manual no menu Quadra Esportiva: primeiros passos, quem pode fazer o quê e um capítulo para cada seção (Dashboard, Agenda de Quadras, Centro Esportivo, Reservas, Lista de Espera, Clientes, Funcionários, Financeiro, Relatórios e Configurações), com passo a passo, dicas e perguntas frequentes.",
-    "Ícone de ajuda (?) no topo de cada tela do módulo, que abre direto o capítulo daquela seção.",
-    "Botão para imprimir ou salvar o manual em PDF."
-   ],
-   "melhorias": [],
-   "correcoes": []
   }
  ],
  "stats": {
-  "migrations": 49,
+  "migrations": 50,
   "tables": 52,
   "functions": 214,
   "pages": 42,

@@ -271,8 +271,8 @@ await as(uid(600), async () => {
   ok("is_platform_admin é verdadeiro para o dono", (await one(`select public.is_platform_admin()`)) === true)
   const o = await one(`select public.sa_overview()`)
   ok("overview: contagens de grupos", o.orgs_total >= 3 && o.orgs_ativa >= 2 && o.orgs_teste >= 1, JSON.stringify(o))
-  ok("overview: MRR soma só grupos ativos pagantes (Básico = 9900)", o.mrr_cents === 9900, `mrr=${o.mrr_cents}`)
-  ok("overview: receita por plano", o.by_plan.some((x) => x.plan === "Básico" && x.mrr_cents === 9900), JSON.stringify(o.by_plan))
+  ok("overview: MRR soma só grupos ativos pagantes (Quadra Pro = 9990, desde a 0050)", o.mrr_cents === 9990, `mrr=${o.mrr_cents}`)
+  ok("overview: receita por plano", o.by_plan.some((x) => x.plan === "Quadra Pro" && x.mrr_cents === 9990), JSON.stringify(o.by_plan))
   const orgs = await q(`select * from public.sa_orgs()`)
   const g = orgs.find((x) => x.slug === "geab")
   ok("sa_orgs: só agregados e contato do responsável (sem nomes de atletas nem pagamentos)", Object.keys(g).join() === "id,slug,name,status,plan_code,plan_name,plan_price_cents,athletes,athletes_limit,admins,matches,created_at,trial_ends_at,paid_until,last_activity,last_access,notes,status_reason,contact_name,contact_email,contact_phone,cancelled_at", Object.keys(g).join())
@@ -1404,7 +1404,7 @@ section("Teste de 10 dias e assinatura (0022)")
   }, false)
   await as("service", async () => {
     const r = (await q(`select * from public.billing_prepare($1,'basico')`, [T.admin]))[0]
-    ok("preço vem do banco: Básico R$ 99", r.price_cents === 9900 && r.org_id === T.org)
+    ok("preço vem do banco: Quadra Pro R$ 99,90", r.price_cents === 9990 && r.org_id === T.org)
     ok("Pro custa R$ 150", (await one(`select price_cents from public.plans where code='pro'`)) === 15000)
   })
   await as("service", async () => {
