@@ -52,6 +52,8 @@ const ACCOUNT = { href: "/conta", label: "Minha conta", icon: UserCog }
 const isActive = (path: string, href: string) => (href === "/" || href === "/quadra" ? path === href : path === href || path.startsWith(href + "/"))
 const PLATFORM = { href: "/super", label: "Painel do SaaS", icon: Crown }
 const SAAS_LINKS = [{ href: "/super/acessos", label: "Log de acessos", icon: Activity }, { href: "/super/leads", label: "Contatos do site", icon: Inbox }, { href: "/super/comunicados", label: "Comunicados", icon: Megaphone }, { href: "/super/documentacao", label: "Documentação", icon: BookOpen }]
+/** Módulo da tela atual, mostrado antes do título no topo (ex.: "Quadra Esportiva / Agenda de Quadras"). */
+const moduleOf = (path: string) => (isActive(path, "/quadra") || path.startsWith("/quadra/") ? "Quadra Esportiva" : path === "/super" || path.startsWith("/super/") ? "Painel do SaaS" : path.startsWith("/conta") || path.startsWith("/assinatura") ? "Sistema" : "")
 const titleOf = (path: string) => [...ADMIN, ...QUADRA, ...SAAS_LINKS, PLATFORM, ACCOUNT].filter((n) => isActive(path, n.href)).sort((a, b) => b.href.length - a.href.length)[0]?.label ?? ""
 
 const itemCls = "flex w-full cursor-default items-center gap-2 rounded-md px-2.5 py-2 text-sm outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
@@ -268,7 +270,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           >
             <MenuIcon className="size-5" />
           </button>
-          <div className="flex-1 truncate font-heading text-[15px] font-semibold text-foreground">{titleOf(path)}</div>
+          {(() => { const mod = moduleOf(path), title = titleOf(path); return (
+            <div className="flex min-w-0 flex-1 items-center gap-2 font-heading text-[15px] font-semibold text-foreground">
+              {mod && mod !== title && <><span className="hidden shrink-0 font-medium text-muted-foreground sm:inline">{mod}</span><span aria-hidden className="hidden text-muted-foreground/50 sm:inline">/</span></>}
+              <span className="truncate">{title || mod}</span>
+            </div>) })()}
           {courtRole && path !== "/quadra/manual" && (() => { const m = manualFor(path); return (
             <Link href={`/quadra/manual${m ? `#${m.id}` : ""}`} aria-label={m ? `Manual: ${m.title}` : "Manual do sistema"} title={m ? `Como usar: ${m.title}` : "Manual do sistema"}
               className="grid size-10 place-items-center rounded-lg text-primary outline-none transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring">

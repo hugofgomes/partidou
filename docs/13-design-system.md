@@ -58,6 +58,8 @@ Os itens ficam em grupos, e cada grupo só aparece para quem tem permissão:
 
 O item ativo fica com o fundo levemente claro, uma barra lima à esquerda e o ícone lima.
 
+Topo da tela: módulo em cinza + "/" + nome da tela (`moduleOf` e `titleOf` em `admin-shell.tsx`): Quadra Esportiva, Painel do SaaS ou Sistema. No celular aparece só o nome da tela.
+
 ## Regras
 
 1. O lima é para a ação mais importante da tela, não para decoração.
