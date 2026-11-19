@@ -1,5 +1,5 @@
 {
- "version": "2.2.3",
+ "version": "2.2.4",
  "versionDate": "2026-11-18",
  "stack": {
   "next": "15.5.29",
@@ -41,7 +41,7 @@
    "id": "painel-do-saas",
    "title": "Painel do SaaS (dono da plataforma)",
    "revisado": "1.3.0",
-   "markdown": "# Painel do SaaS (dono da plataforma)\n\nAcesso: só quem está em `platform_admins`. Menu \"SaaS\".\n\n- **Dashboard** (`/super`): clientes, situação, receita estimada e atividade.\n- **Gerenciar clientes** (lista em `/super`): menu de ações (⋯) em cada cliente com **Editar cliente** (nome, site, lema, cor e logo), contato do responsável, anotação, +7 dias de teste, ativar, suspender/reativar, **Excluir cliente** e, para excluídos, **Restaurar cliente**. A exclusão da lista é **lógica**: confirma mostrando os dados afetados (quadras, reservas, clientes, funcionários, usuários, lançamentos e pagamentos), oferece exportar em JSON, exige motivo, prazo de recuperação (7 a 365 dias) e a digitação do nome do cliente; o acesso é bloqueado e nada é apagado. O próprio centro do dono não pode ser excluído. A **exclusão definitiva** (que apaga os dados) só é liberada depois do prazo de recuperação, na página do cliente.\n- **Clientes** (`/super/clientes/[id]`): dados, plano, tipo da organização (`quadra`), suspensão e reativação, mais dias de teste, vincular administrador, modo espião, exportação e exclusão lógica ou definitiva.\n- **Log de acessos** (`/super/acessos`): uso por cliente.\n- **Comunicados** (`/super/comunicados`): e-mails em massa aos clientes (SMTP), com teste e descadastro.\n- **Documentação** (`/super/documentacao`): esta documentação.\n\nObservação: alguns textos e indicadores do painel ainda vêm da base herdada (por exemplo, contagem de \"atletas\"); a revisão desses rótulos para o contexto de quadras está pendente.\n\n## Avisos de contatos do site\nO menu **Contatos do site** mostra um número com os contatos em situação \"novo\", somado ao sino do topo, e um aviso na tela aparece quando chega um contato com o sistema aberto (detalhes no capítulo do site comercial).\n\n## Criar cliente a partir de um contato do site\nEm **Contatos do site**, o botão **Criar cliente** (contatos de dono de quadra) cria o centro, envia o convite de acesso ao e-mail do dono e o vincula como administrador, numa única ação. O cliente aparece na hora em **Gerenciar clientes**. Detalhes no capítulo do site comercial.\n\n## Administrador do centro: sempre por convite (1.8.2)\n- **Novo cliente (formulário \"Novo grupo\")**: o e-mail do administrador agora recebe um **convite** para criar a senha (antes era preciso a pessoa já ter conta; sem conta, o centro era criado **sem administrador**). Sem e-mail, o centro é criado e o painel avisa.\n- **Convidar administrador** (menu ⋯ do cliente): convida o dono de um centro já existente. Clientes sem administrador mostram a etiqueta vermelha **\"Sem administrador · convidar\"** na lista.\n- A rotina é única para os três caminhos (`src/lib/invite-admin.ts`): convite pelo servidor com a chave de serviço, reaproveita conta existente só se ela não pertencer a outro centro, vincula por `sa_assign_admin` e desfaz o convite se o vínculo falhar. Rota: `POST /api/super/clientes/convidar` (só o dono da plataforma)."
+   "markdown": "# Painel do SaaS (dono da plataforma)\n\nAcesso: só quem está em `platform_admins`. Menu \"SaaS\".\n\n- **Dashboard** (`/super`): clientes, situação, receita estimada e atividade.\n- **Gerenciar clientes** (lista em `/super`): menu de ações (⋯) em cada cliente com **Editar cliente** (nome, site, lema, cor e logo), contato do responsável, anotação, +7 dias de teste, ativar, suspender/reativar, **Excluir cliente** e, para excluídos, **Restaurar cliente**. A exclusão da lista é **lógica**: confirma mostrando os dados afetados (quadras, reservas, clientes, funcionários, usuários, lançamentos e pagamentos), oferece exportar em JSON, exige motivo, prazo de recuperação (7 a 365 dias) e a digitação do nome do cliente; o acesso é bloqueado e nada é apagado. O próprio centro do dono não pode ser excluído. A **exclusão definitiva** (que apaga os dados) só é liberada depois do prazo de recuperação, na página do cliente.\n- **Clientes** (`/super/clientes/[id]`): dados, plano, tipo da organização (`quadra`), suspensão e reativação, mais dias de teste, vincular administrador, modo espião, exportação e exclusão lógica ou definitiva.\n- **Log de acessos** (`/super/acessos`): uso por cliente.\n- **Comunicados** (`/super/comunicados`): e-mails em massa aos clientes (SMTP), com teste e descadastro.\n- **Documentação** (`/super/documentacao`): esta documentação.\n\nObservação: alguns textos e indicadores do painel ainda vêm da base herdada (por exemplo, contagem de \"atletas\"); a revisão desses rótulos para o contexto de quadras está pendente.\n\n## Avisos de contatos do site\nO menu **Contatos do site** mostra um número com os contatos em situação \"novo\", somado ao sino do topo, e um aviso na tela aparece quando chega um contato com o sistema aberto (detalhes no capítulo do site comercial).\n\n## Criar cliente a partir de um contato do site\nEm **Contatos do site**, o botão **Criar cliente** (contatos de dono de quadra) cria o centro, envia o convite de acesso ao e-mail do dono e o vincula como administrador, numa única ação. O cliente aparece na hora em **Gerenciar clientes**. Detalhes no capítulo do site comercial.\n\n## Administrador do centro: sempre por convite (1.8.2)\n- **Novo cliente (formulário \"Novo grupo\")**: o e-mail do administrador agora recebe um **convite** para criar a senha (antes era preciso a pessoa já ter conta; sem conta, o centro era criado **sem administrador**). Sem e-mail, o centro é criado e o painel avisa.\n- **Convidar administrador** (menu ⋯ do cliente): convida o dono de um centro já existente. Clientes sem administrador mostram a etiqueta vermelha **\"Sem administrador · convidar\"** na lista.\n- A rotina é única para os três caminhos (`src/lib/invite-admin.ts`): convite pelo servidor com a chave de serviço, reaproveita conta existente só se ela não pertencer a outro centro, vincula por `sa_assign_admin` e desfaz o convite se o vínculo falhar. Rota: `POST /api/super/clientes/convidar` (só o dono da plataforma).\n- **Correção (2.2.4):** quando o dono da plataforma também pertence a um centro (ex.: Floripa), a trava entre centros (`tenant_guard`) recusava o vínculo do administrador em outro centro (\"Operação fora da organização do usuário\"). O convite era desfeito, mas o e-mail já tinha saído, e o link chegava como \"inválido ou expirado\". A migration `0048_sa_assign_admin_dono_com_centro.sql` libera a trava só para o centro que `sa_assign_admin` está vinculando, só para o dono da plataforma e só dentro da mesma transação (`app.sa_assign_org`). Centros criados antes da correção que ficaram sem administrador mostram **\"Sem administrador · convidar\"**: basta convidar de novo."
   },
   {
    "id": "autenticacao",
@@ -274,6 +274,10 @@
   {
    "file": "0047_marca_partigol.sql",
    "summary": "Nova marca: Partidou -> Partigol nos textos que as funções devolvem ao usuário. Só troca o nome dentro do corpo das funções (CREATE OR REPLACE preserva permissões); nenhuma regra muda."
+  },
+  {
+   "file": "0048_sa_assign_admin_dono_com_centro.sql",
+   "summary": "Correção: convite de administrador feito pelo dono da plataforma falhava quando o dono também pertence a um centro. A trava tenant_guard via a gravação do perfil em OUTRO centro e recusava (\"Operação fora da organização do usuário\")."
   }
  ],
  "tables": [
@@ -1344,7 +1348,7 @@
   },
   {
    "name": "tenant_guard",
-   "file": "0016_multitenant.sql",
+   "file": "0048_sa_assign_admin_dono_com_centro.sql",
    "area": "Geral"
   },
   {
@@ -1404,7 +1408,7 @@
   },
   {
    "name": "sa_assign_admin",
-   "file": "0018_super_admin.sql",
+   "file": "0048_sa_assign_admin_dono_com_centro.sql",
    "area": "Painel do SaaS"
   },
   {
@@ -1954,6 +1958,16 @@
  ],
  "changelog": [
   {
+   "version": "2.2.4",
+   "date": "2026-11-18",
+   "title": "Convite de administrador corrigido",
+   "novidades": [],
+   "melhorias": [],
+   "correcoes": [
+    "O convite para o administrador de um centro novo chegava com o link \"inválido ou expirado\": o vínculo era recusado depois do envio do e-mail e o convite era desfeito. Agora o vínculo funciona e o link do convite é válido."
+   ]
+  },
+  {
    "version": "2.2.3",
    "date": "2026-11-18",
    "title": "Botão Início no Encontre um Jogo",
@@ -2143,22 +2157,10 @@
     "As posições mudam conforme a modalidade: futebol de campo e society (ou \"Qualquer\") usam Goleiro, Zagueiro, Lateral, Meia e Atacante; vôlei, beach tennis, tênis e demais modalidades não mostram posição. Ao trocar a modalidade, uma posição que não se aplica é limpa."
    ],
    "correcoes": []
-  },
-  {
-   "version": "1.7.1",
-   "date": "2026-11-17",
-   "title": "Lista de espera: posição e nível técnico",
-   "novidades": [
-    "Cada interessado da lista de espera pode ter posição (goleiro, zagueiro, lateral, meia ou atacante) e nível técnico (Médio, Bom ou Craque).",
-    "No formulário, cada nível mostra os critérios de técnica, visão de jogo e regularidade para padronizar a avaliação da equipe.",
-    "A lista mostra posição e nível em etiquetas e tem filtros por posição e por nível."
-   ],
-   "melhorias": [],
-   "correcoes": []
   }
  ],
  "stats": {
-  "migrations": 47,
+  "migrations": 48,
   "tables": 52,
   "functions": 214,
   "pages": 42,

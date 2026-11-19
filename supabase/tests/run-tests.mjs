@@ -333,7 +333,21 @@ await as(uid(600), async () => {
   ok("e-mail sem conta é recusado", /Nenhuma conta/.test(await err(`select public.sa_assign_admin($1, 'ninguem@x')`, [clubId]) ?? ""))
   ok("conta que já tem grupo é recusada", /já pertence/.test(await err(`select public.sa_assign_admin($1, 'admin@pelada')`, [clubId]) ?? ""))
 }, true)
-ok("vincular administrador existente", (await one(`select count(*)::int from public.profiles where id=$1 and tenant_id=$2 and role='admin'`, [uid(601), clubId])) === 1)
+// Dono da plataforma que TAMBÉM pertence a um centro (caso real) consegue vincular administrador em outro centro.
+await db.query(`insert into auth.users (id, email) values ($1,'dono2@plataforma'), ($2,'novo2@clube')`, [uid(602), uid(603)])
+await db.query(`insert into public.platform_admins (user_id) values ($1)`, [uid(602)])
+await db.query(`insert into public.profiles (id, tenant_id, full_name, role) values ($1,(select id from public.organizations where slug='pelada'),'Dono com centro','diretoria')`, [uid(602)])
+let club2 = null
+await as(uid(602), async () => {
+  club2 = await one(`select public.sa_create_org('clube-dois', 'Clube Dois', 'pro')`)
+  const e = await err(`select public.sa_assign_admin($1, 'novo2@clube')`, [club2])
+  ok("dono da plataforma com centro próprio vincula administrador em outro centro", !e, e ?? "")
+}, true)
+ok("administrador vinculado pelo dono com centro", (await one(`select count(*)::int from public.profiles where id=$1 and tenant_id=$2 and role='admin'`, [uid(603), club2])) === 1)
+await as(uid(602), async () => {
+  ok("fora do vínculo, a trava entre centros continua valendo para o dono", /fora da organização/.test(await err(`update public.profiles set full_name='x' where id=$1`, [uid(603)]) ?? "") || (await one(`select count(*)::int from public.profiles where id=$1 and full_name='x'`, [uid(603)])) === 0)
+})
+ok("vincular administrador existente",(await one(`select count(*)::int from public.profiles where id=$1 and tenant_id=$2 and role='admin'`, [uid(601), clubId])) === 1)
 await as(uid(601), async () => { ok("o novo administrador vê o grupo dele e nada dos outros", (await one(`select count(*)::int from public.organizations`)) === 1 && (await one(`select count(*)::int from public.athletes`)) === 0) })
 
 section("Níveis de acesso: atleta, diretoria e administrador")
