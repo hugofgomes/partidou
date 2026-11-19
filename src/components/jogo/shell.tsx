@@ -1,9 +1,10 @@
 "use client"
 /* eslint-disable @next/next/no-img-element -- logo já otimizada */
 
+import { SITE_URL } from "@/lib/site-config"
 import { supabase } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
-import { Bell, CalendarCheck, LayoutGrid, LogIn, LogOut, Megaphone, Search, UserRound } from "lucide-react"
+import { Bell, CalendarCheck, House, LayoutGrid, LogIn, LogOut, Megaphone, Search, UserRound } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import * as React from "react"
@@ -45,8 +46,10 @@ export function JogoShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-dvh bg-[#F6F8F5] text-[#19221D]">
       <header className="sticky top-0 z-40 bg-[#002923] text-white shadow-[0_1px_0_rgba(255,255,255,0.06)]">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
-          <Link href="/jogos" aria-label="Partigol: Encontre um Jogo" className="shrink-0"><img src="/brand/partigol-logo-520.png" alt="Partigol" width={520} height={117} className="h-7 w-auto" /></Link>
-          <nav aria-label="Jogos" className="ml-4 hidden flex-1 items-center gap-1 md:flex">
+          <a href={SITE_URL} aria-label="Partigol: página inicial" className="shrink-0"><img src="/brand/partigol-logo-520.png" alt="Partigol" width={520} height={117} className="h-7 w-auto" /></a>
+          {/* Volta ao site (página inicial). No celular fica só o ícone. */}
+          <a href={SITE_URL} aria-label="Página inicial" className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2.5 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white md:ml-2 md:px-3"><House className="size-4" /><span className="hidden md:inline">Início</span></a>
+          <nav aria-label="Jogos" className="hidden flex-1 items-center gap-1 md:flex">
             {NAV.filter((n) => !n.auth || user).map((n) => (
               <Link key={n.href} href={n.href} className={cn("rounded-full px-3 py-2 text-sm font-medium transition-colors", active(n.href) ? "bg-white/10 text-[#C5FA41]" : "text-white/80 hover:text-white")}>{n.label}</Link>
             ))}

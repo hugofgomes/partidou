@@ -16,7 +16,7 @@ Conecta jogadores de linha e goleiros que procuram partidas com organizadores qu
 | `/organizar/<id>` | organizador | Aprovar/recusar solicitações, confirmados (WhatsApp, remover), convites (cancelar), **Preciso de Goleiro** e **Encontrar Jogadores** (compatíveis + **Enviar convite**), encerrar/reabrir inscrições, cancelar partida, divulgar link. |
 | `/convite/<id>` | convidado | Aceitar ou recusar o convite (só o próprio convidado vê; exige login). |
 
-Sino de notificações no topo (não lidas, abrir leva à partida, marcar como lidas). No celular, barra inferior com Jogos, Minhas Partidas, Organizar e Perfil.
+Sino de notificações no topo (não lidas, abrir leva à partida, marcar como lidas). A logo e o botão **Início** (ícone de casa; no celular só o ícone) voltam para a página inicial do site (`SITE_URL`). No celular, barra inferior com Jogos, Minhas Partidas, Organizar e Perfil.
 
 ## Onde os caminhos aparecem (1.9.1)
 - **Site partigol.com.br:** item **Encontrar Jogo** no menu; faixa **Acesso rápido** logo abaixo do topo (Encontrar um jogo, Criar conta grátis, Criar partida, Minhas partidas, Dono de quadra → painel); botões das seções de organizadores e jogadores; rodapé com o grupo **Jogar e organizar** e o grupo **Centros esportivos**; plano Jogador → Criar conta grátis.
