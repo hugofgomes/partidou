@@ -1,6 +1,6 @@
 # Modelos de e-mail do Supabase (Auth)
 
-Modelos com a identidade do Partigol (cabeçalho verde-escuro com o logo, faixa e botão lima, rodapé), em HTML compatível com clientes de e-mail (tabelas e estilos embutidos). O logo vem de `https://partidou.com.br/brand/partigol-logo.png`.
+Modelos com a identidade do Partigol (cabeçalho verde-escuro com o logo, faixa e botão lima, rodapé), em HTML compatível com clientes de e-mail (tabelas e estilos embutidos). O logo vem de `https://partigol.com.br/brand/partigol-logo.png`.
 
 | Modelo no Supabase (Authentication → Emails → Templates) | Arquivo | Assunto |
 |---|---|---|
