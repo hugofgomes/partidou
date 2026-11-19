@@ -543,7 +543,7 @@ section("Planos, módulos e limites (0028)")
   ok("sem limite, promover funciona", (await errq(`update public.profiles set role='admin' where id='${A.a2}'`)) === null)
   await as(A.a1, async () => { ok("my_modules devolve os módulos do plano do grupo", (await one(`select public.my_modules()`)).join() === "pix") })
   await as(U.geabAdmin, async () => {
-    ok("GEAB mantém todos os módulos", (await one(`select public.my_modules()`)).length === 4)
+    ok("GEAB mantém todos os módulos (com Quadra Esportiva desde a 0049)", (await one(`select public.my_modules()`)).length === 5)
     ok("admin comum não lê sa_plans", /restrito/i.test(await err(`select * from public.sa_plans()`) ?? ""))
   })
   await as(uid(600), async () => {
@@ -752,8 +752,10 @@ section("Quadra Esportiva: estrutura (0035)")
   const errq = async (sql) => { try { await q(sql); return null } catch (e) { return e.message } }
   await q(`insert into auth.users (id, email) values ($1,'q-a1@x'),($2,'q-a2@x'),($3,'q-ger@x'),($4,'q-rec@x'),($5,'q-fin@x'),($6,'q-atl@x'),($7,'q-ag@x'),($8,'q-boss@x')`, [Q.a1, Q.a2, Q.ger, Q.rec, Q.fin, Q.atl, Q.ag, Q.boss])
   await q(`insert into public.plans (code, name, price_cents, max_athletes, modules, max_courts) values ('quadra_t','Quadra T',9900,10,array['quadras'],2)`)
+  // Desde a 0049 todos os planos têm o módulo: para testar a trava, um plano criado aqui sem ele.
+  await q(`insert into public.plans (code, name, price_cents, max_athletes, modules) values ('sem_quadra','Sem Quadra',0,10,array['pix'])`)
   const mk = async (o, slug, plan, kind) => q(`insert into public.organizations (id, slug, name, status, kind, plan_id) values ($1,$2,$2,'ativa',$4,(select id from public.plans where code=$3))`, [o, slug, plan, kind])
-  await mk(Q.o1, "quadra-um", "quadra_t", "quadra"); await mk(Q.o2, "quadra-dois", "quadra_t", "quadra"); await mk(Q.og, "grupo-sem-modulo", "basico", "grupo"); await mk(Q.ob, "quadra-boss", "basico", "grupo")
+  await mk(Q.o1, "quadra-um", "quadra_t", "quadra"); await mk(Q.o2, "quadra-dois", "quadra_t", "quadra"); await mk(Q.og, "grupo-sem-modulo", "sem_quadra", "grupo"); await mk(Q.ob, "quadra-boss", "basico", "grupo")
   const pf = (o, id, role) => q(`insert into public.profiles (tenant_id, id, full_name, role) values ($1,$2,'X',$3)`, [o, id, role])
   await pf(Q.o1, Q.a1, "admin"); await pf(Q.o2, Q.a2, "admin"); await pf(Q.o1, Q.ger, "diretoria"); await pf(Q.o1, Q.rec, "diretoria"); await pf(Q.o1, Q.fin, "diretoria"); await pf(Q.o1, Q.atl, "diretoria"); await pf(Q.og, Q.ag, "admin"); await pf(Q.ob, Q.boss, "admin")
   await q(`insert into public.platform_admins (user_id) values ($1)`, [Q.boss])

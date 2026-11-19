@@ -2,6 +2,16 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "2.2.6",
+      "date": "2026-11-18",
+      "title": "Quadra Esportiva liberada em todos os planos",
+      "novidades": [],
+      "melhorias": [],
+      "correcoes": [
+        "Centros novos (plano Teste gratuito e demais planos) viam \"Módulo indisponível\" ao entrar no painel. O módulo Quadra Esportiva agora faz parte de todos os planos."
+      ]
+    },
+    {
       "version": "2.2.5",
       "date": "2026-11-18",
       "title": "Nome do módulo no topo",
