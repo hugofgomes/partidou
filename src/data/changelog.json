@@ -2,6 +2,16 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "2.5.0",
+      "date": "2026-11-20",
+      "title": "Excluir contato do site",
+      "novidades": [
+        "Contatos do site: botão de lixeira em cada contato, com confirmação. A exclusão é definitiva (útil para testes, duplicados, spam ou pedido de remoção pela LGPD). Se o contato já virou cliente, o centro continua existindo."
+      ],
+      "melhorias": [],
+      "correcoes": []
+    },
+    {
       "version": "2.4.1",
       "date": "2026-11-20",
       "title": "Formulário de novo centro redesenhado",

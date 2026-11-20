@@ -11,7 +11,7 @@ import { supabase } from "@/lib/supabase/client"
 import { slugify } from "@/lib/tenant"
 import { cn } from "@/lib/utils"
 import { maskPhone } from "@/lib/whatsapp"
-import { Building2, Loader2, Mail, MessageCircle } from "lucide-react"
+import { Building2, Loader2, Mail, MessageCircle, Trash2 } from "lucide-react"
 import * as React from "react"
 import { toast } from "sonner"
 import { APP_HOST, SITE_HOST } from "@/lib/site-config"
@@ -34,6 +34,16 @@ export default function LeadsPage() {
   const [busy, setBusy] = React.useState("")
   const [notes, setNotes] = React.useState<Record<string, string>>({})
   const [conv, setConv] = React.useState<Lead | null>(null)
+  const [del, setDel] = React.useState<Lead | null>(null)
+  const [deleting, setDeleting] = React.useState(false)
+  async function remove() {
+    if (!del) return
+    setDeleting(true)
+    const r = await supabase().rpc("site_lead_delete", { p_id: del.id })
+    setDeleting(false)
+    if (r.error) return toast.error(r.error.message)
+    toast.success(`Contato "${del.name}" excluído.`); setDel(null); reload()
+  }
   async function save(l: Lead, st: string) {
     setBusy(l.id)
     const r = await supabase().rpc("site_lead_update", { p_id: l.id, p_status: st, p_notes: notes[l.id] ?? l.notes ?? "" })
@@ -70,6 +80,7 @@ export default function LeadsPage() {
                 {l.audience === "quadra" && (created(l)
                   ? <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-900"><Building2 className="size-3.5" /> Cliente criado: {created(l)}</span>
                   : <Button size="sm" variant="brand" onClick={() => setConv(l)}><Building2 className="size-4" /> Criar cliente</Button>)}
+                <Button size="icon-sm" variant="ghost" className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive" disabled={busy === l.id} onClick={() => setDel(l)} aria-label={`Excluir contato ${l.name}`} title="Excluir contato"><Trash2 /></Button>
               </div>
             </li>
           ))}
@@ -77,6 +88,21 @@ export default function LeadsPage() {
         </ul>
       )}
       <ConvertDialog lead={conv} onClose={() => setConv(null)} onDone={() => { setConv(null); reload() }} />
+      <Dialog open={!!del} onOpenChange={(o) => { if (!o && !deleting) setDel(null) }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Excluir contato?</DialogTitle>
+            <DialogDescription>
+              {del && <><strong className="text-foreground">{del.name}</strong>{del.venue_name ? ` · ${del.venue_name}` : ""} será apagado de vez, com WhatsApp, e-mail e anotações. Isso não pode ser desfeito.</>}
+            </DialogDescription>
+          </DialogHeader>
+          {del && created(del) && <p className="rounded-lg bg-amber-50 p-2.5 text-sm text-amber-900">O cliente criado a partir deste contato ({created(del)}) continua existindo. Só o contato é excluído.</p>}
+          <DialogFooter>
+            <Button variant="outline" disabled={deleting} onClick={() => setDel(null)}>Cancelar</Button>
+            <Button variant="destructive" disabled={deleting} onClick={remove}>{deleting ? <Loader2 className="animate-spin" /> : <Trash2 />}Excluir contato</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

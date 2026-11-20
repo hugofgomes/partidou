@@ -1342,7 +1342,16 @@ section("Site comercial: captação de leads (0041)")
   }, true)
   await as(L.user, async () => {
     ok("administrador de um centro (não dono) não acessa os contatos", /restrito/.test(await err(`select * from public.site_leads_list()`) ?? "") && /restrito/.test(await err(`select public.site_lead_update('${id}','ganho',null)`) ?? "") && /permission denied/.test(await err(`select * from public.site_leads`) ?? ""))
+    ok("administrador de um centro (não dono) não exclui contatos", /restrito/.test(await err(`select public.site_lead_delete('${id}')`) ?? ""))
   })
+  // Exclusão (0053): só o dono, definitiva.
+  ok("visitante não exclui contatos", /permission denied/.test(await aerr(`select public.site_lead_delete('${id}')`) ?? ""))
+  const carlos = await one(`select id from public.site_leads where email='carlos@org.com'`)
+  await as(L.owner, async () => {
+    await db.query(`select public.site_lead_delete($1)`, [carlos])
+    ok("dono exclui o contato de vez (dados pessoais saem do banco)", (await one(`select count(*)::int from public.site_leads_list() where id=$1`, [carlos])) === 0 && (await q(`select * from public.site_leads_list()`)).length === 4)
+    ok("excluir de novo avisa que não existe", /não encontrado/.test(await err(`select public.site_lead_delete($1)`, [carlos]) ?? ""))
+  }, true)
 }
 
 section("Painel do SaaS: conferência de exclusão com dados do centro (0042)")

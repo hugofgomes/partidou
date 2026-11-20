@@ -50,3 +50,6 @@ Cabeçalhos de segurança (em `next.config.ts`, valem para site e sistema): HSTS
 2. **Coolify:** na aplicação do Partigol, acrescentar `https://partidou.com.br` e `https://www.partidou.com.br` à lista de domínios (mantendo `https://app.partidou.com.br`) e fazer o deploy.
 3. **Banco:** aplicar a migration `0041_site_leads.sql` **antes** do deploy (sem ela o formulário responde erro).
 4. **Conferir:** `/` mostra o site, `/login` em partidou.com.br leva ao app, `robots.txt` e `sitemap.xml`, o envio de um contato de teste e o painel Contatos do site.
+
+## Excluir contato (2.5.0)
+Em **Contatos do site**, a lixeira de cada contato abre uma confirmação e apaga o contato **de vez** (`site_lead_delete`, migration `0053_excluir_contato_site.sql`; só o dono da plataforma). Use para testes, duplicados, spam ou pedido de remoção dos dados (LGPD). Na auditoria fica só o registro `SA_DELETE_SITE_LEAD` com tipo e situação, sem nome, e-mail ou telefone. Se o contato já virou cliente, o centro não é afetado.
