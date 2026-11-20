@@ -1576,6 +1576,14 @@ section("Teste de 10 dias e assinatura (0022)")
   await save(J.bia, { ...base, full_name: "Bia Lateral Souza", main_position: "lateral", email_notifications: false })
   await db.query(`select public.gm_email($1,'teste','{}','pref-1')`, [J.bia])
   ok("quem desligou e-mails não recebe (preferência respeitada)", (await one(`select count(*)::int from public.email_outbox where dedupe_key='pref-1'`)) === 0)
+
+  // Painel do SaaS › Envios (0052): só o dono da plataforma vê; junta e-mails do jogo e avisos do app com o status real.
+  ok("usuário comum não vê o painel de envios", /restrito à plataforma/.test(await as(J.org, async () => err(`select * from public.sa_notification_log(30, null)`)) ?? ""))
+  const log = await as(uid(600), async () => q(`select * from public.sa_notification_log(30, null)`))
+  ok("painel de envios mostra e-mails do jogo com destinatário, status e erro", log.some((r) => r.source === "jogo" && r.recipient?.endsWith("@jogo") && r.status === "falhou" && r.error === "SMTP fora do ar") && log.some((r) => r.source === "jogo" && r.status === "enviado" && r.sent_at))
+  ok("painel de envios mostra avisos do app (lido / não lido)", log.some((r) => r.source === "app" && ["lido", "nao_lido"].includes(r.status)))
+  const only = await as(uid(600), async () => q(`select distinct source from public.sa_notification_log(30, 'app')`))
+  ok("painel de envios filtra por tipo", only.length === 1 && only[0].source === "app")
 }
 
 console.log(`\n${pass} aprovados, ${fail} falharam`)

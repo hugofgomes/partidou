@@ -17,7 +17,7 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import { toast } from "sonner"
 import { manualFor } from "@/data/manual-quadra"
-import { CalendarCheck, CircleHelp, Search, UserRound } from "lucide-react"
+import { CalendarCheck, CircleHelp, MailCheck, Search, UserRound } from "lucide-react"
 
 const ADMIN = [
   { href: "/assinatura", label: "Assinatura", icon: CreditCard },
@@ -51,7 +51,7 @@ const ACCOUNT = { href: "/conta", label: "Minha conta", icon: UserCog }
 
 const isActive = (path: string, href: string) => (href === "/" || href === "/quadra" ? path === href : path === href || path.startsWith(href + "/"))
 const PLATFORM = { href: "/super", label: "Painel do SaaS", icon: Crown }
-const SAAS_LINKS = [{ href: "/super/acessos", label: "Log de acessos", icon: Activity }, { href: "/super/leads", label: "Contatos do site", icon: Inbox }, { href: "/super/comunicados", label: "Comunicados", icon: Megaphone }, { href: "/super/documentacao", label: "Documentação", icon: BookOpen }]
+const SAAS_LINKS = [{ href: "/super/acessos", label: "Log de acessos", icon: Activity }, { href: "/super/leads", label: "Contatos do site", icon: Inbox }, { href: "/super/comunicados", label: "Comunicados", icon: Megaphone }, { href: "/super/envios", label: "Envios", icon: MailCheck }, { href: "/super/documentacao", label: "Documentação", icon: BookOpen }]
 /** Módulo da tela atual, mostrado antes do título no topo (ex.: "Quadra Esportiva / Agenda de Quadras"). */
 const moduleOf = (path: string) => (isActive(path, "/quadra") || path.startsWith("/quadra/") ? "Quadra Esportiva" : path === "/super" || path.startsWith("/super/") ? "Painel do SaaS" : path.startsWith("/conta") || path.startsWith("/assinatura") ? "Sistema" : "")
 const titleOf = (path: string) => [...ADMIN, ...QUADRA, ...SAAS_LINKS, PLATFORM, ACCOUNT].filter((n) => isActive(path, n.href)).sort((a, b) => b.href.length - a.href.length)[0]?.label ?? ""

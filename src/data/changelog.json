@@ -2,6 +2,17 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "2.4.0",
+      "date": "2026-11-20",
+      "title": "Painel de envios: confira se os avisos estão chegando",
+      "novidades": [
+        "Painel do SaaS › Envios: lista os e-mails e avisos que o sistema mandou às pessoas (Encontre um Jogo, avisos no app, vencimento e comunicados), com o resultado de cada um: na fila, enviado, falhou (com o motivo), lido ou não lido.",
+        "Aba Entrega (Resend): mostra se cada e-mail foi entregue, aberto, devolvido ou marcado como spam, inclusive confirmação de cadastro, convites e troca de senha."
+      ],
+      "melhorias": [],
+      "correcoes": []
+    },
+    {
       "version": "2.3.1",
       "date": "2026-11-20",
       "title": "Todo centro novo começa no teste gratuito de 10 dias",
