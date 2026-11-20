@@ -324,15 +324,20 @@ ok("a ação do dono ficou na auditoria do grupo", (await one(`select count(*)::
 await as(uid(600), async () => { await db.query(`select public.sa_set_org_status($1, 'ativa', null)`, [P.org]) }, true)
 await as(U.peladaAdmin, async () => { ok("reativar devolve o acesso", (await one(`select count(*)::int from public.athletes`)) >= 1) })
 await db.query(`insert into auth.users (id, email, raw_user_meta_data) values ($1,'novo@clube','{"full_name":"Dona do Clube"}')`, [uid(601)])
-let clubId
+let clubId, intId
 await as(uid(600), async () => {
   clubId = await one(`select public.sa_create_org('clube-novo', 'Clube Novo', 'pro')`)
   ok("criar grupo pelo painel", !!clubId)
+  intId = await one(`select public.sa_create_org('centro-interno', 'Interno', 'ilimitado')`)
   ok("endereço repetido é recusado", /indisponível/.test(await err(`select public.sa_create_org('clube-novo', 'Outro', 'pro')`) ?? ""))
   await db.query(`select public.sa_assign_admin($1, 'novo@clube')`, [clubId])
   ok("e-mail sem conta é recusado", /Nenhuma conta/.test(await err(`select public.sa_assign_admin($1, 'ninguem@x')`, [clubId]) ?? ""))
   ok("conta que já tem grupo é recusada", /já pertence/.test(await err(`select public.sa_assign_admin($1, 'admin@pelada')`, [clubId]) ?? ""))
 }, true)
+const nv = (await db.query(`select o.status, p.code, round(extract(epoch from o.trial_ends_at - now()) / 86400) d from public.organizations o join public.plans p on p.id = o.plan_id where o.id = $1`, [clubId])).rows[0]
+ok("centro criado pelo painel entra no Teste gratuito por 10 dias (mesmo escolhendo plano pago)", nv.status === "teste" && nv.code === "teste" && Number(nv.d) === 10, JSON.stringify(nv))
+const ni = (await db.query(`select o.status, p.code, o.trial_ends_at from public.organizations o join public.plans p on p.id = o.plan_id where o.id = $1`, [intId])).rows[0]
+ok("plano interno ilimitado continua ativo, sem prazo de teste", ni.status === "ativa" && ni.code === "ilimitado" && ni.trial_ends_at === null, JSON.stringify(ni))
 // Dono da plataforma que TAMBÉM pertence a um centro (caso real) consegue vincular administrador em outro centro.
 await db.query(`insert into auth.users (id, email) values ($1,'dono2@plataforma'), ($2,'novo2@clube')`, [uid(602), uid(603)])
 await db.query(`insert into public.platform_admins (user_id) values ($1)`, [uid(602)])

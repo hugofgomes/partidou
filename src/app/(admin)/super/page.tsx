@@ -468,7 +468,8 @@ export default function SuperPage() {
           <div className="space-y-1.5"><Label htmlFor="nn">Nome</Label><Input id="nn" required maxLength={80} value={nw.name} onChange={(e) => setNw((x) => ({ ...x, name: e.target.value, slug: slugify(e.target.value) }))} /></div>
           <div className="space-y-1.5"><Label htmlFor="ns">Endereço</Label><Input id="ns" required maxLength={40} value={nw.slug} onChange={(e) => setNw((x) => ({ ...x, slug: slugify(e.target.value) }))} /></div>
           <div className="space-y-1.5"><Label htmlFor="np">Plano</Label>
-            <NativeSelect id="np" className="w-full" value={nw.plan} onChange={(e) => setNw((x) => ({ ...x, plan: e.target.value }))}>{plans.filter((p) => p.active).map((p) => <option key={p.code} value={p.code}>{p.name}</option>)}</NativeSelect></div>
+            <NativeSelect id="np" className="w-full" value={nw.plan} onChange={(e) => setNw((x) => ({ ...x, plan: e.target.value }))}>{plans.filter((p) => p.active && (p.code === "teste" || p.code === "ilimitado")).map((p) => <option key={p.code} value={p.code}>{p.code === "teste" ? `${p.name} (${p.trial_days} dias)` : p.name}</option>)}</NativeSelect>
+            <p className="text-xs text-muted-foreground">Todo centro novo começa no teste gratuito; o plano pago é escolhido pelo centro em Assinatura.</p></div>
           <div className="space-y-1.5"><Label htmlFor="ne">E-mail do administrador <span className="font-normal text-muted-foreground">(recebe o convite para criar a senha)</span></Label><Input id="ne" type="email" value={nw.email} onChange={(e) => setNw((x) => ({ ...x, email: e.target.value }))} /></div>
           <div className="sm:col-span-2 2xl:col-span-4"><Button type="submit" variant="brand" disabled={busy}>Criar grupo</Button></div>
         </form>

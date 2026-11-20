@@ -16,7 +16,9 @@ Observação: alguns textos e indicadores do painel ainda vêm da base herdada (
 O menu **Contatos do site** mostra um número com os contatos em situação "novo", somado ao sino do topo, e um aviso na tela aparece quando chega um contato com o sistema aberto (detalhes no capítulo do site comercial).
 
 ## Criar cliente a partir de um contato do site
-Em **Contatos do site**, o botão **Criar cliente** (contatos de dono de quadra) cria o centro, envia o convite de acesso ao e-mail do dono e o vincula como administrador, numa única ação. O cliente aparece na hora em **Gerenciar clientes**. Detalhes no capítulo do site comercial.
+Em **Contatos do site**, o botão **Criar cliente** (contatos de dono de quadra) cria o centro, envia o convite de acesso ao e-mail do dono e o vincula como administrador, numa única ação. O cliente aparece na hora em **Gerenciar clientes**, já no Teste gratuito de 10 dias. Detalhes no capítulo do site comercial.
+
+**Plano na criação (2.3.1):** os formulários **Novo grupo** e **Criar cliente** só oferecem Teste gratuito (e, no Novo grupo, o plano interno Ilimitado). Mesmo que outro plano seja enviado, `sa_create_org` grava Teste gratuito com situação `teste`; o centro escolhe o plano pago em Assinatura. Para liberar um cliente sem prazo, use **Ativar** ou altere o plano depois de criado.
 
 ## Administrador do centro: sempre por convite (1.8.2)
 - **Novo cliente (formulário "Novo grupo")**: o e-mail do administrador agora recebe um **convite** para criar a senha (antes era preciso a pessoa já ter conta; sem conta, o centro era criado **sem administrador**). Sem e-mail, o centro é criado e o painel avisa.
