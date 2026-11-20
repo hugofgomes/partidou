@@ -17,7 +17,9 @@ import { supabase } from "@/lib/supabase/client"
 import { slugify } from "@/lib/tenant"
 import { maskPhone } from "@/lib/whatsapp"
 import { Menu } from "@base-ui/react/menu"
-import { Download, ExternalLink, Loader2, MoreHorizontal, Pencil, RotateCcw, StickyNote, Trash2, UserPen, UserPlus } from "lucide-react"
+import { Building2, Download, ExternalLink, Gift, Infinity as InfinityIcon, Loader2, Mail, MoreHorizontal, Pencil, Plus, RotateCcw, StickyNote, Trash2, UserPen, UserPlus } from "lucide-react"
+import { APP_HOST } from "@/lib/site-config"
+import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import * as React from "react"
@@ -454,9 +456,15 @@ export default function SuperPage() {
       <InviteAdminDialog org={invOrg} onClose={() => setInvOrg(null)} onDone={() => { setInvOrg(null); reload() }} />
       {delOrg && <DeleteDialog org={delOrg} mode="soft" onClose={() => setDelOrg(null)} onDone={() => { setDelOrg(null); reload() }} />}
 
-      <Card><CardContent className="space-y-3 pt-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">Novo grupo</h2>
-        <form className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-4" onSubmit={(e) => { e.preventDefault(); act(async () => {
+      <Card><CardContent className="pt-5">
+        <div className="mb-4 flex items-start gap-3">
+          <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#C5FA41]/40 text-primary"><Building2 className="size-5" /></span>
+          <div>
+            <h2 className="text-base font-semibold tracking-tight">Novo centro esportivo</h2>
+            <p className="text-sm text-muted-foreground">Cria o centro e, com o e-mail preenchido, envia o convite para o dono criar a senha.</p>
+          </div>
+        </div>
+        <form className="grid gap-x-4 gap-y-4 md:grid-cols-2" onSubmit={(e) => { e.preventDefault(); act(async () => {
           const r = await db().rpc("sa_create_org", { p_slug: nw.slug, p_name: nw.name, p_plan: nw.plan })
           if (r.error) return r
           if (!nw.email.trim()) { toast.warning("Centro criado sem administrador.", { description: "Use \"Convidar administrador\" no menu do cliente." }); return r }
@@ -465,13 +473,31 @@ export default function SuperPage() {
           const j = (await res.json().catch(() => ({}))) as { error?: string }
           return { error: res.ok ? null : { message: `Centro criado, mas o convite falhou: ${j.error ?? "erro desconhecido"}. Use "Convidar administrador" no menu do cliente.` } }
         }, nw.email.trim() ? "Centro criado e convite enviado ao administrador." : "Centro criado.").then(() => setNw({ name: "", slug: "", plan: "teste", email: "" })) }}>
-          <div className="space-y-1.5"><Label htmlFor="nn">Nome</Label><Input id="nn" required maxLength={80} value={nw.name} onChange={(e) => setNw((x) => ({ ...x, name: e.target.value, slug: slugify(e.target.value) }))} /></div>
-          <div className="space-y-1.5"><Label htmlFor="ns">Endereço</Label><Input id="ns" required maxLength={40} value={nw.slug} onChange={(e) => setNw((x) => ({ ...x, slug: slugify(e.target.value) }))} /></div>
-          <div className="space-y-1.5"><Label htmlFor="np">Plano</Label>
-            <NativeSelect id="np" className="w-full" value={nw.plan} onChange={(e) => setNw((x) => ({ ...x, plan: e.target.value }))}>{plans.filter((p) => p.active && (p.code === "teste" || p.code === "ilimitado")).map((p) => <option key={p.code} value={p.code}>{p.code === "teste" ? `${p.name} (${p.trial_days} dias)` : p.name}</option>)}</NativeSelect>
-            <p className="text-xs text-muted-foreground">Todo centro novo começa no teste gratuito; o plano pago é escolhido pelo centro em Assinatura.</p></div>
-          <div className="space-y-1.5"><Label htmlFor="ne">E-mail do administrador <span className="font-normal text-muted-foreground">(recebe o convite para criar a senha)</span></Label><Input id="ne" type="email" value={nw.email} onChange={(e) => setNw((x) => ({ ...x, email: e.target.value }))} /></div>
-          <div className="sm:col-span-2 2xl:col-span-4"><Button type="submit" variant="brand" disabled={busy}>Criar grupo</Button></div>
+          <div className="space-y-1.5"><Label htmlFor="nn">Nome do centro</Label><Input id="nn" required maxLength={80} placeholder="Ex.: Arena Lagoa" value={nw.name} onChange={(e) => setNw((x) => ({ ...x, name: e.target.value, slug: slugify(e.target.value) }))} /></div>
+          <div className="space-y-1.5"><Label htmlFor="ns">Endereço</Label>
+            <div className="flex h-9 items-center overflow-hidden rounded-md border bg-background focus-within:ring-2 focus-within:ring-ring/50">
+              <span className="hidden h-full items-center border-r bg-secondary px-2.5 text-xs text-muted-foreground sm:flex">{APP_HOST}/quadras/</span>
+              <input id="ns" required maxLength={40} placeholder="arena-lagoa" className="h-full min-w-0 flex-1 bg-transparent px-2.5 text-sm outline-none" value={nw.slug} onChange={(e) => setNw((x) => ({ ...x, slug: slugify(e.target.value) }))} />
+            </div>
+            <p className="text-xs text-muted-foreground">Preenchido pelo nome. Letras minúsculas, números e hífen.</p></div>
+          <fieldset className="space-y-1.5"><legend className="mb-1.5 text-sm font-medium">Plano</legend>
+            <div className="grid grid-cols-2 gap-2">
+              {plans.filter((p) => p.active && (p.code === "teste" || p.code === "ilimitado")).map((p) => {
+                const on = nw.plan === p.code, Icon = p.code === "teste" ? Gift : InfinityIcon
+                return (
+                  <label key={p.code} className={cn("flex min-h-9 cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-sm transition", on ? "border-primary bg-secondary font-medium" : "hover:bg-secondary/60")}>
+                    <input type="radio" name="np" className="sr-only" checked={on} onChange={() => setNw((x) => ({ ...x, plan: p.code }))} />
+                    <Icon aria-hidden className={cn("size-4 shrink-0", on ? "text-primary" : "text-muted-foreground")} />
+                    <span className="truncate">{p.code === "teste" ? `Teste grátis · ${p.trial_days} dias` : "Interno (sem prazo)"}</span>
+                  </label>
+                )
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground">O plano pago é escolhido pelo próprio centro em Assinatura.</p></fieldset>
+          <div className="space-y-1.5"><Label htmlFor="ne">E-mail do dono <span className="font-normal text-muted-foreground">(opcional)</span></Label>
+            <div className="relative"><Mail aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input id="ne" type="email" className="pl-8" placeholder="dono@email.com" value={nw.email} onChange={(e) => setNw((x) => ({ ...x, email: e.target.value }))} /></div>
+            <p className="text-xs text-muted-foreground">Recebe o convite para criar a senha e entra como administrador.</p></div>
+          <div className="flex justify-end border-t pt-4 md:col-span-2"><Button type="submit" variant="brand" disabled={busy} className="w-full sm:w-auto">{busy ? <Loader2 className="animate-spin" /> : <Plus />}Criar centro</Button></div>
         </form>
       </CardContent></Card>
 
