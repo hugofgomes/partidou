@@ -3,6 +3,7 @@ import { FaqSection } from "@/components/site/faq"
 import { SiteFooter } from "@/components/site/footer"
 import { SiteHeader } from "@/components/site/header"
 import { LeadForm } from "@/components/site/lead-form"
+import { WhatsAppButton } from "@/components/site/whatsapp-button"
 import { Features, ForOrganizers, ForPlayers, ForSchools, Hero, HowItWorks, QuickAccess, Management, Plans, SmartAgenda, Testimonials } from "@/components/site/sections"
 import { APP_URL, CONTACT_EMAIL, FAQ, SEO, SITE_URL, SOCIAL } from "@/lib/site-config"
 import type { Metadata } from "next"
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 
 /** Dados estruturados (Schema.org): organização, site, aplicativo e perguntas frequentes (conteúdo igual ao da página). */
 const jsonLd = [
-  { "@context": "https://schema.org", "@type": "Organization", name: "Partigol", url: SITE_URL, logo: `${SITE_URL}/brand/icon-512.png`, slogan: "O jogo começa aqui.", email: CONTACT_EMAIL, ...(SOCIAL.length ? { sameAs: SOCIAL.map((s) => s.href) } : {}) },
+  { "@context": "https://schema.org", "@type": "Organization", name: "Partigol", url: SITE_URL, logo: `${SITE_URL}/brand/icon-512.png`, slogan: "O jogo começa aqui.", email: CONTACT_EMAIL, telephone: "+55-48-99820-0810", ...(SOCIAL.some((s) => !s.href.includes("wa.me")) ? { sameAs: SOCIAL.filter((s) => !s.href.includes("wa.me")).map((s) => s.href) } : {}) },
   { "@context": "https://schema.org", "@type": "WebSite", name: "Partigol", url: SITE_URL, inLanguage: "pt-BR" },
   { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Partigol", applicationCategory: "BusinessApplication", operatingSystem: "Web", url: APP_URL, description: SEO.description, inLanguage: "pt-BR" },
   { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
@@ -46,6 +47,7 @@ export default function SitePage() {
         <LeadForm />
       </main>
       <SiteFooter />
+      <WhatsAppButton />
       <CtaTracker />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </>

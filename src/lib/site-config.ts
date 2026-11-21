@@ -30,6 +30,10 @@ export const LOGO = { src: "/brand/partigol-logo-520.png", width: 520, height: 1
 
 export const CONTACT_EMAIL = "contato@partigol.com.br"
 
+/** WhatsApp comercial (botão flutuante do site e rodapé). Número com DDI, só dígitos. */
+export const WHATSAPP = { number: "5548998200810", display: "(48) 99820-0810", text: "Olá! Vim pelo site do Partigol e quero saber mais." }
+export const WHATSAPP_URL = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.text)}`
+
 /** Rotas reais do sistema. O site nunca usa botão sem destino. */
 export const LINKS = {
   entrar: `${APP_URL}/login`,
@@ -59,7 +63,7 @@ export const SOCIAL: { label: string; href: string }[] = [
   { label: "Instagram @partidouoo", href: "https://www.instagram.com/partidouoo/" },
   // { label: "Facebook", href: "https://facebook.com/..." },
   // { label: "LinkedIn", href: "https://linkedin.com/company/..." },
-  // { label: "WhatsApp", href: "https://wa.me/55..." },
+  { label: "WhatsApp (48) 99820-0810", href: "https://wa.me/5548998200810" },
 ]
 
 /** Depoimentos reais e autorizados. Enquanto a lista estiver vazia, a seção NÃO é publicada. */

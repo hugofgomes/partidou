@@ -60,3 +60,6 @@ Em **Contatos do site**, a lixeira de cada contato abre uma confirmação e apag
 - **Planos:** novo bloco "Para escolinhas de futebol" com **Escolinha** (R$ 129,00/mês) e **Arena + Escolinha** (R$ 199,90/mês), ambos levando ao formulário com o plano marcado.
 - **Formulário:** a opção de quem é virou "Quadra ou escolinha"; o interesse aceita `escolinha` e `arena_escolinha` (migration `0056_leads_escolinha.sql`), mostrado em Contatos do site e no e-mail de aviso.
 - FAQ: pergunta "O Partigol atende escolinhas de futebol?" (também no Schema.org). Descrição para buscadores menciona escolinhas.
+
+## WhatsApp (2.6.3)
+Botão flutuante verde no canto inferior direito do site (`src/components/site/whatsapp-button.tsx`) para **(48) 99820-0810**, com a mensagem inicial "Olá! Vim pelo site do Partigol e quero saber mais." e medição de cliques (`whatsapp_flutuante`). O número fica em `WHATSAPP` (`src/lib/site-config.ts`), aparece também no rodapé (redes sociais) e como telefone nos dados estruturados da organização.
