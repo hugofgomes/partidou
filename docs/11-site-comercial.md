@@ -53,3 +53,10 @@ Cabeçalhos de segurança (em `next.config.ts`, valem para site e sistema): HSTS
 
 ## Excluir contato (2.5.0)
 Em **Contatos do site**, a lixeira de cada contato abre uma confirmação e apaga o contato **de vez** (`site_lead_delete`, migration `0053_excluir_contato_site.sql`; só o dono da plataforma). Use para testes, duplicados, spam ou pedido de remoção dos dados (LGPD). Na auditoria fica só o registro `SA_DELETE_SITE_LEAD` com tipo e situação, sem nome, e-mail ou telefone. Se o contato já virou cliente, o centro não é afetado.
+
+## Escolinhas de futebol no site (2.6.2)
+- Nova seção **Para escolinhas de futebol** (`#para-escolinhas`, componente `ForSchools`), entre Agenda e Para organizadores: só recursos já entregues; chamada pelo celular, mensalidades e portal dos pais aparecem como **Em breve**. Ilustração marcada como "Exemplo ilustrativo".
+- Menu do topo ganhou **Escolinhas** (itens com espaçamento menor para caber em 1280px) e o rodapé, "Escolinhas de futebol".
+- **Planos:** novo bloco "Para escolinhas de futebol" com **Escolinha** (R$ 129,00/mês) e **Arena + Escolinha** (R$ 199,90/mês), ambos levando ao formulário com o plano marcado.
+- **Formulário:** a opção de quem é virou "Quadra ou escolinha"; o interesse aceita `escolinha` e `arena_escolinha` (migration `0056_leads_escolinha.sql`), mostrado em Contatos do site e no e-mail de aviso.
+- FAQ: pergunta "O Partigol atende escolinhas de futebol?" (também no Schema.org). Descrição para buscadores menciona escolinhas.

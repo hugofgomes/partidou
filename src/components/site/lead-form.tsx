@@ -9,11 +9,11 @@ import { LEAD_EVENT, type LeadPreset } from "./lead-link"
 
 type Audience = Plan["audience"]
 const TABS: { id: Audience; label: string; hint: string }[] = [
-  { id: "quadra", label: "Sou dono de quadra", hint: "Quero conhecer o sistema de gestão" },
+  { id: "quadra", label: "Quadra ou escolinha", hint: "Quero conhecer o sistema de gestão" },
   { id: "organizador", label: "Sou organizador", hint: "Quero ser avisado quando abrir" },
   { id: "jogador", label: "Sou jogador", hint: "Quero ser avisado quando abrir" },
 ]
-const PLAN_LABEL: Record<string, string> = { organizador_pro: "Organizador Pro", quadra_pro: "Quadra Pro", arena_business: "Arena Business" }
+const PLAN_LABEL: Record<string, string> = { organizador_pro: "Organizador Pro", quadra_pro: "Quadra Pro", arena_business: "Arena Business", escolinha: "Escolinha", arena_escolinha: "Arena + Escolinha" }
 const input = "h-12 w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 text-[15px] text-white placeholder:text-white/50 outline-none transition focus:border-lime focus:ring-2 focus:ring-lime/30"
 
 /** Formulário de contato/captação. Envia para /api/site/lead, que valida e grava no banco (visível ao dono da plataforma). */

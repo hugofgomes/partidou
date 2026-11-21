@@ -33,7 +33,7 @@ export function SiteHeader() {
         </a>
         <nav aria-label="Principal" className="hidden justify-center xl:flex">
           <ul className="flex items-center gap-1">
-            {NAV.map((n) => <li key={n.href}><a href={n.href} className="rounded-full px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white">{n.label}</a></li>)}
+            {NAV.map((n) => <li key={n.href}><a href={n.href} className="rounded-full px-2.5 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white">{n.label}</a></li>)}
           </ul>
         </nav>
         <div className="col-start-3 flex items-center gap-2">

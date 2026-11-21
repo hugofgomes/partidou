@@ -6,7 +6,7 @@ const link = "text-sm text-white/70 transition-colors hover:text-white"
 export function SiteFooter() {
   const groups = [
     { label: "Jogar e organizar", items: [["Encontrar um Jogo", LINKS.encontrarJogo], ["Criar conta grátis", LINKS.cadastro], ["Criar partida", LINKS.criarPartida], ["Minhas partidas", LINKS.minhasPartidas], ["Buscar quadras", LINKS.buscarQuadras]] },
-    { label: "Centros esportivos", items: [["Gestão de Quadras", "#para-quadras"], ["Planos", "#planos"], ["Falar com a equipe", "#contato"], ["Entrar no painel", LINKS.entrar]] },
+    { label: "Centros esportivos", items: [["Gestão de Quadras", "#para-quadras"], ["Escolinhas de futebol", "#para-escolinhas"], ["Planos", "#planos"], ["Falar com a equipe", "#contato"], ["Entrar no painel", LINKS.entrar]] },
     { label: "Empresa", items: [["Como Funciona", "#como-funciona"], ["Perguntas frequentes", "#faq"], ["Contato", "#contato"]] },
     { label: "Legal", items: [["Política de Privacidade", LINKS.privacidade], ["Termos de Uso", LINKS.termos], ["Política de Cookies", LINKS.cookies]] },
   ]

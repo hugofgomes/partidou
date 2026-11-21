@@ -21,7 +21,7 @@ type Lead = { id: string; audience: "quadra" | "organizador" | "jogador"; name: 
 const STATUS: Record<string, string> = { novo: "Novo", contatado: "Contatado", negociando: "Negociando", ganho: "Ganho", perdido: "Perdido" }
 const CLS: Record<string, string> = { novo: "bg-lime text-forest", contatado: "bg-sky-100 text-sky-900", negociando: "bg-amber-100 text-amber-900", ganho: "bg-green-100 text-green-900", perdido: "bg-slate-200 text-slate-700" }
 const AUD: Record<string, string> = { quadra: "Dono de quadra", organizador: "Organizador", jogador: "Jogador" }
-const PLAN: Record<string, string> = { organizador_pro: "Organizador Pro", quadra_pro: "Quadra Pro", arena_business: "Arena Business", demonstracao: "Demonstração" }
+const PLAN: Record<string, string> = { organizador_pro: "Organizador Pro", quadra_pro: "Quadra Pro", arena_business: "Arena Business", escolinha: "Escolinha", arena_escolinha: "Arena + Escolinha", demonstracao: "Demonstração" }
 
 /** Contatos captados pelo site comercial (partidou.com.br). Só o dono da plataforma enxerga. */
 export default function LeadsPage() {

@@ -3,7 +3,7 @@ import { FaqSection } from "@/components/site/faq"
 import { SiteFooter } from "@/components/site/footer"
 import { SiteHeader } from "@/components/site/header"
 import { LeadForm } from "@/components/site/lead-form"
-import { Features, ForOrganizers, ForPlayers, Hero, HowItWorks, QuickAccess, Management, Plans, SmartAgenda, Testimonials } from "@/components/site/sections"
+import { Features, ForOrganizers, ForPlayers, ForSchools, Hero, HowItWorks, QuickAccess, Management, Plans, SmartAgenda, Testimonials } from "@/components/site/sections"
 import { APP_URL, CONTACT_EMAIL, FAQ, SEO, SITE_URL, SOCIAL } from "@/lib/site-config"
 import type { Metadata } from "next"
 
@@ -36,6 +36,7 @@ export default function SitePage() {
         <HowItWorks />
         <Management />
         <SmartAgenda />
+        <ForSchools />
         <ForOrganizers />
         <ForPlayers />
         <Features />

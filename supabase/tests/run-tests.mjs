@@ -1330,6 +1330,7 @@ section("Site comercial: captação de leads (0041)")
   await create(["organizador", "Carlos Org", null, "Joinville", "SC", null, "carlos@org.com", null, "Racha de quinta", true, "organizador_pro", "site-form"])
   // freio: no máximo 3 contatos por WhatsApp em 24 horas
   await create(base); await create(base)
+  ok("site aceita interesse nos planos de escolinha", (await aerr(`select public.site_lead_create('quadra','Rita Escolinha','Escolinha Bola','Joinville','SC','47999990009',null,null,null,true,'arena_escolinha','site-form')`)) === null)
   ok("no máximo 3 contatos por WhatsApp ou e-mail em 24 horas", /Já recebemos/.test(await aerr(`select public.site_lead_create('quadra','Joao Dono','Arena Floripa',null,null,'48999990001',null,1,null,true)`) ?? ""))
 
   await as(L.owner, async () => {

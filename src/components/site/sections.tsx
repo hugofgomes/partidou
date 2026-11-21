@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- foto de depoimento vem de endereço configurado */
 import { LINKS, PHOTOS, PLANS, SPORTS, TESTIMONIALS, type Plan } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
-import { ArrowRight, CalendarRange, ChartColumn, Check, Clock, Contact, Globe2, Hourglass, KeyRound, LayoutGrid, Link2, Lock, MapPin, Repeat, Search, ShieldCheck, Smartphone, Sparkles, Trophy, UserCheck, Users, Wallet, Wrench } from "lucide-react"
+import { ArrowRight, Camera, CalendarRange, ChartColumn, Check, ClipboardCheck, Clock, Contact, GraduationCap, HeartHandshake, Layers, Globe2, Hourglass, KeyRound, LayoutGrid, Link2, Lock, MapPin, Repeat, Search, ShieldCheck, Smartphone, Sparkles, Trophy, UserCheck, Users, Wallet, Wrench, UsersRound } from "lucide-react"
 import { LeadLink } from "./lead-link"
 import { AgendaMockup, DashboardMockup, HeroAppMockup } from "./mockups"
 import { Photo } from "./photo"
@@ -177,6 +177,49 @@ export function SmartAgenda() {
   )
 }
 
+/* ───────── 4b. Para escolinhas de futebol (só o que já existe; o resto aparece como "Em breve") ───────── */
+export function ForSchools() {
+  const items = [
+    { i: Camera, t: "Ficha do atleta com foto", d: "Dados pessoais e esportivos, posição, camisa e matrícula automática." },
+    { i: HeartHandshake, t: "Pais e responsáveis", d: "Responsável legal obrigatório para menores; irmãos com o mesmo cadastro." },
+    { i: Layers, t: "Categorias por idade", d: "Sub-5 a Sub-20 por temporada, com data de corte e aviso de elegibilidade." },
+    { i: UsersRound, t: "Turmas e vagas", d: "Dias, horários, treinador e capacidade: turma lotada só com autorização." },
+    { i: GraduationCap, t: "Treinadores com acesso", d: "Cada treinador vê só as próprias turmas, sem dados sensíveis dos alunos." },
+    { i: Lock, t: "Dados de crianças protegidos", d: "Fotos em área privada e acesso por perfil, com histórico de alterações." },
+    { i: ClipboardCheck, t: "Chamada pelo celular", soon: true },
+    { i: Wallet, t: "Mensalidades e portal dos pais", soon: true },
+  ]
+  const kids = [["Ana", "Goleira", "1"], ["Bruno", "Zagueiro", "4"], ["Caio", "Meio-campo", "8"], ["Duda", "Atacante", "9"]]
+  return (
+    <Section id="para-escolinhas" tone="light" labelledBy="escola-titulo">
+      <div className="grid items-center gap-12 lg:grid-cols-[1fr_1fr] lg:gap-16">
+        <div>
+          <Heading id="escola-titulo" eyebrow="Para escolinhas de futebol" title="Sua escolinha organizada do cadastro ao campo." sub="Atletas, responsáveis, categorias, turmas e treinadores num só lugar, com a proteção que os dados de crianças exigem." />
+          <div className="mt-10"><FeatureList items={items} /></div>
+          <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+            <LeadLink audience="quadra" plan="escolinha" track="escolinha_quero_conhecer" className={btnForest}>Quero Conhecer</LeadLink>
+            <a href="#planos" className={cn(linkArrow, "text-forest")}>Ver planos <ArrowRight aria-hidden className="size-4" /></a>
+          </div>
+        </div>
+        <figure className="rounded-3xl bg-forest p-6 text-white sm:p-8">
+          <figcaption className="sr-only">Ilustração de uma turma da escolinha com atletas, posições e vagas ocupadas.</figcaption>
+          <div aria-hidden>
+            <div className="flex items-center justify-between"><p className="text-xs font-medium text-white/70">Exemplo ilustrativo</p><span className="rounded-full bg-lime px-2.5 py-0.5 text-xs font-semibold text-forest">Seg e Qua · 9h</span></div>
+            <p className="mt-3 font-display text-xl font-bold">Sub-11 Manhã</p>
+            <p className="text-sm text-white/70">Treinador Marcos · 18 de 20 vagas</p>
+            <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-white/10"><span className="block h-full w-[90%] rounded-full bg-lime" /></span>
+            <ul className="mt-6 space-y-2">
+              {kids.map(([n, pos, num]) => (
+                <li key={n} className="flex items-center gap-3 rounded-xl bg-white/[0.06] px-3 py-2.5 text-sm"><span className="grid size-8 place-items-center rounded-full bg-lime text-xs font-bold text-forest">{n[0]}</span><span className="flex-1">{n}</span><span className="text-white/70">{pos}</span><span className="grid size-7 place-items-center rounded-md bg-white/10 text-xs font-bold text-lime">{num}</span></li>
+              ))}
+            </ul>
+          </div>
+        </figure>
+      </div>
+    </Section>
+  )
+}
+
 /* ───────── 5. Para organizadores ───────── */
 export function ForOrganizers() {
   const items = [
@@ -289,9 +332,10 @@ export function Plans() {
   const pro = byId("quadra_pro"), arena = byId("arena_business")
   const extras = arena.items.filter((i) => !pro.items.includes(i))
   const soon = [byId("jogador"), byId("organizador_pro")]
+  const esc = byId("escolinha"), combo = byId("arena_escolinha")
   return (
     <Section id="planos" tone="dark" labelledBy="planos-titulo">
-      <Heading id="planos-titulo" dark center eyebrow="Planos e preços" title="Escolha o plano certo para o seu jogo." sub="Para centros esportivos, dois planos completos. Para jogadores e organizadores, novidades a caminho." />
+      <Heading id="planos-titulo" dark center eyebrow="Planos e preços" title="Escolha o plano certo para o seu jogo." sub="Planos completos para centros esportivos e escolinhas de futebol. Para jogadores e organizadores, novidades a caminho." />
 
       <h3 className="mt-14 text-center text-sm font-semibold text-lime">Para donos de quadras e centros esportivos</h3>
       <ul className="mx-auto mt-6 grid max-w-4xl gap-5 md:grid-cols-2">
@@ -315,6 +359,19 @@ export function Plans() {
           </div>
           <LeadLink audience="quadra" plan={arena.id} track={`plano_${arena.id}`} className={cn(btn, "mt-10 w-full border border-white/25 text-white hover:bg-white/10")}>{arena.cta}</LeadLink>
         </li>
+      </ul>
+
+      <h3 className="mt-16 text-center text-sm font-semibold text-lime">Para escolinhas de futebol</h3>
+      <ul className="mx-auto mt-6 grid max-w-4xl gap-5 md:grid-cols-2">
+        {[esc, combo].map((p, k) => (
+          <li key={p.id} className="flex flex-col rounded-3xl border border-white/15 bg-white/[0.04] p-8 sm:p-10">
+            <h4 className="font-display text-2xl font-bold">{p.name}</h4>
+            <p className="text-[15px] text-white/70">{p.tagline}</p>
+            <p className="mt-6 flex items-baseline gap-1"><span className="font-display text-5xl font-bold tracking-tight">{p.price}</span><span className="text-white/70">{p.period}</span></p>
+            <ul className="mt-8 flex-1 space-y-3 border-t border-white/10 pt-8 text-[15px]">{p.items.map((i) => <li key={i} className="flex gap-3"><Check aria-hidden className="mt-0.5 size-5 shrink-0 text-lime" />{i}</li>)}</ul>
+            <LeadLink audience="quadra" plan={p.id} track={`plano_${p.id}`} className={cn(btn, "mt-10 w-full", k === 0 ? "bg-lime text-forest hover:bg-[#d3fb6e]" : "border border-white/25 text-white hover:bg-white/10")}>{p.cta}</LeadLink>
+          </li>
+        ))}
       </ul>
 
       <h3 className="mt-16 text-center text-sm font-semibold text-lime">Para jogadores e organizadores</h3>

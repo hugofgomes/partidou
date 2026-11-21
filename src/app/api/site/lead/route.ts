@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from "next/server"
 import { APP_URL } from "@/lib/site-config"
 
 const AUDIENCES = ["quadra", "organizador", "jogador"]
-const PLANS = ["organizador_pro", "quadra_pro", "arena_business", "demonstracao"]
+const PLANS = ["organizador_pro", "quadra_pro", "arena_business", "escolinha", "arena_escolinha", "demonstracao"]
 
 // Freio simples por IP (em memória, por instância): no máximo 5 envios a cada 10 minutos. O banco ainda limita por WhatsApp/e-mail.
 const hits = new Map<string, number[]>()

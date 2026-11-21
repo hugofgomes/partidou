@@ -22,7 +22,7 @@ export function legacyRedirect(host: string, pathAndQuery: string): string | nul
 
 export const SEO = {
   title: "Partigol | Gestão de Quadras e Organização de Partidas",
-  description: "Gerencie quadras esportivas, organize partidas, encontre jogadores e controle reservas com o Partigol. Tudo em uma única plataforma.",
+  description: "Gerencie quadras esportivas e escolinhas de futebol, organize partidas, encontre jogadores e controle reservas com o Partigol. Tudo em uma única plataforma.",
 }
 
 /** Logo oficial (versão para fundo escuro, PNG transparente otimizado: 520×120, ~19 KB). O original em alta fica em /brand/partigol-logo.png. */
@@ -48,6 +48,7 @@ export const NAV = [
   { href: "#como-funciona", label: "Como Funciona" },
   { href: `${APP_URL}/jogos`, label: "Encontrar Jogo" },
   { href: "#para-quadras", label: "Para Quadras" },
+  { href: "#para-escolinhas", label: "Escolinhas" },
   { href: "#para-organizadores", label: "Para Organizadores" },
   { href: "#planos", label: "Planos" },
   { href: "#contato", label: "Contato" },
@@ -79,7 +80,7 @@ export const PHOTOS = {
 
 export const SPORTS =["Futebol Society", "Futsal", "Futebol de Campo", "Vôlei", "Beach Tennis", "Basquete", "Tênis", "E outras"]
 
-export type Plan = { id: "jogador" | "organizador_pro" | "quadra_pro" | "arena_business"; name: string; tagline: string; price: string; period: string; items: string[]; cta: string; highlight?: boolean; soon?: boolean; audience: "quadra" | "organizador" | "jogador" }
+export type Plan = { id: "jogador" | "organizador_pro" | "quadra_pro" | "arena_business" | "escolinha" | "arena_escolinha"; name: string; tagline: string; price: string; period: string; items: string[]; cta: string; highlight?: boolean; soon?: boolean; audience: "quadra" | "organizador" | "jogador" }
 /** Valores de lançamento (sujeitos a confirmação). Cobrança e contratação online ainda não existem: o botão leva ao formulário de contato. */
 export const PLANS: Plan[] = [
   { id: "jogador", name: "Jogador", tagline: "Para quem quer jogar", price: "R$ 0", period: "gratuito", audience: "jogador", cta: "Criar conta grátis",
@@ -90,12 +91,17 @@ export const PLANS: Plan[] = [
     items: ["Gestão de quadras", "Agenda de reservas", "Cadastro de clientes", "Controle financeiro", "Relatórios de ocupação"] },
   { id: "arena_business", name: "Arena Business", tagline: "Para arenas com equipe", price: "R$ 199,90", period: "/mês", audience: "quadra", cta: "Falar com Consultor",
     items: ["Gestão de múltiplas quadras", "Controle de funcionários", "Permissões por perfil", "Relatórios avançados", "Gestão administrativa e financeira"] },
+  { id: "escolinha", name: "Escolinha", tagline: "Para escolinhas de futebol", price: "R$ 129,00", period: "/mês", audience: "quadra", cta: "Quero Contratar",
+    items: ["Fichas de atletas com foto", "Responsáveis vinculados", "Categorias por idade", "Turmas e controle de vagas", "Treinadores com acesso próprio"] },
+  { id: "arena_escolinha", name: "Arena + Escolinha", tagline: "Para centros com escolinha", price: "R$ 199,90", period: "/mês", audience: "quadra", cta: "Falar com Consultor",
+    items: ["Tudo do Arena Business", "Tudo do plano Escolinha", "Um login só para os dois"] },
 ]
 
 export const FAQ: { q: string; a: string }[] = [
   { q: "O que é o Partigol?", a: "É uma plataforma que conecta donos de quadras e centros esportivos, organizadores de partidas e jogadores. Centros usam o sistema de gestão; jogadores e goleiros encontram partidas com vagas; organizadores criam jogos, aprovam quem pede vaga e convidam jogadores." },
   { q: "Como encontro uma partida?", a: `Acesse Encontre um Jogo (${APP_HOST}/jogos), filtre por cidade, modalidade, dia, horário e posição e toque em Quero Jogar. Com a conta grátis de jogador, o organizador recebe seu pedido e você é avisado por e-mail quando for aprovado.` },
   { q: "Posso cadastrar minha quadra?", a: "Sim. Fale com a nossa equipe pelo formulário desta página: criamos o ambiente do seu centro esportivo, vinculamos o administrador e ajudamos na configuração inicial." },
+  { q: "O Partigol atende escolinhas de futebol?", a: "Sim. O módulo Escolinhas tem ficha de atletas com foto, responsáveis vinculados (obrigatório para menores), categorias por idade e temporada, turmas com controle de vagas e treinadores com acesso próprio, que veem só as próprias turmas. Fotos e dados das crianças ficam em área privada. Chamada pelo celular, mensalidades e portal dos pais estão em desenvolvimento. Planos: Escolinha (R$ 129,00/mês) e Arena + Escolinha (R$ 199,90/mês), para centros que têm quadras e escolinha." },
   { q: "Como funciona a agenda de reservas?", a: "A agenda mostra os horários por dia, semana ou mês, com cores por tipo de reserva (avulsa, mensalista, mensalista com professor e bloqueios). O sistema impede reservas conflitantes na mesma quadra e permite reservas recorrentes e bloqueios para manutenção." },
   { q: "Posso gerenciar várias quadras?", a: "Sim. Cada centro pode cadastrar várias quadras, com horários, preços e regras próprios. O limite de quadras depende do plano contratado." },
   { q: "O Partigol funciona no celular?", a: "Sim. O sistema é responsivo e pode ser instalado no celular como aplicativo (PWA), com uma visão da agenda pensada para telas pequenas." },

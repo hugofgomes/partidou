@@ -8,7 +8,7 @@ import { APP_URL, SITE_HOST } from "@/lib/site-config"
 export type Mail = { to: string; subject: string; text: string; html: string; replyTo?: string }
 
 const AUD = { quadra: "Dono de quadra", organizador: "Organizador", jogador: "Jogador" }
-const PLAN: Record<string, string> = { organizador_pro: "Organizador Pro", quadra_pro: "Quadra Pro", arena_business: "Arena Business", demonstracao: "Demonstração" }
+const PLAN: Record<string, string> = { organizador_pro: "Organizador Pro", quadra_pro: "Quadra Pro", arena_business: "Arena Business", escolinha: "Escolinha", arena_escolinha: "Arena + Escolinha", demonstracao: "Demonstração" }
 
 /** Aviso para a equipe: quem é, o que pediu e como responder. */
 export function teamNotification(l: LeadInfo, to: string, panelUrl: string): Mail {
