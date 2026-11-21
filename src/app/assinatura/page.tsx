@@ -13,7 +13,8 @@ type Billing = { org_name: string; status: string; usable: boolean; trial_days_l
 type Plan = { code: string; name: string; price_cents: number; max_athletes: number | null }
 /** Resumo de cada plano pago, o mesmo do site (código do banco → plano do site). */
 const SITE_PLAN: Record<string, string> = { basico: "quadra_pro", pro: "arena_business" }
-const planNote = (code: string) => { const p = PLANS.find((x) => x.id === SITE_PLAN[code]); return p ? `${p.tagline}: ${p.items.slice(0, 3).join(", ").toLowerCase()}` : "" }
+const OWN_NOTE: Record<string, string> = { escolinha: "Para escolinhas de futebol: atletas, turmas, categorias, treinadores e responsáveis" }
+const planNote = (code: string) => { if (OWN_NOTE[code]) return OWN_NOTE[code]; const p = PLANS.find((x) => x.id === SITE_PLAN[code]); return p ? `${p.tagline}: ${p.items.slice(0, 3).join(", ").toLowerCase()}` : "" }
 const brl = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2 })
 
 function headline(b: Billing) {

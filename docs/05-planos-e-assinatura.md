@@ -22,3 +22,6 @@ Criação → `teste` → assinatura (Asaas) → `ativa`; atraso → `suspensa`;
   5. Deploy e teste com um centro de teste.
 - **Situação (19/11/2026): ligado em produção.** Variáveis `ASAAS_*` no Coolify (cópia em `.env.deploy`) e webhook "Partigol" criado no Asaas pela API (`POST /v3/webhooks`, e-mail de falhas contato@partigol.com.br). **A conta do Asaas é a mesma do GEAB**: os dois webhooks recebem os eventos de toda a conta; o Partigol responde `desconhecida` (200) para assinaturas que não são dele, sem tentar de novo. Não alterar nem apagar o webhook "GEAB Futebol".
 - Para testar sem cobrar de verdade: conta **sandbox** do Asaas (sandbox.asaas.com) e `ASAAS_ENV=sandbox`.
+
+## Plano Escolinha (2.6.0)
+Plano `escolinha`: **R$ 129,00/mês**, só com o módulo `escolinhas` (aprovado pelo dono). Aparece na tela Assinatura com a descrição própria. O Teste gratuito e o Ilimitado incluem o módulo; Quadra Pro e Arena Business não. Detalhes no capítulo do módulo Escolinhas.

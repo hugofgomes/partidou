@@ -42,7 +42,7 @@ type Dash = {
   growth: { month: string; novos: number; total: number }[]; mrr: { month: string; mrr_cents: number; ativas: number }[]
 }
 type Plan = { code: string; name: string; price_cents: number; max_athletes: number | null; active: boolean; sort_order: number; orgs: number; max_admins: number | null; modules: string[]; trial_days: number; gateway_ref: string | null; max_courts: number | null }
-const MODULES: [string, string][] = [["importar", "Importar planilha"], ["ao_vivo", "Gols ao vivo"], ["pix", "Pix automático"], ["mensagens", "WhatsApp e e-mail"], ["quadras", "Quadra Esportiva"]]
+const MODULES: [string, string][] = [["importar", "Importar planilha"], ["ao_vivo", "Gols ao vivo"], ["pix", "Pix automático"], ["mensagens", "WhatsApp e e-mail"], ["quadras", "Quadra Esportiva"], ["escolinhas", "Escolinhas"]]
 type Data = { overview: Overview; orgs: Org[]; plans: Plan[]; dash: Dash }
 
 const STATUS: Record<string, string> = { teste: "Em teste", ativa: "Ativa", suspensa: "Suspensa", cancelada: "Cancelada", excluida: "Excluída" }

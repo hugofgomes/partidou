@@ -548,7 +548,7 @@ section("Planos, módulos e limites (0028)")
   ok("sem limite, promover funciona", (await errq(`update public.profiles set role='admin' where id='${A.a2}'`)) === null)
   await as(A.a1, async () => { ok("my_modules devolve os módulos do plano do grupo", (await one(`select public.my_modules()`)).join() === "pix") })
   await as(U.geabAdmin, async () => {
-    ok("GEAB mantém todos os módulos (com Quadra Esportiva desde a 0049)", (await one(`select public.my_modules()`)).length === 5)
+    ok("GEAB mantém todos os módulos (com Quadra Esportiva desde a 0049 e Escolinhas desde a 0054)", (await one(`select public.my_modules()`)).length === 6)
     ok("admin comum não lê sa_plans", /restrito/i.test(await err(`select * from public.sa_plans()`) ?? ""))
   })
   await as(uid(600), async () => {
@@ -1593,6 +1593,127 @@ section("Teste de 10 dias e assinatura (0022)")
   ok("painel de envios mostra avisos do app (lido / não lido)", log.some((r) => r.source === "app" && ["lido", "nao_lido"].includes(r.status)))
   const only = await as(uid(600), async () => q(`select distinct source from public.sa_notification_log(30, 'app')`))
   ok("painel de envios filtra por tipo", only.length === 1 && only[0].source === "app")
+}
+
+section("Escolinhas de Futebol: estrutura, atletas, turmas e segurança (0054)")
+{
+  const E = { o1: uid(2501), o2: uid(2502), oq: uid(2503), adm: uid(2511), adm2: uid(2512), coord: uid(2513), fin: uid(2514), tre: uid(2515), tre2: uid(2516), qadm: uid(2517), sem: uid(2518) }
+  await q(`insert into auth.users (id, email) values ($1,'e-adm@x'),($2,'e-adm2@x'),($3,'e-coord@x'),($4,'e-fin@x'),($5,'e-tre@x'),($6,'e-tre2@x'),($7,'e-qadm@x'),($8,'e-sem@x')`, [E.adm, E.adm2, E.coord, E.fin, E.tre, E.tre2, E.qadm, E.sem])
+  const mk = async (o, slug, plan) => q(`insert into public.organizations (id, slug, name, status, plan_id) values ($1,$2,$2,'ativa',(select id from public.plans where code=$3))`, [o, slug, plan])
+  await mk(E.o1, "escolinha-um", "escolinha"); await mk(E.o2, "escolinha-dois", "teste"); await mk(E.oq, "so-quadra", "basico")
+  const pf = (o, id, role) => q(`insert into public.profiles (tenant_id, id, full_name, role) values ($1,$2,'Pessoa',$3)`, [o, id, role])
+  await pf(E.o1, E.adm, "admin"); await pf(E.o2, E.adm2, "admin"); await pf(E.o1, E.coord, "diretoria"); await pf(E.o1, E.fin, "diretoria"); await pf(E.o1, E.tre, "diretoria"); await pf(E.o1, E.tre2, "diretoria"); await pf(E.oq, E.qadm, "admin"); await pf(E.o1, E.sem, "diretoria")
+  await q(`insert into public.school_staff (tenant_id, profile_id, role) values ($1,$2,'coordenador'),($1,$3,'financeiro')`, [E.o1, E.coord, E.fin])
+
+  ok("plano Escolinha: R$ 129,00, só com o módulo Escolinhas", (await one(`select price_cents || '|' || array_to_string(modules, ',') from public.plans where code='escolinha'`)) === "12990|escolinhas")
+  ok("teste gratuito e plano interno incluem o módulo Escolinhas", (await one(`select count(*)::int from public.plans where code in ('teste','ilimitado') and 'escolinhas' = any(modules)`)) === 2)
+  ok("plano Quadra Pro não ganhou o módulo Escolinhas", (await one(`select 'escolinhas' = any(modules) from public.plans where code='basico'`)) === false)
+
+  const roleOf = async (u) => { let r; await as(u, async () => { r = await one(`select public.school_role()`) }); return r }
+  ok("perfis do módulo: administrador, coordenação e financeiro", (await roleOf(E.adm)) === "admin" && (await roleOf(E.coord)) === "coordenador" && (await roleOf(E.fin)) === "financeiro")
+  ok("sem cadastro na equipe ou plano sem o módulo: sem acesso", (await roleOf(E.sem)) === null && (await roleOf(E.qadm)) === null)
+
+  // primeiro acesso, categorias, unidade e treinadores
+  await as(E.adm, async () => { await db.query(`select public.school_bootstrap()`); await db.query(`select public.school_bootstrap()`) }, true)
+  ok("primeiro acesso cria os dados da escolinha e as 10 posições do futebol (sem duplicar)", (await one(`select count(*)::int from public.school_settings where tenant_id=$1`, [E.o1])) === 1 && (await one(`select count(*)::int from public.school_positions where tenant_id=$1`, [E.o1])) === 10)
+  let cats
+  await as(E.adm, async () => {
+    cats = await one(`select public.school_seed_categories(2026)`)
+    ok("CNPJ inválido da escolinha é recusado", /CNPJ inválido/.test(await err(`update public.school_settings set cnpj='11222333000182'`) ?? ""))
+    ok("logo fora da pasta da escolinha é recusada", /Logo inválida/.test(await err(`update public.school_settings set logo_path='${E.o2}/logo/00000000-0000-4000-8000-000000000001.jpg'`) ?? ""))
+    await db.query(`insert into public.school_units (name, city, state) values ('Sede','Florianópolis','SC')`)
+    await db.query(`insert into public.school_coaches (full_name, status) values ('Treinador Um','ativo'),('Treinador Dois','ativo')`)
+  }, true)
+  ok("categorias padrão Sub-5 a Sub-20 (8) para a temporada", cats === 8 && (await one(`select count(*)::int from public.school_categories where tenant_id=$1 and season=2026`, [E.o1])) === 8)
+  const coach1 = await one(`select id from public.school_coaches where full_name='Treinador Um'`), coach2 = await one(`select id from public.school_coaches where full_name='Treinador Dois'`)
+  await q(`update public.school_coaches set profile_id=$1 where id=$2`, [E.tre, coach1]); await q(`update public.school_coaches set profile_id=$1 where id=$2`, [E.tre2, coach2])
+  ok("treinador com acesso tem o perfil treinador", (await roleOf(E.tre)) === "treinador")
+  const sub11 = await one(`select id from public.school_categories where tenant_id=$1 and name='Sub-11'`, [E.o1])
+  ok("elegibilidade pela data de corte: nascido em 2016 cabe no Sub-11 de 2026; em 2012 não", (await one(`select public.school_category_fits('2016-05-10', $1)`, [sub11])) === true && (await one(`select public.school_category_fits('2012-05-10', $1)`, [sub11])) === false)
+
+  // turma com capacidade 2
+  let cls, cls2
+  await as(E.coord, async () => {
+    cls = await one(`insert into public.school_classes (name, category_id, coach_id, weekdays, start_min, end_min, capacity, fee_cents) values ('Sub-11 Manhã',$1,$2,'{3,1,1}',540,600,2,15000) returning id`, [sub11, coach1])
+    cls2 = await one(`insert into public.school_classes (name, coach_id, capacity) values ('Sub-11 Tarde',$1,10) returning id`, [coach2])
+    ok("horário final antes do inicial é recusado", (await err(`insert into public.school_classes (name, capacity, start_min, end_min) values ('Errada',5,600,540)`)) !== null)
+  }, true)
+  ok("coordenação cria turma; dias da semana sem repetição e em ordem", (await one(`select array_to_string(weekdays, ',') from public.school_classes where id=$1`, [cls])) === "1,3")
+
+  // atletas e responsáveis
+  const mkAthlete = (name, birth, guardians) => one(`select public.school_athlete_create($1::jsonb, $2::jsonb)`, [JSON.stringify({ full_name: name, birth_date: birth, category_id: sub11, main_position: "goleiro", shirt_number: 1 }), JSON.stringify(guardians)])
+  let a1, a2, a3, a4
+  await as(E.adm, async () => {
+    ok("menor de idade sem responsável legal é recusado", /responsável legal/.test(await err(`select public.school_athlete_create('{"full_name":"Sem Responsavel","birth_date":"2016-01-01"}'::jsonb, '[]'::jsonb); set constraints all immediate`) ?? ""))
+    ok("menor com responsável que não é o legal também é recusado", /responsável legal/.test(await err(`select public.school_athlete_create('{"full_name":"So Emergencia","birth_date":"2016-01-01"}'::jsonb, '[{"full_name":"Vizinha","phone":"48999990000","relationship":"outro","is_legal":false,"is_emergency":true}]'::jsonb); set constraints all immediate`) ?? ""))
+    ok("CPF inválido do atleta é recusado", /CPF do atleta inválido/.test(await err(`select public.school_athlete_create('{"full_name":"Cpf Errado","birth_date":"2000-01-01","cpf":"11111111111"}'::jsonb, '[]'::jsonb)`) ?? ""))
+    a1 = await mkAthlete("Ana Goleira", "2016-03-10", [{ full_name: "Maria Mãe", phone: "48999990001", email: "Maria@Mae.com", relationship: "mae", is_legal: true, is_financial: true }])
+    const gMaria = await one(`select guardian_id from public.school_athlete_guardians where athlete_id=$1`, [a1])
+    a2 = await mkAthlete("Bruno Irmão", "2017-08-20", [{ guardian_id: gMaria, relationship: "mae", is_legal: true }])
+    a3 = await mkAthlete("Caio Zagueiro", "2016-11-02", [{ full_name: "Pedro Pai", phone: "48999990002", relationship: "pai" }])
+    a4 = await one(`select public.school_athlete_create('{"full_name":"Diego Adulto","birth_date":"2000-02-02","cpf":"529.982.247-25"}'::jsonb, '[]'::jsonb)`)
+    await db.query(`set constraints all immediate`)
+  }, true)
+  ok("números de matrícula automáticos e sequenciais", (await one(`select string_agg(enrollment_no::text, ',' order by enrollment_no) from public.school_athletes where tenant_id=$1`, [E.o1])) === "1,2,3,4")
+  ok("um responsável vinculado a vários atletas (irmãos)", (await one(`select count(*)::int from public.school_athlete_guardians where guardian_id=(select guardian_id from public.school_athlete_guardians where athlete_id=$1)`, [a1])) === 2)
+  ok("adulto pode ser cadastrado sem responsável; CPF fica só com dígitos", (await one(`select cpf from public.school_athletes where id=$1`, [a4])) === "52998224725")
+  await as(E.adm, async () => {
+    ok("número de matrícula não pode ser alterado", (await q(`update public.school_athletes set enrollment_no=99, full_name='Ana Goleira Silva' where id=$1 returning enrollment_no`, [a1]))[0].enrollment_no === 1)
+    ok("remover o único responsável legal de um menor é recusado", /responsável legal/.test(await err(`delete from public.school_athlete_guardians where athlete_id='${a3}'; set constraints all immediate`) ?? ""))
+    ok("foto fora da pasta da escolinha é recusada", /Foto inválida/.test(await err(`update public.school_athletes set photo_path='${E.o2}/atletas/00000000-0000-4000-8000-000000000001.jpg' where id='${a1}'`) ?? ""))
+    ok("foto na pasta certa é aceita", (await err(`update public.school_athletes set photo_path='${E.o1}/atletas/00000000-0000-4000-8000-000000000001.jpg' where id='${a1}'`)) === null)
+  })
+
+  // matrículas e capacidade
+  let e1, e3
+  await as(E.coord, async () => {
+    e1 = await one(`select public.school_enroll($1,$2)`, [a1, cls])
+    await db.query(`select public.school_enroll($1,$2)`, [a2, cls])
+    ok("matrícula repetida na mesma turma é recusada", /já está nesta turma/.test(await err(`select public.school_enroll('${a1}','${cls}')`) ?? ""))
+    ok("turma lotada recusa nova matrícula", /Turma lotada \(2 de 2/.test(await err(`select public.school_enroll('${a3}','${cls}')`) ?? ""))
+    e3 = await one(`select public.school_enroll($1,$2,true)`, [a3, cls])
+    ok("coordenação autoriza matrícula acima da capacidade (fica marcada)", (await one(`select forced from public.school_enrollments where id=$1`, [e3])) === true)
+  }, true)
+  await as(E.coord, async () => {
+    const nid = await one(`select public.school_transfer($1,$2)`, [e1, cls2])
+    ok("transferência encerra a matrícula antiga e cria a nova", (await one(`select end_reason from public.school_enrollments where id=$1`, [e1])) === "transferido" && (await one(`select class_id::text from public.school_enrollments where id=$1`, [nid])) === cls2)
+  }, true)
+  ok("ocupação: turma com 2 matriculados", (await as(E.adm, async () => q(`select enrolled from public.school_class_occupancy() where class_id=$1`, [cls])))[0].enrolled === 2)
+
+  // treinador: vê só a própria turma e só dados esportivos
+  await as(E.tre, async () => {
+    ok("treinador não lê a tabela de atletas nem responsáveis (dados pessoais)", (await one(`select count(*)::int from public.school_athletes`)) === 0 && (await one(`select count(*)::int from public.school_guardians`)) === 0)
+    const roster = await q(`select * from public.school_class_roster($1)`, [cls])
+    ok("treinador vê os alunos da própria turma (nome, idade, posição), sem CPF ou telefone", roster.length === 2 && roster.every((r) => r.age >= 8 && !("cpf" in r) && !("phone" in r)))
+    ok("treinador não vê a turma de outro treinador", /Sem acesso/.test(await err(`select * from public.school_class_roster('${cls2}')`) ?? ""))
+    ok("treinador não cria atleta nem altera turma", /Apenas administração/.test(await err(`select public.school_athlete_create('{"full_name":"X Y Z","birth_date":"2000-01-01"}'::jsonb)`) ?? "") && (await q(`update public.school_classes set capacity=99 returning 1`)).length === 0)
+    ok("treinador vê só as matrículas das próprias turmas", (await one(`select count(*)::int from public.school_enrollments where status='ativa'`)) === 2 && (await one(`select count(*)::int from public.school_enrollments where class_id=$1`, [cls2])) === 0)
+  })
+  await as(E.fin, async () => {
+    ok("financeiro lê atletas e responsáveis, mas não altera", (await one(`select count(*)::int from public.school_athletes`)) === 4 && (await q(`update public.school_athletes set level='avancado' returning 1`)).length === 0)
+  })
+
+  // isolamento entre escolinhas
+  await as(E.adm2, async () => {
+    await db.query(`select public.school_bootstrap()`)
+    ok("outra escolinha não vê atletas, responsáveis, turmas nem matrículas", (await one(`select count(*)::int from public.school_athletes`)) === 0 && (await one(`select count(*)::int from public.school_guardians`)) === 0 && (await one(`select count(*)::int from public.school_classes`)) === 0 && (await one(`select count(*)::int from public.school_enrollments`)) === 0)
+    ok("outra escolinha não lê a turma pelo roster", /não encontrada/.test(await err(`select * from public.school_class_roster('${cls}')`) ?? ""))
+    ok("não dá para matricular em turma de outra escolinha", (await err(`select public.school_enroll('${a1}','${cls}')`)) !== null)
+    ok("não dá para gravar atleta em nome de outra escolinha", /fora da organização/.test(await err(`insert into public.school_athletes (tenant_id, full_name, birth_date) values ('${E.o1}','Invasor Total','2000-01-01')`) ?? ""))
+    ok("histórico de atleta de outra escolinha é recusado", /não encontrado/.test(await err(`select * from public.school_athlete_history('${a1}')`) ?? ""))
+  })
+  await as(E.qadm, async () => { ok("conta só com Quadra não usa a Escolinha", /row-level security|violates/i.test(await err(`insert into public.school_units (name) values ('Nao')`) ?? "") && (await one(`select public.school_role()`)) === null) })
+
+  // painel, histórico e equipe
+  const dash = await as(E.adm, async () => one(`select public.school_dashboard()`))
+  ok("painel: atletas, turmas, treinadores e vagas", dash.athletes_total === 4 && dash.athletes_active === 4 && dash.classes_active === 2 && dash.coaches_active === 2 && dash.seats === 12 && dash.seats_taken === 3 && dash.without_class === 1)
+  ok("treinador não abre o painel administrativo", /Sem acesso/.test(await as(E.tre, async () => err(`select public.school_dashboard()`)) ?? ""))
+  const hist = await as(E.adm, async () => q(`select * from public.school_athlete_history($1)`, [a1]))
+  ok("histórico do atleta: cadastro, alteração, responsável e matrículas", hist.some((h) => h.entity === "school_athletes" && h.action === "INSERT") && hist.some((h) => h.action === "UPDATE") && hist.some((h) => h.entity === "school_enrollments") && hist.some((h) => h.entity === "school_athlete_guardians"))
+  const staff = await as(E.adm, async () => q(`select * from public.school_staff_list()`))
+  ok("equipe com perfis e e-mails (coordenação, financeiro e treinadores com acesso)", staff.length === 4 && staff.some((s) => s.role === "treinador" && s.email === "e-tre@x"))
+  ok("só o administrador vê a equipe", /Apenas o administrador/.test(await as(E.coord, async () => err(`select * from public.school_staff_list()`)) ?? ""))
+  ok("excluir atleta leva junto vínculos e matrículas (sem órfãos)", await as(E.adm, async () => { await db.query(`delete from public.school_athletes where id=$1`, [a4]); return (await one(`select count(*)::int from public.school_athletes where id=$1`, [a4])) === 0 }))
 }
 
 console.log(`\n${pass} aprovados, ${fail} falharam`)

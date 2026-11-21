@@ -43,7 +43,15 @@
     "/organizar/nova": "Criar partida (local livre ou reserva do Partigol; Preciso de goleiro)",
     "/organizar/[id]": "Gestão da partida: solicitações, confirmados, convites, Preciso de Goleiro e Encontrar Jogadores",
     "/convite/[id]": "Aceitar ou recusar convite",
-    "/super/envios": "Painel do SaaS: e-mails e avisos enviados às pessoas (Encontre um Jogo, app, vencimento, comunicados) com o resultado e a entrega no Resend"
+    "/super/envios": "Painel do SaaS: e-mails e avisos enviados às pessoas (Encontre um Jogo, app, vencimento, comunicados) com o resultado e a entrega no Resend",
+    "/escolinha": "Escolinhas: dashboard (primeiros passos, atletas, matrículas do mês, turmas e vagas, treinadores, categorias, aniversariantes)",
+    "/escolinha/atletas": "Escolinhas: lista de atletas com foto, filtros, busca, exportação e cadastro com responsáveis",
+    "/escolinha/atletas/[id]": "Escolinhas: ficha do atleta (foto, dados pessoais e esportivos, turmas, responsáveis, histórico, impressão)",
+    "/escolinha/turmas": "Escolinhas: turmas com vagas, alunos, matrícula e transferência; para o treinador, Minhas turmas",
+    "/escolinha/categorias": "Escolinhas: categorias por temporada, faixa etária, data de corte e relação de atletas",
+    "/escolinha/treinadores": "Escolinhas: cadastro de treinadores com foto e acesso por convite",
+    "/escolinha/responsaveis": "Escolinhas: pais e responsáveis com os atletas vinculados",
+    "/escolinha/configuracoes": "Escolinhas: dados da escolinha e logomarca, unidades, posições e equipe"
   },
   "apis": {
     "/api/assinatura": "Cria a assinatura no Asaas e devolve o link de pagamento",
@@ -57,7 +65,8 @@
     "/api/super/leads/converter": "Cria um cliente (centro esportivo) a partir de um contato do site: convite de acesso ao dono, grupo e vínculo como administrador; só o dono da plataforma",
     "/api/super/clientes/convidar": "Convida e vincula o administrador de um centro existente (convite por e-mail para criar a senha); só o dono da plataforma",
     "/api/cron/emails": "Processa a fila de e-mails do Encontre um Jogo (agendamento com CRON_SECRET ou usuário logado)",
-    "/api/super/envios/provedor": "Últimos e-mails no Resend com status de entrega (só o dono da plataforma; exige chave com acesso total)"
+    "/api/super/envios/provedor": "Últimos e-mails no Resend com status de entrega (só o dono da plataforma; exige chave com acesso total)",
+    "/api/escolinha/equipe": "Escolinhas: convida coordenação/financeiro ou dá acesso a treinador (POST) e reenvia o e-mail de acesso (PUT); só o administrador"
   },
   "env": {
     "APP_URL": "Endereço público usado nos links dos e-mails de aviso (padrão: domínio principal)",

@@ -2,6 +2,24 @@
   "_nota": "Fonte única do histórico de versões. Cada versão publicada ganha uma entrada NOVA no topo; registros antigos não são alterados. 'date' é a data real da publicação (AAAA-MM-DD) ou null quando não foi registrada. A versão exibida no rodapé vem do package.json e precisa ter entrada aqui (verificado em npm run build).",
   "entries": [
     {
+      "version": "2.6.0",
+      "date": "2026-11-21",
+      "title": "Novo módulo: Escolinhas de Futebol (atletas, turmas, categorias e treinadores)",
+      "novidades": [
+        "Módulo Escolinhas: cadastro completo de atletas com foto (recorte e compressão), número de matrícula automático, idade calculada, posição, pé dominante, camisa e observações do treinador.",
+        "Responsáveis: todo atleta menor precisa de responsável legal; um responsável pode ter vários filhos; marcação de responsável financeiro e contato de emergência.",
+        "Categorias por temporada com faixa etária e data de corte (Sub-5 a Sub-20 em um clique), turmas com dias, horário, treinador, auxiliar, capacidade e mensalidade, matrícula, transferência e controle de vagas.",
+        "Treinadores com acesso próprio: veem só as próprias turmas e os dados esportivos dos alunos. Equipe de coordenação e financeiro por convite.",
+        "Plano Escolinha: R$ 129,00/mês."
+      ],
+      "melhorias": [
+        "Fotos de atletas ficam em área privada, com links temporários.",
+        "A página inicial leva cada pessoa ao módulo que ela usa.",
+        "Termos de uso: responsabilidades da escolinha sobre os dados de atletas e responsáveis."
+      ],
+      "correcoes": []
+    },
+    {
       "version": "2.5.0",
       "date": "2026-11-20",
       "title": "Excluir contato do site",

@@ -17,7 +17,8 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import { toast } from "sonner"
 import { manualFor } from "@/data/manual-quadra"
-import { CalendarCheck, CircleHelp, MailCheck, Search, UserRound } from "lucide-react"
+import { CalendarCheck, CircleHelp, GraduationCap, Layers, MailCheck, Search, Shirt, UserRound, UsersRound } from "lucide-react"
+import { useSchoolRole } from "@/hooks/use-school-role"
 
 const ADMIN = [
   { href: "/assinatura", label: "Assinatura", icon: CreditCard },
@@ -38,6 +39,17 @@ const QUADRA = [
   { href: "/quadra/manual", label: "Manual", icon: BookOpen, ready: true },
 ]
 
+/** Módulo Escolinhas de Futebol (Fases 1–2). Treinador vê só "Minhas turmas"; financeiro não edita (o banco garante). */
+const ESCOLA = [
+  { href: "/escolinha", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/escolinha/atletas", label: "Atletas", icon: Shirt },
+  { href: "/escolinha/turmas", label: "Turmas", icon: UsersRound },
+  { href: "/escolinha/categorias", label: "Categorias", icon: Layers },
+  { href: "/escolinha/treinadores", label: "Treinadores", icon: GraduationCap },
+  { href: "/escolinha/responsaveis", label: "Responsáveis", icon: Contact },
+  { href: "/escolinha/configuracoes", label: "Configurações", icon: Settings2 },
+]
+
 /** Encontre um Jogo: a mesma conta do painel também joga e organiza partidas (área própria, fora do painel do centro). */
 const JOGOS = [
   { href: "/jogos", label: "Encontrar um Jogo", icon: Search },
@@ -53,8 +65,8 @@ const isActive = (path: string, href: string) => (href === "/" || href === "/qua
 const PLATFORM = { href: "/super", label: "Painel do SaaS", icon: Crown }
 const SAAS_LINKS = [{ href: "/super/acessos", label: "Log de acessos", icon: Activity }, { href: "/super/leads", label: "Contatos do site", icon: Inbox }, { href: "/super/comunicados", label: "Comunicados", icon: Megaphone }, { href: "/super/envios", label: "Envios", icon: MailCheck }, { href: "/super/documentacao", label: "Documentação", icon: BookOpen }]
 /** Módulo da tela atual, mostrado antes do título no topo (ex.: "Quadra Esportiva / Agenda de Quadras"). */
-const moduleOf = (path: string) => (isActive(path, "/quadra") || path.startsWith("/quadra/") ? "Quadra Esportiva" : path === "/super" || path.startsWith("/super/") ? "Painel do SaaS" : path.startsWith("/conta") || path.startsWith("/assinatura") ? "Sistema" : "")
-const titleOf = (path: string) => [...ADMIN, ...QUADRA, ...SAAS_LINKS, PLATFORM, ACCOUNT].filter((n) => isActive(path, n.href)).sort((a, b) => b.href.length - a.href.length)[0]?.label ?? ""
+const moduleOf = (path: string) => (isActive(path, "/quadra") || path.startsWith("/quadra/") ? "Quadra Esportiva" : path === "/escolinha" || path.startsWith("/escolinha/") ? "Escolinhas" : path === "/super" || path.startsWith("/super/") ? "Painel do SaaS" : path.startsWith("/conta") || path.startsWith("/assinatura") ? "Sistema" : "")
+const titleOf = (path: string) => [...ADMIN, ...QUADRA, ...ESCOLA, ...SAAS_LINKS, PLATFORM, ACCOUNT].filter((n) => isActive(path, n.href)).sort((a, b) => b.href.length - a.href.length)[0]?.label ?? ""
 
 const itemCls = "flex w-full cursor-default items-center gap-2 rounded-md px-2.5 py-2 text-sm outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
 
@@ -145,6 +157,7 @@ function UserMenu({ name, roleLabel, onSignOut }: { name: string; roleLabel: str
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const path = usePathname()
   const courtRole = useCourtRole()
+  const schoolRole = useSchoolRole()
   const { role } = useRole()
   const readOnly = role !== "admin"      // equipe (gerente, recepcionista, financeiro): sem controles exclusivos do administrador
   const [isPlatform, setIsPlatform] = React.useState(false)
@@ -192,6 +205,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   type NavItem = { href: string; label: string; icon: typeof Users; badge?: number }
   const navGroups: { title: string; items: NavItem[] }[] = []
   if (courtRole) navGroups.push({ title: "Visão geral", items: [{ href: "/quadra", label: "Dashboard", icon: LayoutDashboard }] })
+  if (schoolRole) navGroups.push({ title: "Escolinha", items: schoolRole === "treinador"
+    ? [{ href: "/escolinha/turmas", label: "Minhas turmas", icon: UsersRound }]
+    : ESCOLA.filter((n) => n.href !== "/escolinha/configuracoes" || schoolRole !== "financeiro") })
   navGroups.push({ title: "Partidas", items: JOGOS })
   if (courtRole) navGroups.push({ title: "Quadra esportiva", items: [
     { href: "/quadra/agenda", label: "Agenda", icon: CalendarRange }, { href: "/quadra/reservas", label: "Reservas", icon: ClipboardList, badge: pending },
@@ -227,7 +243,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         id="menu-lateral"
         aria-label="Menu principal"
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-60 flex-col bg-[var(--shell-bg)] text-white shadow-xl transition-[transform,width] duration-200 ease-out motion-reduce:transition-none lg:translate-x-0 lg:shadow-none",
+          "fixed inset-y-0 left-0 z-40 flex w-60 flex-col print:hidden bg-[var(--shell-bg)] text-white shadow-xl transition-[transform,width] duration-200 ease-out motion-reduce:transition-none lg:translate-x-0 lg:shadow-none",
           collapsed && "lg:w-[72px]",
           open ? "translate-x-0" : "max-lg:invisible max-lg:-translate-x-full",
         )}
@@ -258,8 +274,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      <div className={cn("flex min-h-dvh flex-1 flex-col transition-[padding] duration-200 motion-reduce:transition-none", collapsed ? "lg:pl-[72px]" : "lg:pl-60")}>
-        <header className="sticky top-0 z-20 flex h-[calc(3.5rem+env(safe-area-inset-top))] items-center gap-2 border-b bg-white/95 px-4 pt-[env(safe-area-inset-top)] backdrop-blur sm:px-6">
+      <div className={cn("flex min-h-dvh flex-1 flex-col transition-[padding] duration-200 motion-reduce:transition-none print:pl-0", collapsed ? "lg:pl-[72px]" : "lg:pl-60")}>
+        <header className="sticky top-0 z-20 flex print:hidden h-[calc(3.5rem+env(safe-area-inset-top))] items-center gap-2 border-b bg-white/95 px-4 pt-[env(safe-area-inset-top)] backdrop-blur sm:px-6">
           <button
             type="button"
             onClick={() => setOpen(true)}
@@ -300,7 +316,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             {children}
           </main>
         </div>
-        <AppFooter />
+        <div className="print:hidden"><AppFooter /></div>
       </div>
     </div>
     </CollapsedCtx.Provider>

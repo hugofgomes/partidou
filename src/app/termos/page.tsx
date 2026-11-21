@@ -15,6 +15,8 @@ export default function Termos() {
       <p>A partida é organizada pelo organizador, que aprova os jogadores. O Partigol apenas facilita o contato e não se responsabiliza pela organização, pelo pagamento entre participantes ou pela conduta de terceiros.</p>
       <h2 className="text-lg font-semibold">Centros esportivos</h2>
       <p>O uso do sistema de gestão depende de plano e assinatura. O centro é responsável pelos dados que cadastra e pelo uso adequado das contas da sua equipe.</p>
+      <h2 className="text-lg font-semibold">Escolinhas de futebol</h2>
+      <p>A escolinha que usa o módulo Escolinhas é a <strong>controladora</strong> dos dados que cadastra (atletas, responsáveis, treinadores, fotos e documentos), inclusive de crianças e adolescentes. Cabe a ela definir a finalidade e a base legal de cada tratamento, obter as autorizações dos responsáveis legais (como o uso de imagem) e fazer a <strong>revisão jurídica</strong> dos seus termos, fichas e autorizações. O Partigol fornece a ferramenta, guarda fotos e documentos em área privada, limita o acesso por perfil e registra as alterações, e trata esses dados somente para prestar o serviço.</p>
       <h2 className="text-lg font-semibold">Disponibilidade</h2>
       <p>Buscamos manter o serviço disponível, mas ele pode sofrer interrupções para manutenção ou por causas fora do nosso controle.</p>
     </main>

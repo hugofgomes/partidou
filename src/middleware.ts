@@ -80,7 +80,7 @@ export async function middleware(req: NextRequest) {
   if (!p.active || !isStaff(p.role)) return path === "/sem-acesso" ? res : go("/sem-acesso")
   if (path === "/login" || path === "/sem-acesso") return go("/")
   // Equipe (gerente, recepcionista, financeiro) não acessa a administração da plataforma nem a assinatura.
-  if (p.role === "diretoria" && isAdminOnlyPath(path)) return go("/quadra")
+  if (p.role === "diretoria" && isAdminOnlyPath(path)) return go("/")
   return res
 }
 
