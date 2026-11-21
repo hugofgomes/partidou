@@ -25,3 +25,6 @@ Criação → `teste` → assinatura (Asaas) → `ativa`; atraso → `suspensa`;
 
 ## Plano Escolinha (2.6.0)
 Plano `escolinha`: **R$ 129,00/mês**, só com o módulo `escolinhas` (aprovado pelo dono). Aparece na tela Assinatura com a descrição própria. O Teste gratuito e o Ilimitado incluem o módulo; Quadra Pro e Arena Business não. Detalhes no capítulo do módulo Escolinhas.
+
+## Plano Arena + Escolinha (2.6.1)
+Plano `arena_escolinha`: **R$ 199,90/mês** (aprovado pelo dono), com tudo do Arena Business (limites e módulos copiados na criação) **mais** o módulo `escolinhas`. Para centros esportivos que também têm escolinha: um login só. Migration `0055_plano_arena_escolinha.sql`.

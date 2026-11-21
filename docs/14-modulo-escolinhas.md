@@ -15,7 +15,7 @@ Gestão de escolinhas de futebol, academias esportivas e projetos sociais: atlet
 | 7 | Validação final (segurança, celular, desempenho) | Pendente |
 
 ## Plano e acesso
-- Plano **Escolinha**: R$ 129,00/mês (`plans.code = 'escolinha'`, aprovado pelo dono), só com o módulo `escolinhas`. O **Teste gratuito** e o plano interno **Ilimitado** também incluem o módulo. Quadra Pro e Arena Business **não** incluem (decisão pendente se algum plano deve juntar Quadra + Escolinha).
+- Plano **Escolinha**: R$ 129,00/mês (`plans.code = 'escolinha'`, aprovado pelo dono), só com o módulo `escolinhas`. O **Teste gratuito** e o plano interno **Ilimitado** também incluem o módulo. Quadra Pro e Arena Business **não** incluem. Para centro com quadras e escolinha existe o plano combinado **Arena + Escolinha** (R$ 199,90/mês, 2.6.1).
 - A escolinha é um **módulo da conta** (organização): um centro com quadras e escolinha usa um login só, desde que o plano tenha os dois módulos.
 - Página inicial do painel (`/`): vai para a Quadra se a pessoa tiver perfil nela; senão para a Escolinha (treinador direto em Minhas turmas).
 

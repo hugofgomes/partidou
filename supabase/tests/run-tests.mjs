@@ -1607,6 +1607,7 @@ section("Escolinhas de Futebol: estrutura, atletas, turmas e segurança (0054)")
 
   ok("plano Escolinha: R$ 129,00, só com o módulo Escolinhas", (await one(`select price_cents || '|' || array_to_string(modules, ',') from public.plans where code='escolinha'`)) === "12990|escolinhas")
   ok("teste gratuito e plano interno incluem o módulo Escolinhas", (await one(`select count(*)::int from public.plans where code in ('teste','ilimitado') and 'escolinhas' = any(modules)`)) === 2)
+  ok("plano Arena + Escolinha: R$ 199,90 com Quadra Esportiva e Escolinhas", (await one(`select price_cents || '|' || ('quadras' = any(modules))::text || '|' || ('escolinhas' = any(modules))::text || '|' || name from public.plans where code='arena_escolinha'`)) === "19990|true|true|Arena + Escolinha")
   ok("plano Quadra Pro não ganhou o módulo Escolinhas", (await one(`select 'escolinhas' = any(modules) from public.plans where code='basico'`)) === false)
 
   const roleOf = async (u) => { let r; await as(u, async () => { r = await one(`select public.school_role()`) }); return r }
